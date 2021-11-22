@@ -1,0 +1,33 @@
+//binary search
+var findKthNumber = function(m, n, k) {
+    let left = 1
+    let right = m*n + 1
+
+    while (left < right) {
+        let mid = left + Math.floor((right-left)/2)
+        if (helper(m,n,mid)>= k) {
+            right = mid
+        } else {
+            left = mid+1
+        }
+    }
+    return left
+};
+
+//for number p, how many numbers are smaller or equal to it in the multiplication table
+let helper = (m,n,p) => {
+    //imagine a table, start from the topright, which is [0,n-1]
+    let i = 1
+    let j = n
+
+    let count = 0
+    while (i>=1 && i<=m && j>=1 && j<=n) {
+        if (i*j<=p) {
+            count += j
+            i++
+        } else {
+            j--
+        }
+    }
+    return count
+}
