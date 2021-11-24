@@ -1,0 +1,70 @@
+function TreeNode(val, left, right) {
+    this.val = (val===undefined ? 0 : val)
+    this.left = (left===undefined ? null : left)
+    this.right = (right===undefined ? null : right)
+}
+
+//three scenarios: no child, one child, two child
+//first find the target node
+var deleteNode = function(root, key) {
+    const pseudoRoot = new TreeNode(Number.MAX_SAFE_INTEGER,root)
+    const [parent,targetNode] = search(pseudoRoot,key) 
+    if (!targetNode) return root
+    deletion(targetNode,parent)
+
+    return pseudoRoot.left
+};
+
+let search = (parent,key) => {
+    if (!parent) return [null,null]
+
+    if (parent.left && parent.left.val === key) {
+        return [parent, parent.left]
+    } else if (parent.right && parent.right.val === key) {
+        return [parent, parent.right]
+    } else {
+        if (parent.val > key) {
+            return search(parent.left,key)
+        } else {
+            return search(parent.right,key)
+        }
+    }
+}
+
+let deletion = (target,parent) => {
+    if (!target.left && !target.right) {
+        if (parent.left === target) {
+            parent.left = null
+        } else {
+            parent.right = null
+        }
+    } else if (target.left && target.right) {
+        //find the minimal on the right
+        let rightMinimalParent = target
+        let rightMinimal = target.right;
+        while (rightMinimal.left) {
+            rightMinimalParent = rightMinimal
+            rightMinimal = rightMinimal.left
+        }
+
+        let temp = rightMinimal.val
+        rightMinimal.val = target.val
+        target.val = temp
+        
+        deletion(rightMinimal,rightMinimalParent)
+    } else {
+        if (target.right) {
+            if (parent.left === target) {
+                parent.left = target.right
+            } else {
+                parent.right = target.right
+            }
+        } else {
+            if (parent.left === target) {
+                parent.left = target.left
+            } else {
+                parent.right = target.left
+            }
+        }
+    }
+}
