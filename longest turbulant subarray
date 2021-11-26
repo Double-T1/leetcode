@@ -1,0 +1,17 @@
+var maxTurbulenceSize = function(arr) {
+    let maxLen = 1
+    let currentLen = 1
+    for (let i=1; i<arr.length; i++) {
+        if (arr[i] === arr[i-1]) {
+            currentLen = 1
+        } else {
+            if ((arr[i]>arr[i-1] && arr[i-1]<arr[i-2]) || (arr[i]<arr[i-1] && arr[i-1]>arr[i-2])) {
+                currentLen++
+            } else {
+                currentLen = 2
+            }
+            maxLen = Math.max(currentLen,maxLen)
+        }
+    }
+    return maxLen
+};
