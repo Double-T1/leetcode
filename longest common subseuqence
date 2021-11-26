@@ -1,0 +1,40 @@
+//time: O(m*n)
+//space: O(min(m,n))
+var longestCommonSubsequence = function(text1, text2) {
+    let min = text1, max = text2
+    if (text1.length>text2.length) {
+      min = text2
+      max = text1
+    }
+    
+    let array = new Array(min.length)
+    //the last row, from right to left
+    for (let i=min.length-1; i>=0; i--) {
+        if (min[i] === max[max1.length-1]) {
+            array[i] = 1
+        } else {
+            array[i] = array[i+1] === 1? 1: 0
+        }
+    }
+    
+    //the rest of the rows
+    let prev; 
+    let diaganol;
+    for (let j=max.length-2; j>=0; j--) {
+        prev = 0
+        diaganol = 0
+        for (let i=min.length-1; i>=0; i--) {
+            if (min[i] === max[j]) {
+                let temp = array[i]
+                array[i] = diaganol + 1
+                diaganol = temp
+            } else {
+                diaganol = array[i]
+                array[i] = Math.max(prev, array[i])
+            }
+            prev = array[i]
+        }
+    }
+
+    return array[0]
+};
