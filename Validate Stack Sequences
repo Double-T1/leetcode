@@ -1,0 +1,38 @@
+//space: O(n)
+Array.prototype.peek = function () {
+    return this[this.length-1]
+}
+
+var validateStackSequences2 = function(pushed, popped) {
+    let arr = []
+    for (let i=0; i<pushed.length; i++) {
+        arr.push(pushed[i])
+        let last = arr.peek()
+        while (last!== undefined && last === popped[0]) {
+            arr.pop()
+            popped.shift()
+
+            last = arr.peek()
+        }   
+    }
+    return arr.length===0
+};
+
+
+//space: O(1) but slower
+var validateStackSequences = function(pushed, popped) {
+    for (let i=0; i<pushed.length; i++) {
+        let index = i
+        while (pushed[index] !== undefined && pushed[index] === popped[0]) {
+            pushed[index] = null
+            popped.shift()
+            while (pushed[index-1] === null) index--
+            index--
+        }
+    }
+    
+    return !popped.length
+};
+
+let  pushed = [1,2,3,4,5], popped = [4,5,3,2,1]
+console.log(validateStackSequences(pushed,popped))
