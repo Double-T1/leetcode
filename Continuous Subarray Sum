@@ -1,0 +1,22 @@
+//time: O(n)
+//space: O(n)
+var checkSubarraySum = function(nums, k) {
+    let prev = 0
+    let map = new Set()
+    let previousOne = 0
+    for (let i = 0; i<nums.length; i++) {
+        nums[i] += prev
+        prev = nums[i]
+
+        let remainder = nums[i]%k
+        if (map.has(remainder)) return true
+
+        map.add(previousOne)
+        previousOne = remainder
+    }
+    return false
+};
+
+
+let  nums = [23,2,6,4,7], k = 23
+console.log(checkSubarraySum(nums,k))
