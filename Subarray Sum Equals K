@@ -1,0 +1,23 @@
+var subarraySum = function(nums, k) {
+    let map = new Map()
+    map.set(0,1) 
+    let prefixSum = new Array(nums.length)
+    let prev = 0
+    let count = 0
+    for (let i=0; i<nums.length; i++) {
+        prefixSum[i] = nums[i] + prev
+        prev = prefixSum[i]
+
+        let remain = prefixSum[i]-k
+        if (map.has(remain)) {
+            count += map.get(remain)
+        }
+        let current = 1
+        if (map.has(prefixSum[i])) current = map.get(prefixSum[i])+1
+        map.set(prefixSum[i],current)
+    }
+
+    return count
+};
+let  nums = [1,1,-1,1], k = 2
+console.log(subarraySum3(nums,k))
