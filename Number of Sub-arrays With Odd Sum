@@ -1,0 +1,18 @@
+var numOfSubarrays = function(arr) {
+    let evenPrefixes = 1
+    let oddPrefixes = 0
+    let sum = 0
+    let count = 0
+    for (let i=0; i<arr.length; i++) {
+        sum += arr[i]
+        if (sum%2 === 0) {
+            count += oddPrefixes
+            evenPrefixes++
+        } else {
+            count += evenPrefixes
+            oddPrefixes++
+        }
+        count = count%(10**9+7)
+    }
+    return count
+};
