@@ -1,14 +1,13 @@
 //time: O(n)
 //space: O(n)
 var checkSubarraySum = function(nums, k) {
-    let prev = 0
+    let sum = 0
     let map = new Set()
     let previousOne = 0
     for (let i = 0; i<nums.length; i++) {
-        nums[i] += prev
-        prev = nums[i]
+        sum += nums[i]
 
-        let remainder = nums[i]%k
+        let remainder = sum%k
         if (map.has(remainder)) return true
 
         map.add(previousOne)
