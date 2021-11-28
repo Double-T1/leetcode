@@ -1,0 +1,23 @@
+var subarraysDivByK = function(nums, k) {
+    let sum = 0
+    let map = new Map()
+    map.set(0,1)
+    let count = 0
+    for (let i=0; i<nums.length; i++) {
+        sum += nums[i]
+        let remainder = mod(sum,k)
+
+        if (map.has(remainder)) {
+            let current = map.get(remainder)
+            count += current
+            map.set(remainder,current+1)
+        } else {
+            map.set(remainder,1)
+        }
+    }
+    return count
+};
+
+let mod = (n,k) => {
+    return (n%k+k)%k
+}
