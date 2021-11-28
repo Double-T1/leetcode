@@ -1,0 +1,20 @@
+var allPathsSourceTarget = function(graph) {
+    let superArr = []
+    helper(graph,superArr)
+    return superArr
+};
+
+
+let helper = (graph,superArr,subArr=[0],index=0) => {
+    if (index === graph.length-1) {
+        superArr.push([...subArr])
+        return
+    } else {
+        for (let i=0; i<graph[index].length; i++) {
+            subArr.push(graph[index][i])
+            helper(graph,superArr,subArr,graph[index][i])
+            subArr.pop()
+        }
+        return
+    }
+}
