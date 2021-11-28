@@ -1,0 +1,27 @@
+//time: O(n)
+//space: O(n)
+var minSubarray = function(nums, p) {
+    let len = nums.length
+    let prev = 0
+    for (let i=0; i<len; i++) {
+        nums[i] += prev
+        prev = nums[i]
+    }
+
+    let last = prev%p
+    let map = new Map()
+    map.set(0,-1)
+    let minLen = len
+    for (let i=0; i<len; i++) {
+        let remainder = nums[i]%p
+        map.set(remainder,i)
+        remainder = mod(remainder,last,p)
+        
+        if (map.has(remainder)) minLen = Math.min(minLen,i-map.get(remainder))     
+    }
+    return minLen === len? -1: minLen
+};
+
+let mod = (a,b,c) => {
+    return (a-b+c)%c
+}
