@@ -1,0 +1,25 @@
+//patience sort
+//time: O(nlogn)
+//space: O(k)
+var lengthOfLIS = function(nums) {
+    let record = [nums[0]]
+    for (let i=1; i<nums.length; i++) {
+        searchAndReplace(record,nums[i])
+    }
+    return record.length
+};
+
+let searchAndReplace = (record,val) => {
+    let left = 0
+    let right = record.length
+    while (left<right) {
+        let mid = left + Math.floor((right-left)/2)
+        if (record[mid] >= val) {
+            right = mid
+        } else {
+            left = mid+1
+        }
+    }
+    record[left] = val
+    return 
+}
