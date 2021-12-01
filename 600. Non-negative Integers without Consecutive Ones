@@ -1,0 +1,42 @@
+var findIntegers = function(n) {
+    if (n <= 2) return n+1 
+    //convert decimal into binary
+    n = n.toString(2)
+    return helper(n,n.length)
+};
+
+let helper = (n,len,memo={}) => {
+    //iteration
+    let k = len
+    let sum = sum(len)
+    let prev = '1'
+    for (let i=1; i<len; i++) {
+        if (prev === '1' && n[i] === '1') break
+        if (prev === '0') {
+            if (n[i] === '1') {
+                k -= 2
+            } else {
+                sum -= f(k-2,memo)
+                k--
+            }
+        }
+        prev = n[i]
+    }
+    return sum
+}
+
+let sum = (k,memo={}) => {
+    if (k in memo) return memo[k]
+    if (k === 0) return 1
+    if (k === 1) return 2
+    memo[k] = sum(k-1,memo) + sum(k-2,memo)
+    return memo[k]
+}
+
+let f = (n,memo) => {
+    if (n in memo) return memo[n]
+    if (n === 0 || n === 1 || n === 2) return 1
+    memo[n] = f(n-1,memo) + f(n-2,memo)
+    return memo[n]
+}
+
