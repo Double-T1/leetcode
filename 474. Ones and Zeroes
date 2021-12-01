@@ -1,0 +1,42 @@
+//DP
+//top down with memoization
+var findMaxForm = function(strs, m, n) {
+    let ones = []
+    let zeros = []
+    for (let i=0; i<strs.length; i++) {
+        ones[i] = 0
+        zeros[i] = 0
+        for (let j=0; j<strs[i].length; j++) {
+            if (strs[i][j] === '1') {
+                ones[i]++
+            } else {
+                zeros[i]++
+            }
+        }
+    }
+    return helper(ones,zeros,m,n)
+};
+
+//find the subsequence with a maximal length
+//s.t. 0s<=m and 1s<=n 
+let helper = (ones,zeros,m,n,index=0,memo={}) => {
+    if (index in memo && m in memo[index] && n in memo[index][m]) return memo[index][m][n]
+    if (index === ones.length || (m===0 && n===0)) {
+        return 0
+    } else {
+        if (!memo[index]) memo[index] = {}
+        if (!memo[index][m]) memo[index][m] = {}
+        let zero = zeros[index]
+        let one = ones[index]
+
+        //excluding strs[index]
+        let len = helper(ones,zeros,m,n,index+1,memo)
+        //including strs[index]
+        if (m>=zero && n>=one) len = Math.max(len,helper(ones,zeros,m-zero,n-one,index+1,memo)+1)
+        memo[index][m][n] = len
+        return len
+    }
+}
+
+//DP
+//bottom up
