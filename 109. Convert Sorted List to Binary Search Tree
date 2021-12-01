@@ -1,0 +1,42 @@
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {TreeNode}
+ */
+ //time: O(n)
+ //space: O(n) + O(logn)
+var sortedListToBST = function(head) {
+    //from list to array
+    let arr = []
+    let node = head
+    while(node) {
+        arr.push(node.val)
+        node = node.next
+    }
+    
+    //divide and conquer, recursion
+    return helper(arr,0,arr.length)
+};
+
+let helper = (arr,left,right) => {
+    if (left >= right) return null
+    let mid = left + Math.floor((right-left)/2)
+    let node = new TreeNode(arr[mid])
+    node.right = helper(arr,mid+1,right)
+    node.left = helper(arr,left,mid)
+    return node
+}
