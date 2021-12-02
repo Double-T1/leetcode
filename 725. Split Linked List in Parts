@@ -1,0 +1,36 @@
+var splitListToParts = function(head, k) {
+    let res = []
+
+    let len = 0
+    let node = head
+    while (node) {
+        len++
+        node = node.next
+    }
+    
+    node = head
+    let base = Math.floor(len/k) 
+    while (len) {
+        let m = base
+        if (len%k) m++
+        len -= m
+        let pseudoHead = new ListNode()
+        let copyHead = pseudoHead
+        for (let i=0; i<m; i++) {
+            copyHead.next = node
+            copyHead = copyHead.next 
+            node = node.next
+            copyHead.next = null
+        }
+        res.push(pseudoHead.next)
+        k--
+    }
+
+    
+    while (k) {
+        k--
+        res.push(null)
+    }
+
+    return res
+};
