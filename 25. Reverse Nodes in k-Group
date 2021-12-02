@@ -1,4 +1,6 @@
+//iteration
 //time: O(n) n being the length of the linkedlist
+//space: O(1)
 var reverseKGroup = function(head, k) {
     if (k === 1) return head
 
@@ -33,3 +35,47 @@ var reverseKGroup = function(head, k) {
     
     return pseudoHead.next
 };
+
+
+//recursion
+//time: O(n)
+//space: O(k + n/k)
+var reverseKGroup2 = function(head, k) {
+    if (k === 1) return head
+    let pseudoHead = new ListNode()
+    pseudoHead.next = head
+    recursion(k,pseudoHead,head)
+    return pseudoHead.next
+};
+
+let recursion = (k,copyHead,current) => {
+    if (!verify(k,current)) return
+
+    reverse(k-1,copyHead,current)
+    recursion(k,current,current.next)
+    return
+}
+
+let verify = (k,node) => {
+    if (!k || !node) {
+        return !k
+    } else {
+        return verify(k-1,node.next)
+    }
+}
+
+//assuming all current exist
+//k should be k-1 from the input above
+let reverse = (k,copyHead,current) => {
+    if (!k) {
+        return 
+    } else {
+        let temp = current.next
+        current.next = current.next.next
+        temp.next = copyHead.next
+        copyHead.next = temp
+        
+        reverse(k-1,copyHead,current)
+        return
+    }
+}
