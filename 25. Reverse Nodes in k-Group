@@ -1,0 +1,35 @@
+//time: O(n) n being the length of the linkedlist
+var reverseKGroup = function(head, k) {
+    if (k === 1) return head
+
+    let pseudoHead = new ListNode()
+    pseudoHead.next = head
+    let copyHead = pseudoHead
+    let current = head
+    while (current) {
+        //count k ahead to ensure there are enough nodes to reverse
+        let node = current
+        let count = k
+        while (node && count) {
+            node = node.next
+            count-- 
+        }
+        if (count) break;
+
+        //reverse k nodes
+        count = k-1
+        while (count) {
+            let temp = current.next
+            current.next = temp.next
+            temp.next = copyHead.next
+            copyHead.next = temp
+
+            count--
+        }
+        
+        copyHead = current
+        current = current.next
+    }
+    
+    return pseudoHead.next
+};
