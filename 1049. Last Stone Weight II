@@ -1,0 +1,18 @@
+//memoization
+var lastStoneWeightII = function(stones) {
+    return helper2(stones)
+};
+
+//at least one negative and one positive, 
+//but we overlook the restriction here for the simplicity of code
+let helper2 = (stones,val=0,index=0,memo={}) => {
+    if (index in memo && val in memo[index]) return memo[index][val]
+    if (!memo[index]) memo[index] = {}
+    if (index === stones.length) {
+        memo[index][val] = val>=0? val : Number.MAX_SAFE_INTEGER
+        return memo[index][val]
+    } else {
+        memo[index][val] = Math.min(helper2(stones,val+stones[index],index+1,memo),helper2(stones,val-stones[index],index+1,memo))
+        return memo[index][val]
+    }
+}
