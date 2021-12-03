@@ -1,0 +1,18 @@
+var largestValues = function(root) {
+    let res = []
+    if (!root) return res
+    let queue = [root] 
+    while (queue.length) {
+        let size = queue.length
+        let max = Number.MIN_SAFE_INTEGER
+        while(size) {
+            let node = queue.pop()
+            max = Math.max(max,node.val)
+            if (node.left) queue.unshift(node.left)
+            if (node.right) queue.unshift(node.right)
+            size--
+        }
+        res.push(max)
+    }
+    return res
+};
