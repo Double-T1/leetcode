@@ -1,0 +1,25 @@
+let dfs = (node) => {
+    if(!node.left && !node.right) {
+        return [node.val, 0]
+    } else {
+        let leftValue = 0,
+            leftBeforeValue = 0,
+            rightValue = 0,
+            rightBeforeValue = 0;
+        if (node.left) [leftValue, leftBeforeValue] = dfs(node.left)
+        if (node.right) [rightValue, rightBeforeValue] = dfs(node.right)
+
+        //highest with node
+        let withNodeMax = node.val + leftBeforeValue + rightBeforeValue
+        
+        //highest without node
+        //left handside + right handside
+        let withoutNodeMax = Math.max(leftValue,leftBeforeValue) + Math.max(rightValue, rightBeforeValue)
+        return [withNodeMax,withoutNodeMax] 
+    }
+}
+
+var rob = function(root) {
+    let [one, two] = dfs(root)
+    return Math.max(one, two)
+};
