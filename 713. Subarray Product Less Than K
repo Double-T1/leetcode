@@ -1,0 +1,15 @@
+//O(n)
+var numSubarrayProductLessThanK = function(nums, k) {
+    let left = 0
+    let product = 1
+    let count = 0
+    for (let i=0; i<nums.length; i++) {
+        product *= nums[i]
+        while (product>=k && left<=i) {
+            product /= nums[left]
+            left++
+        }
+        count += i-left+1
+    }
+    return count
+};
