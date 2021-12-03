@@ -1,4 +1,5 @@
-//O(n)
+//time: O(n)
+//space: O(1)
 var numSubarrayProductLessThanK = function(nums, k) {
     let left = 0
     let product = 1
@@ -13,3 +14,31 @@ var numSubarrayProductLessThanK = function(nums, k) {
     }
     return count
 };
+
+//preifx sum/product
+//time: O(nlogn)
+//space: O(1)
+var numSubarrayProductLessThanK2 = function(nums, k) {
+    let product = 1
+    nums.unshift(k)
+    let count = 0
+    for (let i=1; i<nums.length; i++) {
+        product *= nums[i]
+        let index = search(nums,i,product)
+        count += i-index 
+        nums[i] = product*k
+    }
+    return count
+};
+
+let search = (arr,right,val,left=0) => {
+    while (left<right) {
+        let mid = left + Math.floor((right-left)/2)
+        if (arr[mid]>val) {
+            right = mid
+        } else {
+            left = mid+1
+        }
+    }
+    return left
+}
