@@ -1,0 +1,48 @@
+//bottom up
+//time: O(n)
+//space: O(h)
+var maxAncestorDiff = function(root) {
+    const ans = helper(root)
+    return ans[2]
+};
+
+let helper = (node) => {
+    if (!node.left && !node.right) {
+        //[maxNum,minNum,absmax till this node]
+        //bottom up
+        return [node.val,node.val,Number.MIN_SAFE_INTEGER]
+    } else {
+        let leftMax = Number.MIN_SAFE_INTEGER,leftMin = Number.MAX_SAFE_INTEGER,leftAbs = leftMax
+        let rightMax = Number.MIN_SAFE_INTEGER,rightMin = Number.MAX_SAFE_INTEGER,rightAbs = rightMax
+        if (node.left) [leftMax,leftMin,leftAbs] = helper(node.left)
+        if (node.right) [rightMax,rightMin,rightAbs] = helper(node.right)
+        //find the biggest and smallest child for this node
+        let val = node.val
+        let childMax = Math.max(leftMax,rightMax)
+        let childMin = Math.min(leftMin,rightMin)
+        let currentMaxDiff = val<childMax? childMax - val : val - childMax
+        let currentMinDiff = val<childMin? childMin - val : val - childMin
+        let currentAbs = Math.max(currentMaxDiff,currentMinDiff,leftAbs,rightAbs)
+        return [Math.max(childMax,val),Math.min(childMin,val),currentAbs]
+    }
+}
+
+//topdown
+//time: O(n)
+//space: O(h)
+//while the complexity is the same as above, the code is much more readable
+//much simplier as well
+var maxAncestorDiff2 = function(root) {
+    return helper2(root)
+};
+
+let helper2 = (node,currentMin=node.val,currentMax=node.val) => {
+    if (!node) {
+        return currentMax-currentMin
+    } else {
+        let val = node.val
+        currentMin = Math.min(currentMin,val)
+        currentMax = Math.max(currentMax,val)
+        return Math.max(helper2(node.left,currentMin,currentMax),helper2(node.right,currentMin,currentMax))
+    } 
+}
