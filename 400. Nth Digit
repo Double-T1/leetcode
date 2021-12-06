@@ -1,0 +1,39 @@
+var findNthDigit = function(n) {
+    let map = {}
+    let left = 1
+    let right = n+1
+    while (left<right) {
+        let mid = Math.floor((right-left)/2) + left
+        if (digits(mid,map)>=n) {
+            right = mid
+        } else {
+            left = mid+1
+        }
+    }
+    
+    let start = digits(left-1,map) +1
+    let str = left.toString()
+    return parseInt(str[n-start],10)
+};
+
+//count the amount of digits up to the input number
+let digits = (num,map) => {
+    //count how many digits num has
+    let digits = 0
+    let val = num
+    while (val>=10) {
+        digits++
+        val = Math.floor(val/10)
+    }
+    
+    let extra = (num - 10**digits + 1) * (digits+1)
+    if (digits in map) return map[digits] + extra
+    let accu = 0
+    let j = digits 
+    while (j) {
+        accu += 9*(10**(j-1))*(j)
+        j--
+    }
+    map[digits] = accu
+    return accu + extra
+}
