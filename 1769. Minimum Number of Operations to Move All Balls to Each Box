@@ -1,0 +1,26 @@
+//O(n)
+var minOperations = function(boxes) {
+    let ans = []
+    //count the accu dist of all 1s to index -1
+    let accu = 0
+    let ones = 0
+    for (let i=0; i<boxes.length; i++) {
+        if (boxes[i] === '1') {
+            accu += i+1
+            ones++ 
+        }
+    }
+
+    let deletion = ones 
+    let addition = 0
+    for (let i=0; i<boxes.length; i++) {
+        accu = accu - deletion + addition
+        ans[i] = accu
+
+        if (boxes[i] === '1') {
+            deletion--
+            addition++
+        }
+    }
+    return ans
+};
