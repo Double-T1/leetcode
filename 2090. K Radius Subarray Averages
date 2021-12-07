@@ -1,0 +1,17 @@
+//time: O(n)
+var getAverages = function(nums, k) {
+    let prev = 0
+    let len = nums.length
+    for (let i=0; i<len; i++) {
+        nums[i] += prev
+        prev = nums[i]
+    }
+    nums.unshift(0)
+
+    let ans = new Array(len).fill(-1)
+    let x = 2*k + 1
+    for (let i=k+1; len>=x && i<=len-k; i++) {
+        ans[i-1] = Math.floor((nums[i+k]-nums[i-k-1])/x)
+    }
+    return ans
+};
