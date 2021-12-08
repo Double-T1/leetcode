@@ -1,0 +1,22 @@
+var findTilt = function(root) {
+    return helper(root)
+};
+
+let helper =(root)=>{
+    
+    let ans= 0
+    let left =0
+    let right =0
+    if (root && root.left) {
+        ans+=helper(root.left)
+        left = root.left.val
+        root.val += left
+    }
+    if (root && root.right) {
+        ans+=helper(root.right)
+        right = root.right.val
+        root.val += right
+    }
+    
+    return ans + Math.abs(left-right)    
+}
