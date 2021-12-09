@@ -1,0 +1,81 @@
+//tabulation
+//TLE
+//time: O(n*k) => O(n**2)
+var maxResult = function(nums, k) {
+    for (let i=1; i<nums.length; i++) {
+        //go backwards and find the max score
+        let max = nums[i-1]
+        for (let j=i-2; j>=0 && j>=i-k; j--) {
+            max = Math.max(max,nums[j])
+        }
+        nums[i] += max 
+    }
+    return nums.pop()
+};
+
+//optimized
+//time: O(n*logk)
+var maxResult2 = function(nums, k) {
+    let maxArr = [0]
+    let maxNum = 0
+    nums.unshift(0)
+    for (let i=1; i<nums.length; i++) {
+        //go backwards and find the max score
+        nums[i] += maxNum 
+        
+        //find the max for next index
+        maxArr = insert(maxArr,nums[i])
+        if (i>=k) maxArr = del(maxArr,nums[i-k])
+        maxNum = maxArr[maxArr.length-1] 
+    }
+    return nums.pop()
+};
+
+//binary search
+//find the smallest number that is bigger or equal to target value
+let search = (arr,val) => {
+    let left = 0
+    let right = arr.length
+    while(left<right) {
+        let mid = left + Math.floor((right-left)/2)
+        if (arr[mid]>=val) {
+            right = mid
+        } else {
+            left = mid+1
+        }
+    }
+    return left
+}
+
+let del = (arr,val) => {
+    let index = search(arr,val)
+    let temp = arr.slice(0,index)
+    let temp2 = arr.slice(index+1)
+    return temp.concat(temp2)
+}
+
+let insert = (arr,val) => {
+    //find the smallest index that is greater than val
+    let index = search(arr,val)
+    let temp = arr.slice(0,index)
+    temp.push(val)
+    return temp.concat(arr.slice(index))
+}
+
+//monotonic queue
+//time: O(n)
+var maxResult3 = function(nums, k) {
+    let maxArr = [nums[0]]
+    for (let i=1; i<nums.length; i++) {
+        nums[i] += maxArr[0]
+
+        //prepare the max for next index
+        //delete
+        if (i>=k && nums[i-k] === maxArr[0]) maxArr.shift()
+        while(maxArr.length && maxArr[maxArr.length-1]<nums[i]) {
+            maxArr.pop()
+        }
+        maxArr.push(nums[i])
+    }
+    return nums.pop()
+};
