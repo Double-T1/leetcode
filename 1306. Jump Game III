@@ -1,0 +1,19 @@
+//time: O(n)
+//space: O(n)
+var canReach = function(arr, start) {
+    return helper(arr,start)
+};
+
+let helper=(arr, index, visited={})=>{
+    if(arr[index] === 0) return true
+    if(visited[index]||index<0||index>=arr.length) {
+        return false
+    } else {
+        visited[index] = true
+        //go either left or right
+        let left = index-arr[index] 
+        let right = index+ arr[index]
+        return helper(arr,left,visited) || helper(arr,right,visited)
+        
+    }
+}
