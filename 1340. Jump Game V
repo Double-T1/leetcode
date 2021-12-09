@@ -1,0 +1,34 @@
+//time: O(n)
+//space: O(n) 
+var maxJumps = function(arr, d) {
+  let max  = 1;
+  let memo = {};
+  for (let i=0; i<arr.length; i++) {
+    max = Math.max(dfs(arr,d,i,memo),max)
+  }
+  return max
+};
+
+let dfs = (arr, d, i, memo) => {
+  if (i in memo) return memo[i]
+  //i+d
+  let count = 0;
+  for (let m=i+1; m<=i+d && m< arr.length; m++) {
+    if (arr[i]>arr[m]) {
+      count = Math.max(dfs(arr,d,m,memo),count)
+    } else {
+      break
+    }
+  }
+
+  //i-d
+  for (let n=i-1; n>=i-d && n>= 0; n--) {
+    if (arr[i]>arr[n]) {
+      count = Math.max(dfs(arr,d,n,memo),count)
+    } else {
+      break
+    }
+  }
+  memo[i] = count+1
+  return count+1
+}
