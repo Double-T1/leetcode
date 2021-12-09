@@ -1,0 +1,87 @@
+//while theoratically solution 3 and 4 have the same time complexity O(n)
+//realistically, solution 4 is faster than 3 by a non-neglible degree (4000ms vs 100ms)
+//perhaps it's because the operation at each index for 3 requires more complexity
+//hence the disparity
+
+//TLE
+//time: O(sLen*(maxJump-minJump+1)) = O(n**2)
+var canReach = function(s, minJump, maxJump) {
+    let arr = new Array(s.length).fill(false)
+    arr[0] = true
+    for (let i=0; i<arr.length; i++) {
+        if (arr[i] === true) {
+            for (let j=minJump+i; j<=maxJump+i && j<arr.length; j++) {
+                if (s[j] === '0') {
+                    arr[j] = true
+                }
+            }
+        }
+    }
+    return arr.pop()
+};
+
+//still TLE
+//optimized
+//O(n**2)
+var canReach2 = function(s, minJump, maxJump) {
+    if (s[0] === '1' || s[s.length-1] === '1') return false
+    return helper(s,0,minJump,maxJump)
+};
+
+//greedy: always go for the furthest point 
+//dfs
+let helper = (s,currentIndex,minJump,maxJump) => {
+    if (currentIndex === s.length-1) {
+        return true
+    } else {
+        s[currentIndex] = '1'
+        for (let i=currentIndex+maxJump; i>=currentIndex+minJump; i--) {
+            if (s[i] === '0' && helper(s,i,minJump,maxJump)) return true
+        }
+        return false
+    }
+}
+
+//go forward as a range
+//time: O(n)
+//make sure that we don't revisit nodes
+//bfs
+var canReach3 = function(s, minJump, maxJump) {
+    let queue = [0]
+    let farthest = 0
+    while (queue.length) {
+        let i = queue.pop()
+        let start = Math.max(i+minJump,farthest+1)
+        for (let j=start; j<=i+maxJump && j<s.length; j++) {
+            if (s[j] === '0') {
+                queue.unshift(j)
+                if (j === s.length-1) return true
+            }
+        }
+        farthest = Math.max(farthest,i+maxJump) 
+    }
+    return false
+};
+
+//sliding window + DP
+//O(n)
+var canReach4 = function(s, minJump, maxJump) {
+    let arr = new Array(s.length).fill(false)
+    arr[0] = true
+    let pre = 0
+    //utilize the fact that we know 0 index is def '0'
+    for (let i=1; i<s.length; i++) {
+        if (i>=minJump && arr[i-minJump]) {
+            pre++
+        } 
+
+        if (i>maxJump && arr[i-maxJump-1]) {
+            pre--
+        }
+        arr[i] = pre>0 && s[i] === '0'
+    }
+    return arr.pop()
+};
+
+let  s = "011010", minJump = 2, maxJump = 3
+console.log(canReach4(s,minJump,maxJump))
