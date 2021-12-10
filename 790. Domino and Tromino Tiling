@@ -1,0 +1,29 @@
+//memoization
+//time: O(n)
+//space: O(n)
+var numTilings = function(n) {
+    return helper(n)
+};
+
+
+let helper = (n,memo={}) => {
+    if (n === 0) return 1
+    if (n in memo) return memo[n]
+    let count = 0
+    //dominos only
+    if(n>=1) count += helper(n-1,memo) // one domino, vertical
+    if(n>=2) count += helper(n-2,memo) // two domino, horizontal
+
+    //triminos only
+    if(n>=3) {
+        //we consider two different cases where the triminos are flipped upside down
+        count += helper(n-3,memo) + helper(n-3,memo)
+    }
+
+    //triminos and dominos
+    for (let i=4; i<=n; i++) {
+        count += helper(n-i,memo) + helper(n-i,memo)
+    }
+    memo[n] = count%((10**9)+7)
+    return memo[n]
+}
