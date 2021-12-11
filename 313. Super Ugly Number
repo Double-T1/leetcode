@@ -1,0 +1,20 @@
+//time: O(n*k) k=primes.length
+//space: O(n+k)
+var nthSuperUglyNumber = function(n, primes) {
+    let ref = new Array(n)
+    ref[0] = 1
+    let pointers = new Array(primes.length).fill(0)
+    for (let k=1; k<n; k++) {
+        let current = Number.MAX_SAFE_INTEGER
+        for (let i=0; i<primes.length; i++) {
+            current = Math.min(current,primes[i]*ref[pointers[i]])
+        }
+
+        ref[k] = current
+
+        for (let i=0; i<pointers.length; i++) {
+            if (current%primes[i] === 0) pointers[i]++
+        }
+    }
+    return ref.pop()
+};
