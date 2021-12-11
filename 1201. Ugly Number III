@@ -1,0 +1,38 @@
+//interestingly, the why GCD is written affects the runtime by a significant degree
+
+//similar to question Nth magical number
+//time: log(Max-safe-integer)
+//space: O(1)
+var nthUglyNumber = function(n, a, b, c) {
+    let left = 0
+    let right = Number.MAX_SAFE_INTEGER
+    let ab = LCM(a,b)
+    let bc = LCM(b,c)
+    let ac = LCM(a,c)
+    let abc = LCM(ab,c)
+    while (left<right) {
+        let mid = left + Math.floor((right-left)/2)
+        if (g(mid,a,b,c,ab,bc,ac,abc)>=n) {
+            right = mid
+        } else {
+            left = mid + 1
+        }
+    }
+    return left
+};
+
+let g = (mid,a,b,c,ab,bc,ac,abc) => {
+    return Math.floor(mid/a) + Math.floor(mid/b) + Math.floor(mid/c) - Math.floor(mid/ab) - Math.floor(mid/ac) - Math.floor(mid/bc) + Math.floor(mid/abc) 
+}
+
+let LCM = (a,b) => {
+    return (a*b)/GCD(a,b)
+}
+
+let GCD = (a,b) => {
+    if (a === 0) return b
+    return GCD(b%a,a)
+}
+
+let  n = 3, a = 2, b = 3, c = 5
+console.log(nthUglyNumber(n,a,b,c))
