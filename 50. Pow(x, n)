@@ -1,10 +1,10 @@
 //find x to the power of n
+//recursion
 //time: O(logn)
 //space: O(logn)
 var myPow = function(x, n) {
     if (n<0) {
         let ans = recur(x,-n)
-        console.log(ans)
         return 1/ans
     } else {
         return recur(x,n)
@@ -17,7 +17,7 @@ let recur = (x,n) => {
     return recur(x*x,(n-1)/2)*x
 }
 
-
+//iteration
 //time: O(logn)
 //space: O(1)
 var myPow = function(x, n) {
@@ -47,4 +47,33 @@ let iter = (x,n) => {
     odd /= x
     
     return odd*x
+}
+
+//Revised Iteration
+/this version is better since there are no division and if conditions after the loop
+//time: O(logn)
+//space: O(1)
+var myPow2 = function(x, n) {
+    if (n<0) {
+        return 1/iter2(x,-n)
+    } else {
+        return iter2(x,n)
+    }
+};
+
+let iter2 = (x,n) => {
+    let prev = 1;
+    let prevOdd = 1
+    let odd = 1
+    while(n) {
+        if (n%2 === 1) {
+            n = (n-1)
+            prevOdd = odd
+            odd *= x
+        }
+        n = n/2
+        prev = x
+        x *= x
+    }
+    return prevOdd*prev
 }
