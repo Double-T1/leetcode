@@ -1,0 +1,72 @@
+//             time    | space
+//brute force: (n**2)    (n**2)
+//memoization: (n)       (n) + (n)
+//tabulation:  (n)       (n)
+//revised bottom-up:   
+//             (n)       (1)
+//matrix exponential (for transitory functions only):
+//             (n)       (n)
+//revised matrix exponential (recursion):
+//             (logn)    (logn)
+//revised matrix exponential (iteration):
+//             (logn)    (1)
+
+
+//revised matrix exponential (iteration)
+//time: O(logn)
+//space: O(1)
+var fib2 = function(n) {
+    if (n <= 1) return n
+    let base =[[1],[0]]
+    let matrix = [[1,1],[1,0]]
+    return matrixMultiply(matrixPow(matrix,n-1),base)[0][0]
+};
+
+//in this case, the power n will be >= 1
+let matrixPow = (x,n) => {
+    let prev = new Array(x.length)
+        .fill()
+        .map(() => new Array(x[0].length))
+    for (let i=0; i<prev.length; i++) {
+        for (let j=0; j<prev[0].length; j++) {
+            prev[i][j] = 0
+            if (i===j) prev[i][j] = 1
+        }
+    }
+
+    let prevOdd = [...prev]
+    let odd = [...prev]
+    while(n) {
+        if (n%2 === 1) {
+            n = (n-1)
+            prevOdd = odd
+            odd = matrixMultiply(odd,x)
+        }
+        n = n/2
+        prev = x
+        x = matrixMultiply(x,x)
+    }
+    return matrixMultiply(prevOdd,prev)
+}
+
+let matrixMultiply = (matrix1,matrix2) => {
+    if (matrix1[0].length !== matrix2.length) return NaN
+    //the product of matrix1 and matrix2 has the row of 1 and col of 2
+    let ans = new Array(matrix1.length)
+        .fill()
+        .map(() => new Array(matrix2[0].length))
+    for (let i=0; i<matrix1.length; i++) {
+        //consider the col change of matrix2
+        for (let n=0; n<matrix2[0].length; n++) {
+            let accu = 0
+            //since matrix1.length === matrix2[0].length, j is the col for 1 and row for 2
+            for (let j=0; j<matrix1[i].length; j++) {
+                accu += matrix1[i][j]*matrix2[j][n]
+            }
+            ans[i][n] = accu
+        }        
+    }
+    return ans
+}
+let matrix = [[1,1],[1,0]]
+console.log(fib2(2))
