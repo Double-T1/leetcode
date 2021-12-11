@@ -1,0 +1,77 @@
+//brute force
+//time: O(n**2) 
+//space: O(1)
+var findPairs = function(nums, k) {
+    nums.sort((a,b) => a-b) //small to large
+    let count = 0
+    for (let i=0; i<nums.length; i++) {
+        if (i>0  && nums[i] === nums[i-1]) continue
+        //can be reduce by binary search
+        for (let j=i+1; j<nums.length; j++) {
+            //can be reduced by prefix sum
+            if (nums[j]-nums[i] === k) {
+                count++
+                break
+            }
+
+            if (nums[j]-nums[i]>k) {
+                break
+            }
+        }
+    }
+    return count
+};
+
+//hashmap
+//time: O(nlogn) => O(n)
+//space: O(n)
+var findPairs2 = function(nums, k) {
+    let map = new Map()
+    let count = 0
+    for (let i=0; i<nums.length; i++) {
+        let val = nums[i]
+        //what if k === 0 ?
+        if (map.has(val)) {
+            if (k===0 && !map.get(val)) {
+                map.set(val,true)
+                count++
+            }
+            continue
+        }
+        if (map.has(val-k)) count++ 
+        if (map.has(val+k)) count++
+        map.set(val,false)
+    }
+    return count
+};
+
+//time: O(nlogn) 
+//space: O(1)
+var findPairs3 = function(nums, k) {
+    nums.sort((a,b) => a-b) //small to large
+    let count = 0
+    let len = nums.length
+    for (let i=0; i<len; i++) {
+        if (i>0  && nums[i] === nums[i-1]) continue
+        //can be reduce by binary search
+        let left = i+1
+        let right = len
+        while (left < right) {
+            let mid = left + Math.floor((right-left)/2)
+            if (nums[mid]-nums[i] === k) {
+                count++ 
+                break
+            }
+
+            if (nums[mid]-nums[i] > k) {
+                right = mid
+            } else {
+                left = mid+1
+            }
+        }
+    }
+    return count
+};
+
+let nums = [-1,-2,-3], k = 1
+console.log(findPairs3(nums,k))
