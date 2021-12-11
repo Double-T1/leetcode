@@ -1,0 +1,67 @@
+//time: O(bLen*logB)
+//space: O(logB+bLen)
+var superPow = function(a, b) {
+    return recur(a,b)
+};
+
+let recur = (a,b) => {
+    a = a%1337
+    if (!b.length) return 1
+    let ans = []
+    let remainder = arrayDivision(b,2,ans)
+    if (remainder === 0) return (recur(a*a,ans))%1337
+    if (remainder === 1) return (recur(a*a,ans)*a)%1337
+}
+
+let arrayDivision = (arr,divisor,ans) => {
+    let remainder = 0
+    for (let i=0; i<arr.length; i++) {
+        let val = arr[i] + remainder*10
+        remainder = val%divisor
+        ans.push(Math.floor(val/divisor))
+    }
+    while (ans[0] === 0) {
+        ans.shift()
+    }
+    return remainder
+}
+
+
+var superPow2 = function(a, b) {
+    return iter(a,b)
+};
+
+let iter = (a,b) => {
+    a = a%1337
+    let prev = 1
+    let prevOdd = 1
+    let odd = 1
+    while(b.length) {
+        let ans = []
+        let remainder = arrayDivision2(b,2,ans)
+        b = ans
+        if (remainder === 1) {
+            prevOdd = odd
+            odd = (odd*a)%1337
+        }
+        prev = a
+        a = (a*a)%1337
+    }
+    return (prevOdd*prev)%1337
+}
+
+let arrayDivision2 = (arr,divisor,ans) => {
+    let remainder = 0
+    for (let i=0; i<arr.length; i++) {
+        let val = arr[i] + remainder*10
+        remainder = val%divisor
+        ans.push(Math.floor(val/divisor))
+    }
+    while (ans[0] === 0) {
+        ans.shift()
+    }
+    return remainder
+}
+
+let  a = 2147483647, b = [2,0,0]
+console.log(superPow2(a,b))
