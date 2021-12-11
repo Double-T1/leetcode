@@ -1,5 +1,5 @@
 //             time    | space
-//brute force: (n**2)    (n**2)
+//brute force: (2**n)    (n)
 //memoization: (n)       (n) + (n)
 //tabulation:  (n)       (n)
 //revised bottom-up:   
