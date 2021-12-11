@@ -1,0 +1,33 @@
+var nthMagicalNumber = function(n, a, b) {
+    let left = 0
+    let right = Number.MAX_SAFE_INTEGER
+    let c = LCM(a,b)
+    while (left<right) {
+        let mid = left + Math.floor((right-left)/2)
+        if (g(mid,a,b,c)>=n) {
+            right = mid
+        } else {
+            left = mid + 1
+        }
+    } 
+    return left%(10**9 + 7)
+};
+
+let g = (num,a,b,c) => {
+    return Math.floor(num/a) + Math.floor(num/b) - Math.floor(num/c)
+}
+
+let LCM = (a,b) => {
+    return (a*b)/GCD(a,b)
+}
+
+let GCD = (a,b) => {
+    while (a!==b) {
+        if (a>b) {
+            a -= b
+        } else {
+            b -= a
+        }
+    }
+    return a  
+}
