@@ -1,5 +1,5 @@
-//memoization
-//time: O(n)
+//top-down from n to 1
+//time: (n)
 //space: O(n)
 var numTilings = function(n) {
     return helper(n)
@@ -27,3 +27,70 @@ let helper = (n,memo={}) => {
     memo[n] = count%((10**9)+7)
     return memo[n]
 }
+
+
+//bottom-up
+//from 1 to n
+//time: O(n)
+//space: O(n)
+var numTilings2 = function(n) {
+    let ref = new Array(n+1)
+    let accu = 0
+    ref[0] = 1
+    ref[1] = 1
+    for (let i=2; i<=n; i++) {
+        ref[i] = ref[i-1] + ref[i-2]
+        if (i>=3) {
+            accu += ref[i-3]*2
+            ref[i] += accu
+        }
+        ref[i] = ref[i]%((10**9)+7)
+    }
+
+    return ref.pop()
+};
+
+//bottom-up 
+//time: O(n)
+//space-optimized: O(1)
+var numTilings3 = function(n) {
+    if (n<= 2) return n
+
+    let oneBefore = 2 //ref[2]
+    let twoBefore = 1 //ref[1]
+    let threeBefore = 1 //ref[0]
+    let doubleAccu = 0
+    let current = 0
+    for (let i=3; i<=n; i++) {
+        doubleAccu += threeBefore*2
+        current = (doubleAccu + twoBefore + oneBefore)%((10**9)+7)
+
+        threeBefore = twoBefore
+        twoBefore = oneBefore
+        oneBefore = current
+    }
+
+    return current
+};
+
+//another pattern
+//same time space complexity as above
+var numTilings3_1 = function(n) {
+    if (n<= 2) return n
+
+    let oneBefore = 2 //ref[2]
+    let twoBefore = 1 //ref[1]
+    let threeBefore = 1 //ref[0]
+    let current = 0
+    for (let i=3; i<=n; i++) {
+        current = (2*oneBefore + threeBefore)%((10**9)+7)
+
+        threeBefore = twoBefore
+        twoBefore = oneBefore
+        oneBefore = current
+    }
+
+    return current
+};
+let n = 50
+console.log(numTilings3(n))
