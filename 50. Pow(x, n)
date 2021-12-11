@@ -1,0 +1,50 @@
+//find x to the power of n
+//time: O(logn)
+//space: O(logn)
+var myPow = function(x, n) {
+    if (n<0) {
+        let ans = recur(x,-n)
+        console.log(ans)
+        return 1/ans
+    } else {
+        return recur(x,n)
+    }
+};
+
+let recur = (x,n) => {
+    if (n === 0) return 1
+    if (n%2 === 0) return recur(x*x,n/2)
+    return recur(x*x,(n-1)/2)*x
+}
+
+
+//time: O(logn)
+//space: O(1)
+var myPow = function(x, n) {
+    if (n<0) {
+        let ans = iter(x,-n)
+        return 1/ans
+    } else {
+        return iter(x,n)
+    }
+};
+
+let iter = (x,n) => {
+    let prev = x;
+    let odd = 1
+    while(n) {
+        if (n%2 === 1) {
+            n = (n-1)
+            odd *= x
+        }
+        n = n/2
+        prev = x
+        x *= x
+    }
+    if (prev === 0 || x === 0) return 0
+    if (x === Infinity || prev === Infinity || odd === Infinity) return Infinity
+    x /= prev
+    odd /= x
+    
+    return odd*x
+}
