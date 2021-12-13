@@ -1,0 +1,19 @@
+var subArrayRanges = function(nums) {
+    let accu = 0
+    for (let i=0; i<nums.length-1; i++) {
+        accu += helper(nums,i)
+    }
+    return accu
+};
+
+let helper = (nums,startIndex) => {
+    let max = nums[startIndex]
+    let min = nums[startIndex]
+    let accu = 0
+    for (let i=startIndex+1; i<nums.length; i++) {
+        max = Math.max(max,nums[i])
+        min = Math.min(min,nums[i])
+        accu += max-min
+    }
+    return accu
+}
