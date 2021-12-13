@@ -1,0 +1,16 @@
+var countHomogenous = function(s) {
+    let prev = null
+    let total = 0
+    let current = 0
+    for (let i=0; i<s.length; i++){
+        if (prev != s[i]) {
+            prev = s[i]
+            current = 1
+        } else {
+            current++
+        }
+        total += current 
+        total = total%(10**9 + 7)
+    }
+    return total
+};
