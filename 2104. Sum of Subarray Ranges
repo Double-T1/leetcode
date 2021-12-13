@@ -1,3 +1,5 @@
+//brute force
+//time: O(n**2)
 var subArrayRanges = function(nums) {
     let accu = 0
     for (let i=0; i<nums.length-1; i++) {
@@ -17,3 +19,41 @@ let helper = (nums,startIndex) => {
     }
     return accu
 }
+
+//monotonic stack
+var subArrayRanges2 = function(nums) {
+    let minStack = [-1]
+    let maxStack = [-1]
+    let maxSum = 0
+    let minSum = 0
+    for (let i=0; i<=nums.length; i++) {
+        let val = nums[i]
+        if (i===nums.length) val = Number.MIN_SAFE_INTEGER
+        while (nums[peek(minStack)]>val) {
+            let targetIndex = minStack.pop()
+            let leftBound = peek(minStack)
+            let rightBound = i
+            let amount = (targetIndex-leftBound)*(rightBound-targetIndex)
+            minSum += amount*nums[targetIndex]
+        }
+        minStack.push(i)
+        if (i===nums.length) val = Number.MAX_SAFE_INTEGER
+        while (nums[peek(maxStack)]<val) {
+            let targetIndex = maxStack.pop()
+            let leftBound = peek(maxStack)
+            let rightBound = i
+            let amount = (targetIndex-leftBound)*(rightBound-targetIndex)
+            maxSum += amount*nums[targetIndex]
+        }
+        maxStack.push(i)
+    }
+    return maxSum - minSum
+};
+
+let peek = (arr) => {
+    return arr[arr.length-1]
+}
+
+//,-3,4,1
+let nums = [4,-2,-3,4,1]
+console.log(subArrayRanges2(nums))
