@@ -1,0 +1,23 @@
+let peek = (arr) => {
+    return arr[arr.length-1]
+}
+
+var sumSubarrayMins = function(arr) {
+    let mod = 10**9 + 7
+    let stack = [-1] //min monotonic stack, store indices
+    arr.unshift(Number.MIN_SAFE_INTEGER)
+    arr.push(Number.MIN_SAFE_INTEGER)
+    let accu = 0
+    for (let i=0; i<arr.length; i++) {
+        while (arr[peek(stack)]>arr[i]) {
+            let targetIndex = stack.pop()
+            let leftBound = peek(stack)
+            let rightBound = i
+            let amount = (targetIndex-leftBound)*(rightBound-targetIndex)
+            accu += (amount*arr[targetIndex])
+            accu = accu%mod
+        }
+        stack.push(i)
+    }
+    return accu
+};
