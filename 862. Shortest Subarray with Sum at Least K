@@ -1,0 +1,65 @@
+//time: O(nlogn)
+//space: O(n)
+var shortestSubarray = function(nums, k) {
+    let prev = nums[0]
+    for (let i=1; i<nums.length; i++) {
+        nums[i] += prev
+        prev = nums[i]
+    }
+    
+    let stack = [0]
+    let minLen = Number.MAX_SAFE_INTEGER
+    nums.unshift(0)
+    //O(n)
+    for (let i=1; i<nums.length; i++) {
+        let index = binarySearch(stack,nums,nums[i]-k) //O(logn)
+        if(index !== undefined) minLen = Math.min(minLen,i-index)
+       
+        while (nums[stack[stack.length-1]]>=nums[i]) {
+            stack.pop()
+        }
+        stack.push(i)
+    }
+    return minLen === Number.MAX_SAFE_INTEGER? -1: minLen
+};
+
+//find the index of the biggest number that is smaller or equal to target
+let binarySearch = (stack,nums,target) => {
+    let left = -1
+    let right = stack.length-1
+    while (left<right) {
+        let mid = left + Math.ceil((right-left)/2)
+        if (nums[stack[mid]]<=target) {
+            left = mid
+        } else {
+            right = mid -1
+        }
+    }
+    return stack[right]
+}
+
+//O(n)
+var shortestSubarray2 = function(nums, k) {
+    let prev = nums[0]
+    for (let i=1; i<nums.length; i++) {
+        nums[i] += prev
+        prev = nums[i]
+    }
+    
+    let stack = [0]
+    let minLen = Number.MAX_SAFE_INTEGER
+    nums.unshift(0)
+    for (let i=1; i<nums.length; i++) {
+        while (nums[stack[0]]+k<=nums[i]) {
+            minLen = Math.min(i-stack.shift(),minLen)
+        }
+        while (nums[stack[stack.length-1]]>=nums[i]) {
+            stack.pop()
+        }
+        stack.push(i)
+    }
+    return minLen === Number.MAX_SAFE_INTEGER? -1: minLen
+};
+
+let nums = [56,-21,56,35,-9], k=61
+console.log(shortestSubarray2(nums,k))
