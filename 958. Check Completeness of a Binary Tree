@@ -1,0 +1,22 @@
+var isCompleteTree = function(root) {
+    let queue = [root] 
+    let prevIsNull = false
+    while (queue.length) {
+        let size = queue.length
+        while (size) {
+            let node = queue.pop()
+            if (prevIsNull) {
+                if (node) return false
+            } else {
+                if (!node) {
+                    prevIsNull = true
+                } else {
+                    queue.unshift(node.left)
+                    queue.unshift(node.right)
+                }
+            }
+            size--
+        }
+    }
+    return true
+};
