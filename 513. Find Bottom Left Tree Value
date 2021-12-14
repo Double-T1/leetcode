@@ -1,0 +1,15 @@
+var findBottomLeftValue = function(root) {
+    let queue =[root]
+    let leftMost = null
+    while (queue.length) {
+        let size = queue.length
+        leftMost = queue[0].val
+        while (size) {
+            let node = queue.shift()
+            size--
+            if (node.left) queue.push(node.left)
+            if (node.right) queue.push(node.right)
+        }
+    }
+    return leftMost
+};
