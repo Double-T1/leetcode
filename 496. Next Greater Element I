@@ -1,0 +1,22 @@
+var nextGreaterElement = function(nums1, nums2) {
+    //monotonic stack that records the value
+    let stack = []
+    let map = new Map()
+    nums2.push(Number.MAX_SAFE_INTEGER)
+    for (let i=0; i<nums2.length; i++) {
+        let val = nums2[i]
+        while (stack[stack.length-1]<val) {
+            if (i===nums2.length-1) {
+                map.set(stack.pop(),-1)
+            } else {
+                map.set(stack.pop(),val)
+            }
+        }
+        stack.push(val)
+    }
+    
+    for (let i=0; i<nums1.length; i++) {
+        nums1[i] = map.get(nums1[i])
+    }
+    return nums1
+};
