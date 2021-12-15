@@ -1,0 +1,49 @@
+//time: O(logn*logn)
+//space: O(logn)
+var countNodes = function(root) {
+    let accu = 0
+    let totalHeight = countHeight(root)
+    let memo = {}
+    while (totalHeight > 0) {
+        let rightHeight = countHeight(root.right)
+        if (totalHeight === rightHeight+1) {
+            //the last node of the last level 
+            //is on the right hand side
+            root = root.right
+        } else {
+            //on the left hand side
+            root = root.left
+        }
+        accu += numberOfNodes(rightHeight,memo)
+        totalHeight--
+        accu++ //count the head
+    }
+    return accu 
+};
+
+let countHeight = (root,left) => {
+    if(!root) return 0
+    return countHeight(root.left,left) + 1
+} 
+
+let numberOfNodes = (height,memo) => {
+    if (height in memo) return memo[height]
+    let accu = 0
+    let current = 1
+    for (let i=0; i<height; i++) {
+        accu += current
+        memo[i+1] = accu
+
+        current = current << 1
+    }
+    
+    return accu
+}
+
+//calculating the time complexity
+//T(n) = T(n/2) + O(logn)
+//T()
+//     .
+//     .
+//     .
+//T(2) = T(1) + O()
