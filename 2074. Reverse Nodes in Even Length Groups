@@ -1,0 +1,38 @@
+var reverseEvenLengthGroups = function(head) {
+    let pseudoHead = new ListNode()
+    pseudoHead.next = head
+    let len = 0
+    let node = head
+    while (node) {
+        len++
+        node = node.next
+    }
+    recur(pseudoHead,head,1,len)
+    return pseudoHead.next
+};
+
+let recur = (copyHead,current,groupLabel,len) => {
+    if (len<groupLabel) groupLabel = len
+    if (groupLabel%2 === 0) reverse(copyHead,current,groupLabel-1)
+    for (let i=0; groupLabel%2 === 1 && i<groupLabel-1; i++) {
+        current = current.next
+    }
+    
+    if (!current.next) return 
+    recur(current,current.next,groupLabel+1,len-groupLabel)
+    return
+}
+
+let reverse = (copyHead,current,nums) => {
+    if (nums === 0) {
+        return
+    } else {
+        let temp = copyHead.next
+        copyHead.next = current.next
+        current.next = copyHead.next.next
+        copyHead.next.next = temp
+        reverse(copyHead,current,nums-1)
+        return
+    }
+}
+
