@@ -1,0 +1,22 @@
+var numComponents = function(head, nums) {
+    let map = new Set() 
+    for (let i=0; i<nums.length; i++) {
+        map.add(nums[i])
+    }
+
+    let prevIsComponent = false
+    let count = 0
+    while(head) {
+        if (map.has(head.val)) {
+            if (!prevIsComponent) {
+                prevIsComponent = true
+                count++
+            }
+        } else {
+            prevIsComponent = false
+        }
+        head = head.next
+    }
+
+    return count
+};
