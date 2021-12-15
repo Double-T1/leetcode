@@ -1,0 +1,25 @@
+//O(n)
+//nothing to do with quick sort despite the seeming similarity
+var partition = function(head, x) {
+    let bigger = new ListNode()
+    let smaller = new ListNode()
+    let pseudoHead = smaller
+    let pseudoBigger = bigger
+    let current = head
+    while (current) {
+        let temp = current.next
+        if (current.val<x) {
+            smaller.next = current
+            smaller = smaller.next
+            smaller.next = null
+        } else {
+            bigger.next = current
+            bigger = bigger.next
+            bigger.next = null
+        }
+        current = temp
+    }
+
+    smaller.next = pseudoBigger.next
+    return pseudoHead.next
+};
