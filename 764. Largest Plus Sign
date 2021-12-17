@@ -1,0 +1,156 @@
+//brute force
+//TLE
+//time: O(n**3)
+//space: O(minesLen)
+var orderOfLargestPlusSign = function(n, mines) {
+    let zeros = {}
+    for (let [row,col] of mines) {
+        if (!zeros[row]) zeros[row] = {}
+        zeros[row][col] = true
+    }
+
+    let longestArm = 0
+    for (let i=0; i<n; i++) {
+        for (let j=0; j<n; j++) {
+            if (zeros[i] && zeros[i][j]) continue
+            longestArm = Math.max(longestArm,fourArms(n,i,j,zeros))
+        }
+    }
+    return longestArm
+};
+
+let fourArms = (n,i,j,zeros) => {
+    let minArm = 1
+    let actionSpace = [[1,0],[-1,0],[0,1],[0,-1]]
+    for (let [vertical,horizontal] of actionSpace) {
+        minArm = Math.min(findLen(n,i,j,vertical,horizontal,zeros),minArm)
+    }
+    return minArm
+}
+
+
+let findLen = (n,i,j,vertical,horizontal,zeros) => {
+    let count = 0
+    while (i<n && j<n && i>=0 && j>=0) {
+        if (zeros[i] && zeros[i][j]) break
+        i += vertical
+        j += horizontal
+        count++
+    }
+    return count
+}
+
+//optimized
+//time: O(n**3)
+//space: O(n**2)
+var orderOfLargestPlusSign2 = function(n, mines) {
+    let zeros = {}
+    for (let [row,col] of mines) {
+        if (!zeros[row]) zeros[row] = {}
+        zeros[row][col] = true
+    }
+
+    let maxLen = Math.ceil(n/2)
+    let mid = Math.floor(n/2)
+    let longestArm = 0
+    //start from the center, then spread out
+    let queue = [[mid,mid]]
+    let visited = {}
+    visited[mid] = {}
+    visited[mid][mid] = true
+    while (queue.length) {
+        let [i,j] = queue.pop()
+        longestArm = Math.max(fourArms2(n,i,j,zeros),longestArm)
+        if (longestArm === maxLen) return longestArm
+        maxLen--
+        let actionSpace = [[i+1,j],[i-1,j],[i+1,j+1],[i+1,j-1],[i-1,j+1],[i-1,j-1],[i,j+1],[i,j-1]]
+        for ([i,j] of actionSpace) {
+            if ((i<0 || i>=n || j<0 || j>=n) || (visited[i] && visited[i][j]) || (zeros[i] && zeros[i][j])) continue
+            if (!visited[i]) visited[i] = {}
+            visited[i][j] = true 
+            queue.unshift([i,j])
+        }
+    }
+    return longestArm
+};
+
+let fourArms2 = (n,i,j,zeros) => {
+    let minArm = 1
+    let actionSpace = [[1,0],[-1,0],[0,1],[0,-1]]
+    for (let [vertical,horizontal] of actionSpace) {
+        minArm = Math.min(findLen2(n,i,j,vertical,horizontal,zeros),minArm)
+    }
+    return minArm
+}
+
+
+let findLen2 = (n,i,j,vertical,horizontal,zeros) => {
+    let count = 0
+    while (i<n && j<n && i>=0 && j>=0) {
+        if (zeros[i] && zeros[i][j]) break
+        i += vertical
+        j += horizontal
+        count++
+    }
+    return count
+}
+
+//trade space with time
+//time: O(n**2)
+//space: O(n+k)
+var orderOfLargestPlusSign3 = function(n, mines) {
+    let zeros = {}
+    for (let [row,col] of mines) {
+        if (!zeros[row]) zeros[row] = {}
+        zeros[row][col] = true
+    }
+
+    //the first row
+    let max = 0
+    let upper = []
+    let lower = []
+    for (let i=0; i<n; i++) {
+        let rightLen = 0
+        let leftLen = 1
+        for (let j=0; j<n; j++) {
+            fixUp(upper,j)
+            fixUp(lower,j)
+    
+            if (zeros[i] && zeros[i][j]) {
+                upper[j] = 1
+                leftLen = 1
+                continue
+            }
+            
+            //horizontal
+            if (leftLen === 1) rightLen = findLen3(n,i,j,0,1,zeros)
+            //vertical
+            if (upper[j] === 1) lower[j] = findLen3(n,i,j,1,0,zeros)
+            
+            max = Math.max(Math.min(rightLen,leftLen,lower[j],upper[j]),max)
+            rightLen--
+            leftLen++
+            lower[j]--
+            upper[j]++
+        }
+    }
+    return max
+};
+
+let fixUp = (arr,j) => {
+    if (!arr[j]) arr[j] = 1
+    return
+}
+
+let findLen3 = (n,i,j,vertical,horizontal,zeros) => {
+    let count = 0
+    while (i<n && j<n && i>=0 && j>=0) {
+        if (zeros[i] && zeros[i][j]) break
+        i += vertical
+        j += horizontal
+        count++
+    }
+    return count
+}
+let n = 5, mines = [[4,2]]
+console.log(orderOfLargestPlusSign3(n,mines))
