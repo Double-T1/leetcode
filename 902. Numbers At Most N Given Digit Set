@@ -1,0 +1,49 @@
+//N = digits of n
+//k = arr length (arr is represent as digits in this case, but not to be conflate with digits of n)
+//time: O(N*logk) + O(k) + O(N)
+//space: O(k) 
+var atMostNGivenDigitSet = function(digits, n) {
+    let str = n.toString(10) //O(N)
+    let d = str.length
+    let k = digits.length
+    let memo ={}
+    memo[1] = 0
+    memo[0] = 0
+    let ans = wholeCount(d,k,memo) //O(k)
+    for (let i=0; i<d; i++) {
+        let index = binarySearch(digits,str[i]) //O(logk)
+        ans += (index)*(memo[d-i] - memo[d-i-1]) //O(1)
+        if (i === d-1) ans += index  
+        if (digits[index] !== str[i]) return ans
+    }    
+    
+    return ans + 1
+};
+
+let binarySearch = (arr,val) => {
+    val = parseInt(val,10)
+    let left = 0
+    let right = arr.length
+    while(left<right) {
+        let mid = left + Math.floor((right-left)/2)
+        if (parseInt(arr[mid],10)>=val) {
+            right = mid
+        } else {
+            left = mid+1
+        }
+    }
+    return left
+}
+
+let wholeCount = (digits,len,memo) => {
+    if (digits in memo) return memo[digits]
+    digits--
+    let accu = 1
+    let ans = 0
+    for (let i=1; i<=digits; i++) {
+        accu *= len
+        ans += accu
+        memo[i+1] = ans
+    }
+    return ans
+}
