@@ -1,0 +1,35 @@
+var decodeString = function(s) {
+    let ans = ''
+    let index = 0
+    while (index<s.length) {
+        [ans,index] = helper(ans,s,index)
+    }
+    return ans
+};
+//either [,],a number, or a char
+let helper = (ans,s,index) => {
+    let str = ''
+    let freq = ''
+    while (s[index].match(/[0-9]/)) {
+        freq = freq + s[index]
+        index++
+    }
+    if (s[index] === '[') index++
+
+    while (index<s.length && s[index] !== ']') {
+        if (s[index].match(/[a-z]/)) {
+            str = str + s[index]
+            index++
+        } else if (s[index].match(/[0-9]/)) {
+            [str,index] = helper(str,s,index)
+        }
+    }
+    if (s[index] === ']') index++
+    if (freq === '') freq = '1'
+    freq = parseInt(freq,10)
+    while (freq>0) {
+        ans = ans + str
+        freq--
+    }
+    return [ans,index]
+}
