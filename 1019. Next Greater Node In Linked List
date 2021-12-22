@@ -1,0 +1,19 @@
+var nextLargerNodes = function(head) {
+    let stack = []
+    let ans = []
+    let index = 0
+    while (head) {
+        while(ans[stack[stack.length-1]]<head.val) {
+            ans[stack.pop()] = head.val
+        } 
+        ans[index] = head.val
+        head = head.next
+        stack.push(index)
+        index++
+    }
+
+    while(stack.length) {
+        ans[stack.pop()] = 0
+    }
+    return ans
+};
