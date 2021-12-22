@@ -3,6 +3,7 @@
 
 //stack1
 //time: O(n)
+//the actual runtime will be around 2n
 //space: O(n)
 var reorderList = function(head) {
     let slow = head
@@ -89,4 +90,54 @@ let recur = (fast,slow) => {
         }
         return temp
     }
+}
+
+//space optimization
+//time: O(n) the actual runtime is approximately 2n, which is slower then the solution 2 and 3. 
+//space: O(1)
+var reorderList4 = function(head) {
+    //step 1, find the mid
+    //step 2, reverse the second half
+    //step 3, merget the first and second half one at a time
+    
+    // step 1
+    let fast = head
+    let slow = head
+    //slow should become the end of the first half here
+    while (fast.next && fast.next.next) {
+        fast = fast.next.next
+        slow = slow.next
+    }
+    if (slow === fast) return head
+    
+    //step 2
+    let l2 = reverse(slow.next)
+    slow.next = null
+
+    //step 3
+    merge(head,l2)
+
+    return head
+};
+
+let reverse = (head) => {
+    let next = head.next
+    head.next = null
+    while (next) {
+        let temp = next.next
+        next.next = head
+        head = next
+        next = temp
+    }
+    return head
+}
+
+let merge = (l1,l2) => {
+    while (l1 && l2) {
+        let next = l1.next
+        l1.next = l2
+        l1 = l2
+        l2 = next
+    }
+    return
 }
