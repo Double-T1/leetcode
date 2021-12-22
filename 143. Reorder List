@@ -1,0 +1,92 @@
+//recursion
+//stack
+
+//stack1
+//time: O(n)
+//space: O(n)
+var reorderList = function(head) {
+    let slow = head
+    let fast = head
+    while (fast && fast.next && fast.next.next) {
+        fast = fast.next.next
+        slow = slow.next
+    }
+    if (fast === slow) return head
+
+    //pushing the second half the list into the array
+    let stack = []
+    while (slow && slow.next) {
+        slow = slow.next
+        stack.push(slow)
+    }
+
+    //the second half should be equal to the first half
+    //or smaller by one node
+    let current = head
+    while (stack.length) {
+        let node = stack.pop()
+        node.next = current.next
+        current.next = node
+        current = current.next.next
+    }
+    current.next = null
+    return head
+};
+
+//stack2?
+//time: O(n) but optimized
+//space: O(n)
+var reorderList2 = function(head) {
+    let slow = head
+    let fast = head
+    let stack = [head]
+    while (fast && fast.next && fast.next.next) {
+        fast = fast.next.next
+        slow = slow.next
+        stack.push(slow)
+    }
+    if (fast === slow) return head
+
+    //the second half should be equal to the first half
+    //or smaller by one node
+    slow = slow.next //the start of the second half
+    let end = slow
+    if (!fast.next) end = stack.pop()
+    while (stack.length) {
+        let temp = slow.next
+        let node = stack.pop()
+        slow.next = node.next
+        node.next = slow
+        slow = temp
+    }
+    end.next = null
+    return head
+};
+
+//recursion 
+//follows the same concept as stack2
+//but utilize the internal stack
+var reorderList3 = function(head) {
+    recur(head,head)
+    return head
+};
+
+//the current node would be slow
+let recur = (fast,slow) => {
+    if (fast.next && fast.next.next) {
+        let target = recur(fast.next.next,slow.next)
+        let temp = target.next
+        target.next = slow.next
+        slow.next = target
+        return temp
+    } else {
+        let temp = slow.next
+        if (fast.next) {
+            temp = temp.next
+            slow.next.next = null
+        } else {
+            slow.next = null
+        }
+        return temp
+    }
+}
