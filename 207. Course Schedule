@@ -1,0 +1,38 @@
+//make sure it is acyclical
+//time: O(V+E)
+//space: O(V+E) 
+var canFinish = function(numCourses, prerequisites) {
+    let adj = {}
+    for (let i=0; i<prerequisites.length; i++) {
+        const [end,start] = prerequisites[i]
+        if (!adj[start]) adj[start] = []
+        adj[start].push(end)
+    }
+
+    //dfs
+    let record = new Array(numCourses)
+    //undefined means not yet visited
+    //1 means visited but not recorded, a revisited of this state ipmlies a circle
+    //2 means done
+    for (let i=0; i<numCourses; i++) {
+        if(!dfs(adj,i,record)) return false
+    }
+    return true
+};
+
+let dfs = (adj,course,record) => {
+    if (record[course] === 1) return false
+    if (record[course] === 2) return true
+
+    record[course] = 1
+    if (adj[course]) {
+        for (let end of adj[course]) {
+            if(!dfs(adj,end,record)) return false
+        }
+    } 
+    record[course] = 2
+    return true
+}
+
+let  numCourses = 2, prerequisites = [[1,0]]
+console.log(canFinish(numCourses,prerequisites))
