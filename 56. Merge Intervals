@@ -1,0 +1,21 @@
+var merge = function(intervals) {
+    intervals.sort((a,b)=>a[0]-b[0])
+    
+    let ans =[intervals[0]]
+    let ansIndex =0
+    let [prevLo,prevHi] = ans[0]
+    for (let i=1;i<intervals.length;i++) {
+        let [currentLo,currentHi] = intervals[i]
+        if(currentLo<=prevHi) {
+            prevHi= Math.max(prevHi, currentHi)
+            prevLo= Math.min(currentLo,prevLo)
+            ans[ansIndex] = [prevLo,prevHi]
+        } else {
+            ans.push(intervals[i])
+            prevLo = currentLo
+            prevHi = currentHi
+            ansIndex++
+        }
+    }
+  return ans 
+};
