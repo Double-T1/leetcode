@@ -1,0 +1,59 @@
+var largestNumber = function(nums) {
+    quickSort(nums)
+    let str = ''
+    for (let i=0; i<nums.length; i++) {
+        str = nums[i].toString() + str 
+    }
+    //trim out the zeros at front
+    if (str[0] === '0') return '0'
+    return str
+};
+
+let quickSort = (nums,left=0,right=nums.length-1) => {
+    if (left >= right) {
+        return 
+    } else {
+        let index = partition(nums,left,right)
+        quickSort(nums,left,index-1)
+        quickSort(nums,index+1,right)
+        return 
+    }
+}
+
+//Lumotu
+let partition = (arr,left=0,right=arr.length-1) => {
+    let pivot = arr[right].toString()
+    let startOfBigger = left
+    while (left<right) {
+        if (isBigger(pivot,arr[left].toString())) {
+            swap(arr,startOfBigger,left)
+            startOfBigger++
+        }
+        left++
+    }
+    swap(arr,startOfBigger,right)
+    
+    return startOfBigger
+}
+
+let swap = (arr,a,b) => {
+    let temp = arr[a]
+    arr[a] = arr[b]
+    arr[b] = temp
+    return
+}
+//a and b are stringified number
+//returns whether num1>num2
+let isBigger = (num1,num2) => {
+    let str1 = num1 + num2 //num1 smaller than num2
+    let str2 = num2 + num1 //num2 smaller than num1
+
+    for (let i=0; i<str1.length; i++) {
+        if (str1[i]>str2[i]) {
+            return true
+        } else if (str1[i]<str2[i]) {
+            return false
+        } 
+    }
+    return false
+}
