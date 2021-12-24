@@ -1,0 +1,33 @@
+var findKthLargest = function(nums, k) {
+    k = nums.length-k
+    return findK(nums,k)
+};
+
+let findK = (nums,k,left=0,right=nums.length-1) => {
+    let index = partition(nums,left,right)
+    if (k===index) return nums[k]
+    if (k>index) return findK(nums,k,index+1,right)
+    return findK(nums,k,left,index-1) 
+}
+
+//lomuto
+let partition = (nums,left,right) => {
+    let pivot = nums[right]
+    let startOfBigger = left
+    while (left<right) {
+        if (nums[left]<pivot) {
+            swap(nums,left,startOfBigger)
+            startOfBigger++
+        }
+        left++
+    }
+    swap(nums,right,startOfBigger)
+    return startOfBigger
+}
+
+let swap = (arr,a,b) => {
+    let temp = arr[a]
+    arr[a] = arr[b]
+    arr[b] = temp
+    return
+}
