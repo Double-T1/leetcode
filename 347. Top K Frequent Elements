@@ -1,0 +1,55 @@
+//time: O(n)
+var topKFrequent = function(nums, k) {
+    let map = new Map()
+    let res = []
+    //O(n)
+    for (let i=0; i<nums.length; i++) {
+        let val = nums[i]
+        if (!map.has(val)) {
+            map.set(val,0)
+            res.push(val)
+        }
+        let x = (map.get(val))
+        map.set(val,++x)
+    }
+
+    //we only want the first k elements
+    //use quickselect and binary search to find them
+    let left = 0
+    let right = res.length-1  
+    k--
+    //O(klogk)
+    while (left<=right) {
+        let index = partition(map,res,left,right)
+        if (index === k) return res.slice(0,index+1)
+        if (index > k) {
+            right = index-1
+        } else {
+            left = index+1
+        }
+    }
+
+    return res.slice(0,left+1)
+};
+
+// the more frequent the number is, the closer to the left they are
+let partition = (map,res,left,right) => {
+    let pivot = map.get(res[right])
+    let startOfSmaller = left
+    while (left<right) {
+        if (pivot<map.get(res[left])) {
+            swap(res,startOfSmaller,left)
+            startOfSmaller++
+        }
+        left++
+    }
+    swap(res,startOfSmaller,right)
+    return startOfSmaller
+}
+
+let swap = (arr,a,b) => {
+    let temp = arr[a]
+    arr[a] = arr[b]
+    arr[b] = temp
+    return
+}
