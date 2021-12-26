@@ -1,0 +1,48 @@
+var kClosest = function(points, k) {
+    let memo = {}
+    let left = 0
+    let right = points.length-1
+
+    //find the frist k smallest points
+    k--
+    while (left<=right) {
+        let index = partition(memo,points,left,right)
+        if (index === k) return points.slice(0,index+1)
+        if (index > k) {
+            right = index-1
+        } else {
+            left = index+1
+        }
+    }  
+    return
+};
+
+let partition = (memo,points,left,right) => {
+    let pivot = distSq(memo,points[right])
+    let startOfBigger = left
+    while (left<right) {
+        if (distSq(memo,points[left])<pivot) {
+            swap(points,left,startOfBigger)
+            startOfBigger++
+        }
+        left++
+    }
+    swap(points,startOfBigger,right)
+    return startOfBigger
+}
+
+let swap = (arr,a,b) => {
+    let temp = arr[a]
+    arr[a] = arr[b]
+    arr[b] = temp
+    return
+}
+
+
+let distSq = (memo,arr) => {
+    let [x,y] = arr
+    if (x in memo && y in memo[x]) return memo[x][y]
+    if (!memo[x]) memo[x] = {}
+    memo[x][y] = x*x + y*y
+    return memo[x][y]
+}
