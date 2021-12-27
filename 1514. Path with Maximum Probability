@@ -1,6 +1,4 @@
-//modified dijkstra with known end
-//SPSP
-//O((V+E)logV)
+//minheap for dijkstra
 var maxProbability = function(n, edges, succProb, start, end) {
     let adj = {} 
     for (let i=0; i<succProb.length; i++) {
@@ -42,8 +40,8 @@ let removeMin = (minHeap) => {
     while (2*currentIndex+1<minHeap.length) {
         let index1 = 2*currentIndex+1
         let index2 = 2*currentIndex+2
-        let child1 = minHeap[index1]
-        let child2 = minHeap[index2]
+        let child1 = minHeap[child1]
+        let child2 = minHeap[child2]
 
         if (child2 === undefined) {
             if (child1[1]<val) {
@@ -89,3 +87,37 @@ let swap = (arr,a,b) => {
     arr[b] = temp
     return
 }
+
+//bfs?
+//O(V+E)
+var maxProbability2 = function(n, edges, succProb, start, end) {
+    let adj = {} 
+    for (let i=0; i<succProb.length; i++) {
+        let rate = succProb[i]
+        let [v1,v2] = edges[i]
+        if (!adj[v1]) adj[v1] = []
+        if (!adj[v2]) adj[v2] = []
+        adj[v1].push([v2,rate])
+        adj[v2].push([v1,rate])
+    }
+
+    let stack = [[start,1]]
+    let dist = []
+    dist[start] = 1
+    while (stack.length) {
+        let [vertex,distFromS] = stack.shift()
+        if(adj[vertex]) {
+            for (let [target,rate] of adj[vertex]) {
+                if (dist[target] === undefined || dist[target] < distFromS*rate) {
+                    dist[target] = rate*distFromS
+                    stack.push([target,dist[target]])             
+                }
+            }
+        }
+    }
+
+    return dist[end] === undefined? 0: dist[end] 
+};
+
+let  n = 3, edges = [[0,1],[1,2],[0,2]], succProb = [0.5,0.5,0.2], start = 0, end = 2
+console.log(maxProbability2(n,edges,succProb,start,end))
