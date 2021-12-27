@@ -1,0 +1,91 @@
+//modified dijkstra with known end
+//SPSP
+//O((V+E)logV)
+var maxProbability = function(n, edges, succProb, start, end) {
+    let adj = {} 
+    for (let i=0; i<succProb.length; i++) {
+        let rate = 1/succProb[i]
+        let [v1,v2] = edges[i]
+        if (!adj[v1]) adj[v1] = []
+        if (!adj[v2]) adj[v2] = []
+        adj[v1].push([v2,rate])
+        adj[v2].push([v1,rate])
+    }
+
+    let minHeap = [[start,1]]
+    let dist = []
+    dist[start] = 1
+    while (minHeap.length) {
+        let[vertex,distFromS] = removeMin(minHeap)
+        if (vertex === end) return 1/distFromS
+        if (!adj[vertex]) continue
+        for (let [end,val] of adj[vertex]) {
+            if (dist[end] === undefined || dist[end] > val*distFromS) {
+                dist[end] = val*distFromS
+                insert(minHeap,end,dist[end])
+            }
+        }
+    }
+
+    return 0
+};
+
+
+let removeMin = (minHeap) => {
+    let ans = minHeap[0]
+    swap(minHeap,0,minHeap.length-1)
+    minHeap.pop()
+    if (minHeap.length === 0) return ans
+
+    let val = minHeap[0][1]
+    let currentIndex = 0
+    while (2*currentIndex+1<minHeap.length) {
+        let index1 = 2*currentIndex+1
+        let index2 = 2*currentIndex+2
+        let child1 = minHeap[index1]
+        let child2 = minHeap[index2]
+
+        if (child2 === undefined) {
+            if (child1[1]<val) {
+                swap(minHeap,index1,currentIndex)
+                currentIndex = index1
+            } else {
+                break
+            }
+        } else {
+            if (child1[1]<child2[1] && child1[1]<val) {
+                swap(minHeap,index1,currentIndex)
+                currentIndex = index1
+            } else if (child2[1]<val) {
+                swap(minHeap,index2,currentIndex)
+                currentIndex = index2
+            } else {
+                break
+            }
+        }
+    }
+    return ans
+}
+
+let insert = (minHeap,target,val) => {
+    minHeap.push([target,val])
+    let currentIndex = minHeap.length-1
+    while (currentIndex>0) {
+        let parentIndex = currentIndex%2===1? (currentIndex-1)/2 : (currentIndex-2)/2
+
+        if (minHeap[parentIndex][1]>val) {
+            swap(minHeap,parentIndex,currentIndex)
+            currentIndex = parentIndex
+        } else {
+            break
+        }
+    }
+    return
+}
+
+let swap = (arr,a,b) => {
+    let temp = arr[a]
+    arr[a] = arr[b]
+    arr[b] = temp
+    return
+}
