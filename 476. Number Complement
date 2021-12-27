@@ -1,0 +1,5 @@
+var findComplement = function(num) {
+    let max = 0xFFFFFFFF
+    while ((max & num) > 0) max <<= 1
+    return ~max & ~num
+};
