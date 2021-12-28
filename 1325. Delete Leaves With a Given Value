@@ -1,0 +1,13 @@
+var removeLeafNodes = function(root, target) {
+    let pseudoRoot = new TreeNode()
+    pseudoRoot.left = root
+    helper(pseudoRoot,target)
+    return pseudoRoot.left
+};
+
+let helper = (node,target) => {
+    if (node.left && helper(node.left,target)) node.left = null
+    if (node.right && helper(node.right,target)) node.right = null 
+    if (!node.right && !node.left && node.val === target) return true
+    return false
+}
