@@ -1,0 +1,32 @@
+var eventualSafeNodes = function(graph) {
+    let reverseAdj = {}
+    let inDegree = []
+    for (let i=0; i<graph.length; i++)  {
+        inDegree[i] = graph[i].length //the indegree of each vertex
+        for (let vertex of graph[i]) {
+            if (!reverseAdj[vertex]) reverseAdj[vertex]=[]
+            reverseAdj[vertex].unshift(i)
+        }
+    }
+
+    let queue = []
+    //indegree == 0
+    for (let i=inDegree.length-1; i>=0; i--) {
+        if (inDegree[i] === 0) {
+            queue.push(i)
+        }
+    }
+
+    let ans = []
+    while (queue.length) {
+        let vertex = queue.shift()
+        ans.push(vertex)
+        if (!reverseAdj[vertex]) continue
+        for (let end of reverseAdj[vertex]) {
+            inDegree[end]--
+            if (inDegree[end] === 0) queue.push(end)
+        }
+    }
+    ans.sort((a,b)=> a-b)
+    return ans
+};
