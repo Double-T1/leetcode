@@ -1,0 +1,18 @@
+var connect = function(root) {
+    if (root === null) return null
+    let queue = [root]
+    while (queue.length) {
+        let size = queue.length
+        let prev;
+        while (size) {
+            let node = queue.pop()
+            if (prev !== undefined) prev.next = node 
+            prev = node
+            
+            if (node.left) queue.unshift(node.left)
+            if (node.right) queue.unshift(node.right)
+            size--
+        }
+    }
+    return root
+};
