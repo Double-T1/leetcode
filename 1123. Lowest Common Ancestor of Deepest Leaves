@@ -1,0 +1,22 @@
+//return the depth of the deepest leaves and the LCA of them
+var lcaDeepestLeaves = function(root) {
+    let ans = helper(root)
+    return ans[1]
+};
+
+//depth is the depth of its previous node
+let helper = (node,depth=0) => {
+    if (!node) {
+        return [depth-1,null]
+    } else {
+        let [leftDepth,lcaLeft] = helper(node.left,depth+1)
+        let [rightDepth,lcaRight] = helper(node.right,depth+1)
+        if (leftDepth === rightDepth) {
+            return [leftDepth,node]
+        } else if (leftDepth>rightDepth) {
+            return [leftDepth,lcaLeft]
+        } else {
+            return [rightDepth,lcaRight]
+        }
+    }
+}
