@@ -1,0 +1,33 @@
+var verticalTraversal = function(root) {
+    let colDict = {}
+    preorder(root,colDict)
+
+    let ans = []
+    let colsArr = Object.keys(colDict).sort((a,b)=> a-b)
+    for (let i=0; i<colsArr.length; i++) {
+        let objIndex = colsArr[i]
+        let subArr = []
+        for (let rowsArr of Object.values(colDict[objIndex])) {
+            rowsArr.sort((a,b) => a-b)
+            subArr = subArr.concat(rowsArr)
+        }
+        ans.push(subArr)
+    }
+
+    return ans
+};
+
+let preorder = (node,colDict,rows=0,cols=0) => {
+    if (!node) return
+
+    if (!colDict[cols]) {
+        colDict[cols] = {}
+    } 
+    if(!colDict[cols][rows]) {
+        colDict[cols][rows] = []
+    }
+    colDict[cols][rows].push(node.val)
+    preorder(node.left,colDict,rows+1,cols-1)
+    preorder(node.right,colDict,rows+1,cols+1)
+    return
+}
