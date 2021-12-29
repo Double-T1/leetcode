@@ -1,3 +1,4 @@
+//bfs
 var connect = function(root) {
     if (root === null) return null
     let queue = [root]
@@ -15,4 +16,27 @@ var connect = function(root) {
         }
     }
     return root
+};
+
+
+//dfs
+var connect = function(root) {
+  if (!root) return null
+  if (!root.left && !root.right) return root
+      
+  root.left.next = root.right
+
+  function crossGap(lNode,rNode) {
+    if (!lNode || !rNode) return null
+
+    lNode.next = rNode
+
+    crossGap(lNode.right,rNode.left)
+    return
+  }
+  
+  if (root.left.right) crossGap(root.left.right, root.right.left);
+  connect(root.left);
+  connect(root.right);
+  return root
 };
