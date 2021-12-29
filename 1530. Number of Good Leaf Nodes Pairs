@@ -1,0 +1,34 @@
+var countPairs = function(root, distance) {
+    let ans = helper(root,distance)
+    return ans[0]
+};
+
+let helper = (node,distance) => {
+    if (!node.left && !node.right) {
+        return [0,1]
+    } else {
+        let leftTree= [0], rightTree= [0]
+        node.val = 0
+        if (node.left) leftTree = helper(node.left,distance)
+        if (node.right) rightTree = helper(node.right,distance)
+
+        let pairs = leftTree[0] + rightTree[0]
+        let ans = []
+        for (let i=1; i<leftTree.length; i++) {
+            if (leftTree[i] === undefined) continue
+            ans[i+1] = leftTree[i]
+            for (let j=1; j<rightTree.length; j++) {
+                if (rightTree[j] === undefined) continue
+                if (i+j<=distance) pairs += leftTree[i]*rightTree[j] 
+            }
+        }
+
+        for (let j=1; j<rightTree.length; j++) {
+            if (rightTree[j] === undefined) continue
+            if (!ans[j+1]) ans[j+1] = 0
+            ans[j+1] += rightTree[j]
+        }
+        ans[0] = pairs
+        return ans
+    }
+}
