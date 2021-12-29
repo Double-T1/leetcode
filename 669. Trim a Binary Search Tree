@@ -1,0 +1,30 @@
+var trimBST = function(root, low, high) {
+    let pseudoRoot = new TreeNode(high)
+    pseudoRoot.left = root
+    helper(pseudoRoot,low,high)
+    return pseudoRoot.left
+};
+
+
+let helper = (node,low,high) => {
+    if(!node) return
+    while (node.left && (node.left.val<low || node.left.val>high)) {      
+        if (node.left.val<low) {
+            node.left = node.left.right 
+        } else {
+            node.left = node.left.left
+        }
+        
+    } 
+    if (node.left) helper(node.left,low,high) 
+
+    while (node.right && (node.right.val<low || node.right.val>high)) {
+        if (node.right.val<low) {
+            node.right = node.right.right 
+        } else {
+            node.right = node.right.left
+        }
+    }
+    if(node.right) helper(node.right,low,high)
+    return
+}
