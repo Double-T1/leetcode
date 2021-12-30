@@ -61,5 +61,38 @@ let find = (x,parents) => {
     }
     return parents[x]
 }
+
+//time O(n**2)
+var findRedundantConnection3 = function(edges) {
+    let adj = {}
+    
+    for (let [v1,v2] of edges) {
+        if (findPath(v1,v2,adj)) return [v1,v2]
+        if(!adj[v1]) adj[v1] = []
+        if(!adj[v2]) adj[v2] = []
+        adj[v1].push(v2)
+        adj[v2].push(v1)
+    }
+    return
+};
+
+let findPath = (v1,v2,adj) => {
+    if (!adj[v1] || !adj[v2]) return false
+    let stack = [v1]
+    let visited = []
+    visited[v1] = true
+    while (stack.length) {
+        let vertex = stack.pop()
+        for (let end of adj[vertex]) {
+            if (end === v2) return true
+            if (!visited[end]) {
+                stack.push(end)
+                visited[end] = true
+            }
+        }
+    }
+    return false
+}
+
 let edges = [[1,2],[2,3],[3,4],[1,4],[1,5]]
 console.log(findRedundantConnection(edges))
