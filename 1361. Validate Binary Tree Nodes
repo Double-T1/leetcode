@@ -1,0 +1,48 @@
+var validateBinaryTreeNodes2 = function(n, leftChild, rightChild) {
+    let inDegree = []
+    for (let i=0; i<leftChild.length; i++) {
+        let left = leftChild[i]
+        let right = rightChild[i]
+        if (left !== -1) {
+            if (!inDegree[left]) inDegree[left] = 0
+            inDegree[left]++
+        }
+        if (right !== -1 ) {
+            if(!inDegree[right]) inDegree[right] = 0
+            inDegree[right]++
+        } 
+    }
+    
+    //find the one and only one with inDegree = 0
+    //if more than one zero => not connected
+    //if one node has an inDegree > 1 => more than one parent
+    //if no node has zero => cyclical
+    let hasOneZero = false
+    let stack = []
+    for (let i=0; i<n; i++) {
+        if (inDegree[i] === undefined) {
+            if (!hasOneZero) {
+                hasOneZero = true
+                stack.push(i)
+            } else {
+                return false
+            }
+        } else if (inDegree[i] > 1) {
+            return false
+        } 
+    }
+
+    while (stack.length) {
+        let node = stack.pop()
+        inDegree[node] = undefined
+
+        if (leftChild[node] !== -1) stack.push(leftChild[node])
+        if (rightChild[node] !== -1) stack.push(rightChild[node])
+    }
+    
+    for (let i=0;i<n; i++) {
+        if (inDegree[i] !== undefined) return false
+    }
+    
+    return true
+};
