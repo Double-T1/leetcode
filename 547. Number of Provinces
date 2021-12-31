@@ -1,0 +1,25 @@
+//time: O(V+E)
+//space: O(V)
+var findCircleNum = function(isConnected) {
+    let visited = []
+    let count = 0
+    for (let i=0; i<isConnected.length; i++) {
+        if (!visited[i]) {
+            count++
+            dfs(visited,i,isConnected)
+        }
+    }
+    return count
+};
+
+let dfs = (visited,i,isConnected) => {
+    visited[i] = true
+    let arr = isConnected[i]
+
+    for (let j=0; j<arr.length; j++) {
+        if (!visited[j] && arr[j]===1) {
+            dfs(visited,j,isConnected)
+        }
+    }
+    return
+}
