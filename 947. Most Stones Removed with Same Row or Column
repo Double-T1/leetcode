@@ -1,0 +1,55 @@
+//unoin find
+var removeStones = function(stones) {
+    let parents = new Array(stones.length) //give each stone an index representation
+    for (let i=0; i<parents.length; i++) {
+        parents[i] = i
+    }
+
+    let xMap = {}
+    let yMap = {}
+    for (let k =0; k<stones.length; k++) {
+        let [x,y] = stones[k]
+        if (xMap[x] !== undefined) {
+            union(parents,xMap[x],k)
+        } else {
+            xMap[x] = find(parents,k)
+        }
+
+        if (yMap[y] !== undefined) {
+            union(parents,yMap[y],k)
+        } else {
+            yMap[y] = find(parents,k)
+        }
+    }
+
+    let sets = {}
+    for (let x of parents) {
+        let parent = find(parents,x)
+        if (!sets[parent]) sets[parent] = 0
+        sets[parent]++
+    }
+    
+    let ans = 0
+    for (let count of Object.values(sets)) {
+        ans += count-1
+    }
+    return ans
+};
+
+let union = (parents,x,y) => {
+    let px = find(parents,x)
+    let py = find(parents,y) 
+    parents[py] = px
+    return
+}
+
+let find = (parents,x) => {
+    if (x !== parents[x]) {
+        parents[x] = find(parents,parents[x])
+    }
+    return parents[x]
+}
+// ,[1,0],[1,2],[2,1],[2,2]
+
+let stones = [[0,1],[1,0],[1,1]]
+console.log(removeStones(stones))
