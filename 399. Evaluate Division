@@ -1,0 +1,104 @@
+//DFS
+//q is the length of queries
+//time: O(E + q*V)
+//space: O(E)
+var calcEquation = function(equations, values, queries) {
+    //adjList, directed, weighted, cyclical
+    //use negative signs to represent fractions
+    //since some fraction might have infinite decimal
+    let adj = {}
+    for (let i=0; i<equations.length; i++) {
+        let [s1,s2] = equations[i]
+        let twoToOne = values[i]
+        if (!adj[s1]) adj[s1] = []
+        if (!adj[s2]) adj[s2] = []
+        adj[s1].push([s2,(1/twoToOne)])
+        adj[s2].push([s1,twoToOne])
+    }
+    
+    for (let i=0; i<queries.length; i++) {
+        let [end,start] = queries[i]
+        queries[i] = dist(start,end,adj) //and create a new linkage between the two
+    }
+
+    return queries
+};
+
+//find the dist from start to target
+//time: O(V) //worst case where we have to traverse all vertices to reach the target
+//space: O(V)
+let dist = (start,target,adj) => {
+    if (!adj[start] || !adj[target]) return -1
+    if (start === target) return 1
+
+    //dfs
+    let visited = {}
+    let queue = [[start,1]]
+    visited[start] = true
+    while (queue.length) {
+        let [vertex,distFromS] = queue.pop()
+        for (let [end,weight] of adj[vertex]) {
+            if (end === target) {
+                return weight*distFromS
+            }
+            if (!visited[end]) {
+                visited[end] = true
+                queue.unshift([end,weight*distFromS])
+            }
+        }
+    }
+    return -1
+}
+
+//union find
+//time: O(E+q*alpha(V)) = O(E+q)
+//space: O(E)
+var calcEquation2 = function(equations, values, queries) {
+    let parents = {} //a linked list
+
+    for (let i=0; i<equations.length; i++) {
+        let [v1,v2] = equations[i]
+        let twoToOne = values[i]
+        union(v1,v2,parents,twoToOne)
+    }
+
+    for (let i=0; i<queries.length; i++) {
+        let [target,start] = queries[i]
+        queries[i] = findDist(start,target,parents)
+    }
+
+    return queries
+};
+
+let findDist = (start,target,parents) => {
+    if (parents[start] === undefined || parents[target] === undefined) return -1
+    let [ps,ws] = find(start,parents)
+    let [pt,wt] = find(target,parents)
+    if (ps!==pt) return -1
+    return ws/wt
+}
+
+let union = (v1,v2,parents,twoToOne) => {
+    let [p1,w1] = find(v1,parents)
+    let [p2,w2] = find(v2,parents)
+    if (p1 === p2) return
+    let weight = (twoToOne/w2)*w1
+    parents[p2] = [p1,weight]
+    return
+}
+
+let find = (vertex,parents) => {
+    if (parents[vertex] === undefined) {
+        parents[vertex] = [vertex,1]
+    }
+
+    if (vertex !== parents[vertex][0]) {
+       let [root,weight] = find(parents[vertex][0],parents)
+       parents[vertex] = [root,weight*parents[vertex][1]]
+    }
+    return parents[vertex]
+}
+
+let  equations = [["a","b"],["b","c"],["bc","cd"]], values = [1.5,2.5,5.0], queries = [["a","c"],["c","b"],["bc","cd"],["cd","bc"]]
+console.log(calcEquation2(equations,values,queries))
+
