@@ -1,0 +1,43 @@
+//time: O(m*n)
+//space: O(m*n)
+var numEnclaves = function(grid) {
+    //nullify all the lands that touch the sea
+    nullify(grid)
+
+    let count = 0
+    for (let i=1; i<grid.length-1; i++) {
+        for (let j=1; j<grid[i].length-1; j++) {
+            if (grid[i][j] === 1) count += dfs(grid,i,j)
+        }
+    }
+    return count
+};
+
+
+let nullify = (grid) => {
+    //first and last row
+    let end = grid.length-1
+    for (let j=0; j<grid[0].length; j++) {
+        if (grid[0][j] === 1) dfs(grid,0,j)
+        if (grid[end][j] === 1) dfs(grid,end,j)
+    }
+
+    end = grid[0].length-1
+    for (let i=1; i<grid.length-1; i++) {
+        if (grid[i][0] === 1) dfs(grid,i,0)
+        if (grid[i][end] === 1) dfs(grid,i,end)
+    }
+    return
+}
+
+let dfs = (grid,i,j) => {
+    grid[i][j] = 0
+    let count = 1
+    let actionSpace = [[i+1,j],[i-1,j],[i,j+1],[i,j-1]]
+    for (let [i,j] of actionSpace) {
+        if (i>=0 && i<grid.length && j>=0 && j<grid[i].length && grid[i][j] === 1) {
+            count += dfs(grid,i,j)
+        }
+    }
+    return count 
+}
