@@ -1,0 +1,50 @@
+//bottom-up
+var maxCoins = function(nums) {
+    let n = nums.length
+    nums.push(1)
+    nums.unshift(1)
+    let dp = new Array(n+2)
+        .fill()
+        .map(() => new Array(n+2).fill(0))
+    //the length of a range of [left:right]
+    //remember to includ (left+1,right+1) for computation
+    for (let l=1; l<=n; l++) {
+        //i denotes the left boundary
+        for (let i=1; i<=n-l+1; i++) {
+            let j = i+l-1 //j denotes the right boundary 
+            //k refers to the last node in this subarray
+            for (let k=i; k<=j; k++) {
+                let current = nums[k]*nums[i-1]*nums[j+1]
+                dp[i][j] = Math.max(dp[i][j],current+dp[i][k-1]+dp[k+1][j])
+            }
+        }
+    }
+    return dp[1][n]
+};
+
+//top-down
+var maxCoins2 = function(nums) {
+    let n = nums.length
+    nums.push(1)
+    nums.unshift(1)
+    let dp = new Array(n+2)
+        .fill()
+        .map(() => new Array(n+2).fill(0))
+    //the length of a range of [left:right]
+    //remember to includ (left+1,right+1) for computation
+    let dfs = (i,j,dp,nums) => {
+        if (i>j) return 0
+        if (dp[i][j] !== 0) return dp[i][j]
+
+        for (let k=i; k<=j; k++) {
+            let current = nums[k]*nums[i-1]*nums[j+1]
+            dp[i][j] = Math.max(dp[i][j],current+dfs(i,k-1,dp,nums)+dfs(k+1,j,dp,nums))
+        }
+        return dp[i][j]
+    }
+    
+    return dfs(1,n,dp,nums)
+};
+
+let nums = [3,1,5,8]
+console.log(maxCoins(nums))
