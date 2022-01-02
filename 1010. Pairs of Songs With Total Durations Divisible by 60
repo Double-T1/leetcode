@@ -1,0 +1,20 @@
+//time: O(n)
+//space: O(n)
+var numPairsDivisibleBy60 = function(time) {
+    let map = new Map()
+    let pairs = 0
+    for (let i=0; i<time.length; i++) {
+        let remainder = time[i]%60
+        let complement = remainder>0 ? 60-remainder: 0
+        if (map.has(complement)) {
+            pairs += map.get(complement)
+        } 
+        
+        if (map.has(remainder)) {
+            map.set(remainder, map.get(remainder) + 1)
+        } else {
+            map.set(remainder,1)
+        }
+    }    
+    return pairs
+};
