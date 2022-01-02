@@ -1,0 +1,12 @@
+var goodNodes2 = function(root) {
+    return helper2(root)
+};
+
+let helper2 = (node,max) => {
+    if (!node) return 0
+    let good = 0
+    if (node.val>=max || max===undefined) good = 1    
+    max = max===undefined? node.val : Math.max(max,node.val)
+    good += helper2(node.left,max) + helper2(node.right,max)
+    return good
+}
