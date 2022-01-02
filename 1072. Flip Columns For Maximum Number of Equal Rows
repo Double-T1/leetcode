@@ -1,0 +1,61 @@
+var maxEqualRowsAfterFlips = function(matrix) {
+    let parents = []
+    for (let i=0; i<matrix.length; i++) {
+        parents[i] = i
+    }
+    let roots = [0]
+    let rank = {}
+    rank[0] = 1 //root 0 has a count of 1
+
+    for (let i=1; i<matrix.length; i++) {
+        //check with the previous roots
+        for (let rootIndex of roots) {
+            if (i === rootIndex) break
+            let same = true
+            if (matrix[rootIndex][0] !== matrix[i][0]) same = false
+            if (scan(matrix,rootIndex,i,same,parents,roots,rank)) break
+        }
+    }
+    
+    let max = 1
+    for (let index in rank) {
+        max = Math.max(max,rank[index])
+    }
+    return max
+};
+
+//arr1 is the root inside the set already
+let scan = (matrix,one,two,same,parents,roots,rank) => {
+    let arr1 = matrix[one]
+    let arr2 = matrix[two]
+    if (rank[two] === undefined) {
+        rank[two] = 1
+        roots.push(two)
+    }
+
+    for (let i=1; i<arr1.length; i++) {
+        if ((same && arr1[i] === arr2[i])||(!same && arr1[i] !== arr2[i])) {
+            continue
+        } else {
+            return false
+        } 
+    }
+    parents[two] = find(parents,one)
+    rank[parents[two]]++
+
+    delete rank[two]
+    roots.pop()
+
+    return true
+}
+
+
+let find = (parents,x) => {
+    if (x!==parents[x]) {
+        parents[x] = find(parents,parents[x])
+    }
+    return parents[x]
+}
+
+let  matrix = [[0],[1],[0]]
+console.log(maxEqualRowsAfterFlips(matrix))
