@@ -1,0 +1,134 @@
+//prim
+var minCostConnectPoints = function(points) {
+    let inWeight = []
+    let visited = []
+    for (let i=0; i<points.length; i++) {
+        inWeight[i] = 0
+    }
+    
+    //we're actually choosing the edges
+    let minHeap = [[0,0]]
+    while (minHeap.length) {
+        let [i,w] = removeTop(minHeap)
+        visited[i] = true
+        let [x1,y1] = points[i]
+        for (let j=0; j<points.length; j++) {
+            if (visited[j] === true) continue
+            let [x2,y2] = points[j]
+            let cost = Math.abs(x1-x2) + Math.abs(y1-y2)
+            if (cost < inWeight[j] || inWeight[j] === 0) {
+                insert(minHeap,[j,cost])
+                inWeight[j] = cost
+            }              
+        }
+    }
+    let sum = 0
+    for (let cost of inWeight) {
+        sum += cost
+    }
+    return sum
+};
+
+let removeTop = (minHeap) => {
+    let ans = minHeap[0]
+    swap(minHeap,0,minHeap.length-1)
+    minHeap.pop()
+    if (minHeap.length === 0) return ans
+
+    let currentIndex = 0
+    let val = minHeap[0][1]
+    while (2*currentIndex+1<minHeap.length) {
+        let index1 = 2*currentIndex+1
+        let index2 = 2*currentIndex+2
+        let child1 = minHeap[index1]
+        let child2 = minHeap[index2]
+
+        if (child2 === undefined) {
+            if (child1[1]<val) {
+                swap(minHeap,currentIndex,index1)
+                currentIndex = index1
+            } else {
+                break
+            }
+        } else {
+            if (child1[1]<child2[1] && child1[1]<val) {
+                swap(minHeap,currentIndex,index1)
+                currentIndex = index1
+            } else if (child2[1]<val) {
+                swap(minHeap,currentIndex,index2)
+                currentIndex = index2
+            } else {
+                break
+            }
+        }
+    }
+    return ans
+}
+
+let insert = (minHeap,pair) => {
+    minHeap.push(pair)
+    let value = pair[1]
+    let currentIndex = minHeap.length-1
+
+    while (currentIndex>0) {
+        let parentIndex = currentIndex%2 === 1? (currentIndex-1)/2 : (currentIndex-2)/2
+
+        if (minHeap[parentIndex][1]>value) {
+            swap(minHeap,currentIndex,parentIndex)
+            currentIndex = parentIndex
+        } else {
+            break
+        }
+    }
+    return 
+}
+
+let swap = (arr,a,b) => {
+    let temp = arr[a]
+    arr[a] = arr[b]
+    arr[b] = temp
+    return
+}
+
+//kruskal
+var minCostConnectPoints2 = function(points) {
+    let parents = []
+    for (let i=0; i<points.length; i++) {
+        parents[i] = i
+    }
+
+    //[v1,v2,w]
+    let edges = []
+    for (let i=0; i<points.length; i++) {
+        let[x1,y1] = points[i]
+        for (let j=i+1; j<points.length; j++) {
+            let [x2,y2] = points[j]
+            let weight = Math.abs(x1-x2) + Math.abs(y1-y2)
+            edges.push([i,j,weight])
+        }
+    }
+
+    edges.sort((a,b) => a[2]-b[2])
+    let cost = 0
+    for (let [v1,v2,w] of edges) {
+        if (!union(v1,v2,parents)) {
+            cost += w
+        }
+    }
+    return cost
+};
+
+let union = (v1,v2,parents) => {
+    let p1 = find(parents,v1)
+    let p2 = find(parents,v2)
+    if (p1 === p2) return true //already connected
+    parents[p1] = p2
+    return false
+}
+
+let find = (parents,x) => {
+    if (x!==parents[x]) {
+        parents[x] = find(parents,parents[x])
+    }
+    return parents[x]
+}
