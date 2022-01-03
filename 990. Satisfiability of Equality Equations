@@ -1,0 +1,44 @@
+var equationsPossible = function(equations) {
+    let parent = {}
+    let not = []
+    for (let str of equations) {
+        let a = str[0]
+        let b = str[3]
+        let factor = str[1]
+
+        if (factor === '=') {
+            union(parent,a,b)
+        } else {
+            not.push(str)
+        }
+    }
+    
+    for (let str of not) {
+        let a = str[0]
+        let b = str[3]
+        let pa = find(parent,a)
+        let pb = find(parent,b)
+        if(pa === pb) return false
+    }
+    
+    return true
+};
+
+let union = (parent,a,b) => {
+    let pa = find(parent,a)
+    let pb = find(parent,b)
+    if (pa === pb) return true //a === b already
+    parent[pa] = pb 
+    return false // a and b doesn't have any relations before 
+}
+
+let find = (parent,a) => {
+    if (parent[a] === undefined) parent[a] = a
+    if (a !== parent[a]) {
+        parent[a] = find(parent,parent[a])
+    }    
+    return parent[a]
+}
+
+let equations = ["f==a","a==b","f!=e","a==c","b==e","c==f"]
+console.log(equationsPossible(equations))
