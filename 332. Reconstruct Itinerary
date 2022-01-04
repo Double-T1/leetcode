@@ -1,0 +1,29 @@
+//O(E)
+var findItinerary = function(tickets) {
+    let adj = {}
+    let outDegree = {}
+    for (let i=0; i<tickets.length; i++) {
+        let [start,end] = tickets[i]
+        if (!adj[start]) adj[start] = []
+        adj[start].push(end)
+        if (!outDegree[start]) outDegree[start] = 0
+        outDegree[start]++ 
+    }
+    
+    for (let edges of Object.values(adj)) {
+        edges.sort()
+    }
+    let source = 'JFK'
+    let ans = []
+    dfs(source,adj,ans)
+    return ans
+};
+
+let dfs = (vertex,adj,ans) => {
+    while (adj[vertex] && adj[vertex].length>0) {
+        let end = adj[vertex].shift()
+        dfs(end,adj,ans)
+    }
+    ans.unshift(vertex)
+    return
+}
