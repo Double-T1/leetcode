@@ -1,0 +1,116 @@
+//TLE
+var validArrangement = function(pairs) {
+    let adj = {}
+    let degree = {}
+    for (let i=0; i<pairs.length; i++) {
+        let [start,end] = pairs[i]
+        if (!adj[start]) adj[start] = []
+        adj[start].push(end)
+        if (!degree[start]) degree[start] = 0
+        if (!degree[end]) degree[end] = 0
+        degree[start]--
+        degree[end]++ 
+    }
+
+    let s = null;
+    for (let key of Object.keys(degree)) {
+        s = key
+        if (degree[key] === -1) {
+            break
+        }
+    } 
+
+    let ans = []
+    dfs(parseInt(s),ans,adj)
+    return ans  
+};
+
+let dfs = (vertex,ans,adj) => {
+    while (adj[vertex] && adj[vertex].length>0) {
+        let end = adj[vertex].pop()
+        dfs(end,ans,adj)
+        ans.unshift([vertex,end])
+    }
+    return
+}
+
+//iterative
+var validArrangement2 = function(pairs) {
+    let adj = {}
+    let degree = {}
+    for (let i=0; i<pairs.length; i++) {
+        let [start,end] = pairs[i]
+        if (!adj[start]) adj[start] = []
+        adj[start].push(end)
+        if (!degree[start]) degree[start] = 0
+        if (!degree[end]) degree[end] = 0
+        degree[start]--
+        degree[end]++ 
+    }
+
+    let s = null;
+    for (let key of Object.keys(degree)) {
+        if (degree[key] === -1) {
+            s = key
+            break
+        }
+    } 
+    if (s === null) s = pairs[0][0]
+
+    let ans = []
+    let stack = [[null,parseInt(s)]] 
+    while(stack.length) {
+        let vertex = stack[stack.length-1][1]
+        if (adj[vertex] && adj[vertex].length>0) {
+            let end = adj[vertex].pop()
+            stack.push([vertex,end])
+        } else {
+            ans.unshift(stack.pop())
+        }
+    }
+    ans.shift()
+    return ans  
+};
+
+//optimized
+//let the starting node be represented by the index of pairs
+//ie. pairs[0] = [1,3] then node 1has an index of 0
+var validArrangement3 = function(pairs) {
+    let adj = {}
+    let degree = {}
+    for (let i=0; i<pairs.length; i++) {
+        let [start,end] = pairs[i]
+        if (!adj[start]) adj[start] = []
+        adj[start].push(end)
+        if (!degree[start]) degree[start] = 0
+        if (!degree[end]) degree[end] = 0
+        degree[start]--
+        degree[end]++ 
+    }
+
+    let s = null;
+    for (let key of Object.keys(degree)) {
+        if (degree[key] === -1) {
+            s = key
+            break
+        }
+    } 
+    if (s === null) s = pairs[0][0]
+
+    let ans = []
+    let stack = [[null,parseInt(s)]] 
+    while(stack.length) {
+        let vertex = stack[stack.length-1][1]
+        if (adj[vertex] && adj[vertex].length>0) {
+            let end = adj[vertex].pop()
+            stack.push([vertex,end])
+        } else {
+            ans.unshift(stack.pop())
+        }
+    }
+    ans.shift()
+    return ans  
+};
+
+let pairs = [[1,3],[3,2],[2,1]]
+console.log(validArrangement2(pairs))
