@@ -1,0 +1,23 @@
+//coloring
+var isBipartite = function(graph) {
+    let color = []
+    for (let i=0; i<graph.length; i++) {
+        if (color[i] !== undefined) continue
+        let queue = [i]
+        color[i] = -1
+        while (queue.length) {
+            let vertex = queue.pop()
+            for (let end of graph[vertex]) {
+                if (color[end] === undefined) {
+                    color[end] = -color[vertex]
+                    queue.unshift(end)
+                } else if (color[end] === color[vertex]) {
+                    return false
+                }
+            }
+        }
+    }
+    return true
+};
+
+//traversing
