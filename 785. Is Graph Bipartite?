@@ -21,3 +21,20 @@ var isBipartite = function(graph) {
 };
 
 //traversing
+var isBipartite = function(graph) {
+    let color = []
+    for (let i=0; i<graph.length; i++) {
+        if (!color[i] && !dfs(i,graph,color,1)) return false
+    }
+    return true
+};
+
+let dfs = (i,graph,color,col) => {
+    if (color[i] !== undefined) return color[i] === col 
+
+    color[i] = col
+    for (let end of graph[i]) {
+        if (!dfs(end,graph,color,-col)) return false
+    }
+    return true
+}
