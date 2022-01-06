@@ -1,0 +1,69 @@
+//brute force
+//time: O(n**2)
+var maxDistance = function(grid) {
+    let max = -1
+    for (let i=0; i<grid.length; i++) {
+        for (let j=0; j<grid[i].length; j++) {
+            if (grid[i][j] === 0) max = Math.max(bfs(grid,i,j),max)
+        }
+    }
+    return max
+};
+
+let bfs = (grid,i,j,visited={}) => {
+    let queue = [[i,j]]
+    let level = 1
+    while (queue.length) {
+        let size = queue.length
+        while (size) {
+            [i,j] = queue.pop()
+            let actionSpace = [[i+1,j],[i-1,j],[i,j+1],[i,j-1]]
+            for (let [i,j] of actionSpace) {
+                if (i<0 || i>=grid.length || j<0 || j>=grid[0].length) continue
+                if (grid[i][j] === 1) return level
+                if (visited[i] && visited[i][j]) continue
+                
+                if (!visited[i]) visited[i] = {}
+                visited[i][j] = true
+                queue.unshift([i,j])
+            }
+            size--
+        }  
+        level++
+    }
+    return -1
+}
+
+//time: O(n)
+var maxDistance2 = function(grid) {
+    let dp = new Array(grid.length)
+        .fill()
+        .map(() => new Array(grid[0].length))
+    for (let i=0; i<grid.length; i++) {
+        for (let j=0; j<grid[i].length; j++) {
+            if (grid[i][j] === 1) {
+                dp[i][j] = 0
+            } else {
+                dp[i][j] = Number.MAX_SAFE_INTEGER
+                if(i>0) dp[i][j] = Math.min(dp[i-1][j]+1,dp[i][j])
+                if(j>0) dp[i][j] = Math.min(dp[i][j-1]+1,dp[i][j])
+            }
+        }
+    }
+    let max = -1
+    for(let i=grid.length-1; i>=0; i--) {
+        for (let j=grid[0].length-1; j>=0; j--) {
+            if (grid[i][j] === 0) {
+                if (i<grid.length-1) dp[i][j] = Math.min(dp[i+1][j]+1,dp[i][j])
+                if (j<grid[i].length-1) dp[i][j] = Math.min(dp[i][j+1]+1,dp[i][j])
+                max = Math.max(max,dp[i][j])
+            }
+        }
+    } 
+    return max
+};
+
+
+
+let  grid = [[1,0,1],[0,0,0],[1,0,1]]
+console.log(maxDistance2(grid))
