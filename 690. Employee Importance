@@ -1,0 +1,21 @@
+var GetImportance = function(employees, id) {
+    //1.find the id first 
+    //2add up all the importance underneath it
+
+    let map = {}
+    for (let i=0; i<employees.length; i++) {
+        let id = employees[i].id
+        map[id] = employees[i]
+    }
+
+    let queue = [id]
+    let ans = 0
+    while (queue.length) {
+        id = queue.pop()
+        ans += map[id].importance
+        for (let sub of map[id].subordinates) {
+            queue.unshift(sub)
+        }
+    }
+    return ans
+};
