@@ -1,0 +1,37 @@
+var closedIsland = function(grid) {
+    invalidate(grid)
+
+    let count = 0
+    for (let i=0; i<grid.length; i++) {
+        for (let j=0; j<grid[i].length; j++) {
+            if (grid[i][j] === 0) {
+                count++
+                convert(grid,i,j)
+            }
+        }
+    }
+    return count
+};
+
+let invalidate = (grid) => {
+    let len = grid.length
+    let lenJ = grid[0].length
+    for (let j=0; j<lenJ; j++) {
+        if (grid[0][j] === 0) convert(grid,0,j)
+        if (grid[len-1][j] === 0) convert(grid,len-1,j)
+    }
+
+    for (let i=1; i<len-1; i++) {
+        if (grid[i][0] === 0) convert(grid,i,0)
+        if (grid[i][lenJ-1] === 0) convert(grid,i,lenJ-1)
+    }
+}
+
+let convert = (grid,i,j) => {
+    grid[i][j] = 1
+    let actionSpace = [[i+1,j],[i-1,j],[i,j+1],[i,j-1]]
+    for ([i,j] of actionSpace) {
+        if(i>=0 && i<grid.length && j>=0 && j<grid[i].length && grid[i][j] === 0) convert(grid,i,j)
+    }
+    return
+}
