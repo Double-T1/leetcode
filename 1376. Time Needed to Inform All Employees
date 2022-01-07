@@ -1,0 +1,57 @@
+//there are at most v-1 edges in this problem
+//time: O(E)
+var numOfMinutes = function(n, headID, manager, informTime) {
+    let adj = []
+    //O(V)
+    for (let i=0; i<n; i++) {
+        let m = manager[i]
+        if (m === -1) continue
+        if (adj[m] === undefined) adj[m] = []
+        adj[m].push(i)
+    }
+
+    //find the steepest height
+    return height(adj,headID,informTime)
+};
+
+//traverse all the edges
+//time: O(E)
+//space: O(V)
+let height = (adj,id,informTime) => {
+    if (informTime[id] === 0) {
+        return 0
+    } else {
+        let max = 0
+        for (let sub of adj[id]) {
+            max = Math.max(max,height(adj,sub,informTime))
+        }
+        return max + informTime[id]
+    }
+}
+
+//optimized
+//instead of going top down, which requires to prepare an adjacency list
+//we go bottom up
+var numOfMinutes2 = function(n, headID, manager, informTime) {
+    //the isse with bottom up, is find the vertices/subordinates at the bottom
+    let depth = [] //to record the depth from i to headID
+    let max = 0
+    for (let i=0; i<n; i++) {
+        max = Math.max(max,findMax(depth,i,headID,manager,informTime))
+    }
+    return max
+};
+
+let findMax = (depth,currentID,headID,manager,informTime) => {
+    if (currentID === headID) {
+        return informTime[headID]
+    } else if (depth[currentID] !== undefined) {
+        return depth[currentID]
+    } else {
+        depth[currentID] = findMax(depth,manager[currentID],headID,manager,informTime) + informTime[currentID]
+        return depth[currentID]
+    }
+}
+
+let  n = 1, headID = 0, manager = [-1], informTime = [0]
+console.log(numOfMinutes(n,headID,manager,informTime))
