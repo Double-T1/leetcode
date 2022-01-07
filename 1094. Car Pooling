@@ -1,0 +1,13 @@
+var carPooling = function(trips, capacity) {
+    let arr = new Array(1001).fill(0)
+    for (let i=0; i<trips.length; i++) {
+        let [val,start,end] = trips[i]
+        arr[start] -= val
+        arr[end] += val
+    }
+    for (let i=1; i<arr.length; i++) {
+        cap += arr[i]
+        if (cap<0) return false
+    }
+    return true
+};
