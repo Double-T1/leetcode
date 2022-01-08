@@ -1,0 +1,99 @@
+//brute force
+var cherryPickup = function(grid) {
+    return helper(grid,0,0,grid[0].length-1)
+};
+
+let helper = (grid,i,j1,j2) => {
+    if (i === grid.length) {
+        return 0
+    } else {
+        let val = grid[i][j1] + grid[i][j2]
+        let max = 0
+        let move1 = [j1,j1+1,j1-1]
+        let move2 = [j2,j2+1,j2-1]
+        for (let j1 of move1) {
+            if (j1<0 || j1>=grid[i].length) continue
+            for (let j2 of move2) {
+                if (j1 === j2 || j2<0 || j2>=grid[i].length) continue
+                max = Math.max(max,helper(grid,i+1,j1,j2))
+            }
+        }
+        return max + val
+    }
+}
+
+//with memoization
+//time: O(i*(j**2)) => O(i*((j**2)/2))
+//space: O((j**2)*i) => O(i*((j**2)/2))
+var cherryPickup2 = function(grid) {
+    return helper2(grid,0,0,grid[0].length-1)
+};
+
+let helper2 = (grid,i,j1,j2,memo={}) => {
+    if (i in memo) {
+        if (j1 in memo[i] && j2 in memo[i][j1]) return memo[i][j1][j2]
+        if (j2 in memo[i] && j1 in memo[i][j2]) return memo[i][j2][j1]    
+    } 
+
+    if (i === grid.length) {
+        return 0
+    } else {
+        if (memo[i] === undefined) memo[i] = {}
+        if (memo[i][j1] === undefined) memo[i][j1] = {}
+        let val = grid[i][j1] + grid[i][j2]
+        let max = 0
+        let move1 = [j1,j1+1,j1-1]
+        let move2 = [j2,j2+1,j2-1]
+        for (let j1 of move1) {
+            if (j1<0 || j1>=grid[i].length) continue
+            for (let j2 of move2) {
+                if (j1 === j2 || j2<0 || j2>=grid[i].length) continue
+                max = Math.max(max,helper2(grid,i+1,j1,j2,memo))
+            }
+        }
+        memo[i][j1][j2] = max + val
+        return memo[i][j1][j2]
+    }
+}
+
+//bottom-up
+//there could be n(n-1) pairs of j1 and j2
+//time: O(i*(j**2))
+var cherryPickup3 = function(grid) {
+    let dp1 = []
+    let dp2 = []
+    let n = grid.length-1
+    //prepare the dp matrix
+    for (let j1=0; j1<grid[n].length; j1++) {
+        dp2[j1] = []
+        dp1[j1] = []
+        for (let j2=0; j2<grid[n].length; j2++) {
+            if (j1 === j2) continue
+            dp2[j1][j2] = grid[n][j1] + grid[n][j2]
+            dp1[j1][j2] = 0
+        }
+    }
+
+    for (let i=grid.length-2; i>=0; i--) {
+        for (let j1=0; j1<grid[i].length; j1++) {
+            let space1 = [j1,j1-1,j1+1]
+            for (let j2=j1; j2<grid[i].length; j2++) {
+                let space2 = [j2,j2-1,j2+1]
+                for (let a1 of space1) {
+                    if (a1<0 || a1>=grid[i].length) continue
+                    for (let a2 of space2) {
+                        if (a1 === a2 || a2<0 || a2>=grid[i].length) continue
+                        dp1[j1][j2] = Math.max(dp1[j1][j2],dp2[a1][a2]+grid[i][j1]+grid[i][j2])
+                    }
+                }
+            }
+        }
+        let temp = dp1
+        dp1 = dp2 
+        dp2 = temp
+    }
+    return dp2[0][grid[0].length-1]
+};
+
+let grid = [[3,1,1],[2,5,1],[1,5,5],[2,1,1]]
+console.log(cherryPickup3(grid))
