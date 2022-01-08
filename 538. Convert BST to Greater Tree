@@ -1,0 +1,59 @@
+//rightsubtree first inorder
+//time: O(n)
+var convertBST = function(root) {
+    let stack = []
+    inorder(root,stack)
+
+    let prev = 0
+    while (stack.length) {
+        let node = stack.pop()
+        node.val += prev
+        prev = node.val
+    }
+    return root
+};
+
+let inorder = (node,stack) => {
+    if (!node) return  
+
+    inorder(node.left,stack)
+    stack.push(node)
+    inorder(node.right,stack)
+    return
+}
+
+//morris traversal
+//time: O(n)
+//space: O(1)
+var convertBST2 = function(root) {
+    let current = root
+    let prev = 0
+    while (current) {
+        if (current.right) {
+            let predecessor = current.right
+            while (predecessor.left && predecessor.left !== current) {
+                predecessor = predecessor.left
+            }
+            if (predecessor.left === current) {
+                predecessor.left = null
+                current.val += prev
+                prev = current.val
+                current = current.left 
+            } else {
+                predecessor.left = current
+                current = current.right
+            }
+        } else {
+            current.val += prev
+            prev = current.val
+            current = current.left
+        }
+    }
+
+    return root
+};
+
+
+let root = [4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]
+root = arrayToTree(root)
+console.log(convertBST2(root).left.right)
