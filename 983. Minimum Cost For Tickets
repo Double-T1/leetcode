@@ -1,0 +1,51 @@
+var mincostTickets = function(days, costs) {
+    let span = [1,7,30]
+    return helper(days,costs,span)
+};
+
+let helper = (days,costs,span,index=0,memo={}) => {
+    if (index in memo) return memo[index]
+    if (index>=days.length) {
+        return 0
+    } else {
+        let min = Number.MAX_SAFE_INTEGER
+        for (let i=0; i<span.length; i++) {
+            min = Math.min(costs[i]+helper(days,costs,span,update(days,index,span[i]),memo),min)
+        }
+        memo[index] = min
+        return min
+    }
+}
+
+let update = (days,index,duration) => {
+    let date = duration + days[index]
+    while (days[index]<date) {
+        index++
+    }
+    return index
+}
+
+//bottom up
+var mincostTickets2 = function(days, costs) {
+    let span = [1,7,30]
+    let dp = new Array(days.length+1).fill(Number.MAX_SAFE_INTEGER)
+    dp[dp.length-1] = 0
+
+    for (let index = days.length-1; index>=0; index--) {
+        for (let i=0; i<span.length; i++) {
+            dp[index] = Math.min(costs[i]+dp[update2(days,index,span[i])],dp[index])
+        }
+    }
+    return dp[0]
+};
+
+let update2 = (days,index,duration) => {
+    let date = duration + days[index]
+    while (days[index]<date) {
+        index++
+    }
+    return index
+}
+
+let days = [1,4,6,7,8,20],costs = [2,7,15]
+console.log(mincostTickets(days,costs))
