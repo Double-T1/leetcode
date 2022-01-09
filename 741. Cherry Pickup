@@ -1,0 +1,175 @@
+//brute force
+var cherryPickup = function(grid) {
+    let num  = helper(grid)
+    return num === -1? 0 : num
+};
+
+let helper = (grid,i1=0,j1=0,i2=0,j2=0) => {
+    if (i1 === grid.length-1 && j1 === grid[i1].length-1 && i2 === i1 && j1 === j2) {
+        return grid[i1][j1]
+    } else {
+        let val = grid[i1][j1] + grid[i2][j2]
+        let max = -1
+        if (i1 === i2 && j1 === j2) val /= 2
+        let move1 = [[i1+1,j1],[i1,j1+1]] 
+        let move2 = [[i2+1,j2],[i2,j2+1]]
+        for ([i1,j1] of move1) {
+            if (!isValid(grid,i1,j1)) continue
+            for ([i2,j2] of move2) {
+                if (!isValid(grid,i2,j2)) continue
+                max = Math.max(max,helper(grid,i1,j1,i2,j2))
+            }
+        }
+        return max === -1 ? -1 : max + val
+    }
+}
+
+let isValid = (grid,i,j) => {
+    return i>=0 
+        && i<grid.length
+        && j>=0
+        && j<grid[i].length
+        && grid[i][j] !== -1
+}
+
+//time: O(N**4)
+//space: O(N**4)
+var cherryPickup2 = function(grid) {
+    let num  = helper2(grid)
+    return num === -1? 0 : num
+};
+
+let helper2 = (grid,i1=0,j1=0,i2=0,j2=0,memo={}) => {
+    if (i1 in memo && j1 in memo[i1] && i2 in memo[i1][j1] && j2 in memo[i1][j1][i2]) return memo[i1][j1][i2][j2]
+    // if (i2 in memo && j2 in memo[i2] && i1 in memo[i2][j2] && j1 in memo[i2][j2][i1]) return memo[i2][j2][i1][j1]
+
+    if (i1 === grid.length-1 && j1 === grid[i1].length-1 && i2 === i1 && j1 === j2) {
+        return grid[i1][j1]
+    } else {
+        let val = grid[i1][j1] + grid[i2][j2]
+        let max = -1
+        if (i1 === i2 && j1 === j2) val /= 2
+        let move1 = [[i1+1,j1],[i1,j1+1]] 
+        let move2 = [[i2+1,j2],[i2,j2+1]]
+        for (let [a1,b1] of move1) {
+            if (!isValid2(grid,a1,b1)) continue
+            for (let [a2,b2] of move2) {
+                if (!isValid2(grid,a2,b2)) continue
+                max = Math.max(max,helper2(grid,a1,b1,a2,b2,memo))
+            }
+        }
+
+        if (!memo[i1]) memo[i1] = {}
+        if (!memo[i1][j1]) memo[i1][j1] = {}
+        if (!memo[i1][j1][i2]) memo[i1][j1][i2] = {}
+        memo[i1][j1][i2][j2] = max === -1 ? -1 : max + val
+        return memo[i1][j1][i2][j2]
+    }
+}
+
+let isValid2 = (grid,i,j) => {
+    return i>=0 
+        && i<grid.length
+        && j>=0
+        && j<grid[i].length
+        && grid[i][j] !== -1
+}
+
+//optimized memoization
+//time: O(n**3)
+//space: O(n**3)
+var cherryPickup3 = function(grid) {
+    let num = helper3(grid)
+    return num === -1 ? 0 : num
+};
+
+//i2 can be deduced from i1+j1-j2
+let helper3 = (grid,i1=0,j1=0,j2=0,memo={}) => {
+    if (i1 in memo && j1 in memo[i1] && j2 in memo[i1][j1]) return memo[i1][j1][j2]
+
+    if (i1 === grid.length-1 && j1 === grid[i1].length-1) {
+        return grid[i1][j1]
+    } else {
+        let i2 = i1+j1-j2
+        let val = grid[i1][j1]
+        let max = -1
+        if (j1 !== j2) val += grid[i2][j2]
+        let move1 = [[i1+1,j1],[i1,j1+1]] 
+        let move2 = [[i2+1,j2],[i2,j2+1]]
+        for (let [a1,b1] of move1) {
+            if (!isValid3(grid,a1,b1)) continue
+            for (let [a2,b2] of move2) {
+                if (!isValid3(grid,a2,b2)) continue
+                max = Math.max(max,helper3(grid,a1,b1,b2,memo))
+            }
+        }
+
+        if (!memo[i1]) memo[i1]= {}
+        if (!memo[i1][j1]) memo[i1][j1] = {}
+        memo[i1][j1][j2] = max === -1 ? -1 : max + val
+        return memo[i1][j1][j2]
+    }
+}
+
+let isValid3 = (grid,i,j) => {
+    return i>=0 
+        && i<grid.length
+        && j>=0
+        && j<grid[i].length
+        && grid[i][j] !== -1
+}
+
+//bottom-up 
+//same as solution 3
+var cherryPickup4 = function(grid) {
+    let dp = new Array(grid.length)
+        .fill()
+        .map(() => new Array(grid[0].length)
+            .fill()
+            .map(() => new Array(grid[0].length))
+        )
+
+    for (let i1 = grid.length-1; i1>=0; i1--) {
+        for (let j1 = grid[i1].length-1; j1>=0; j1--) {
+            let move1 = [[i1+1,j1],[i1,j1+1]]
+            for (let j2 = grid[0].length-1; j2>=0; j2--) {
+                let i2 = i1+j1-j2
+                if (i2<0 || i2>=grid.length || grid[i1][j1] === -1 || grid[i2][j2] === -1) continue
+                let val = grid[i1][j1]
+                if (j1 !== j2) val += grid[i2][j2]
+
+                let max = -1
+                let move2 = [[i2+1,j2],[i2,j2+1]]
+                for (let [a1,b1] of move1) {
+                    if (!isValid4(grid,a1,b1)) continue
+                    for (let [a2,b2] of move2) {
+                        if (!isValid4(grid,a2,b2)) continue
+                        max = Math.max(max,dp[a1][b1][b2])
+                    }
+                }
+                
+                if (i1 === grid.length-1 && j1 === grid[i1].length-1) {
+                    dp[i1][j1][j2] = val
+                } else if (max === -1) {
+                    dp[i1][j1][j2] = -1
+                } else {
+                    dp[i1][j1][j2] = max+val
+                }
+            }
+        }
+    }
+    let x = dp[0][0][0]
+    return x === -1 ? 0 : x 
+};
+
+let isValid4 = (grid,i,j) => {
+    return i>=0 
+        && i<grid.length
+        && j>=0
+        && j<grid[i].length
+        && grid[i][j] !== -1
+}
+
+
+let grid =[[0,1,-1],[1,0,-1],[1,1,1]]
+console.log(cherryPickup4(grid))
