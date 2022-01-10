@@ -1,0 +1,51 @@
+var addBinary = function(a, b) {
+    let res = 0
+    let aPointer = a.length-1
+    let bPointer = b.length-1
+    let carry = 0
+    let str = '';
+
+    while (aPointer >=0 && bPointer >=0) {
+        res = parseInt(a[aPointer]) + parseInt(b[bPointer]) + carry
+        if (res>=2) {
+            res = res-2
+            carry = 1
+        } else {
+            carry = 0
+        }
+        str = res.toString(10).concat(str)
+        aPointer--
+        bPointer--
+    }
+
+
+    while (aPointer>=0) {
+        res = parseInt(a[aPointer]) + carry
+        if (res>=2) {
+            res = res-2
+            carry = 1
+        } else {
+            carry = 0
+        }
+        str = res.toString(10).concat(str)
+        aPointer--
+    }
+
+    while (bPointer>=0) {
+        res = parseInt(b[bPointer]) + carry
+        if (res>=2) {
+            res = res-2
+            carry = 1
+        } else {
+            carry = 0
+        }
+        str = res.toString(10).concat(str)
+        bPointer--
+    }
+
+    if (carry > 0) {
+        str = carry.toString(10).concat(str)
+    }
+
+    return str
+};
