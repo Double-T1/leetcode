@@ -1,0 +1,24 @@
+var PredictTheWinner = function(nums) {
+    let sum = nums.reduce((accu,ele) => accu + ele)
+    return helper(nums) >= sum/2
+};
+
+let helper= (nums,left=0,right=nums.length-1,playerOne=true,memo={}) => {
+    if (left in memo && right in memo[left]) return memo[left][right]
+    if (!memo[left]) memo[left] = {}
+
+    if (left>right) {
+        memo[left][right] = 0
+    } else {
+        if (playerOne) {
+            memo[left][right] = Math.max(nums[left]+helper(nums,left+1,right,false,memo),nums[right]+helper(nums,left,right-1,false,memo))
+        } else {
+            memo[left][right] = Math.min(helper(nums,left+1,right,true,memo),helper(nums,left,right-1,true,memo))
+        }
+    }
+    return memo[left][right]
+}
+
+
+let nums = [1,5,233,7]
+console.log(PredictTheWinner(nums))
