@@ -1,0 +1,39 @@
+var maximumSum = function(arr) {
+    //beware of the edge case where no element is deleted
+    let forward = []
+    let max = maxArray(arr,forward)
+    let backward = []
+    maxArray2(arr,backward)
+
+    for (let p=1; p<arr.length-1; p++) {
+        //go left and right
+        //find the maximum prefix sum of (0,p-1) and (p+1,n-1)
+        max = Math.max(max,forward[p-1]+backward[p+1])
+    }
+    return max
+};
+
+//how do we find max subarray?
+let maxArray = (arr,currentMax) => {
+    let max = arr[0]
+    currentMax[0] = arr[0]
+    for (let i=1; i<arr.length; i++) {
+        currentMax[i] = Math.max(arr[i],currentMax[i-1]+arr[i])
+        max = Math.max(currentMax[i],max)
+    }
+    return max
+}
+
+let maxArray2 = (arr,currentMax) => {
+    let n = arr.length-1
+    let max = arr[n]
+    currentMax[n] = max
+    for (let i=n-1; i>=0; i--) {
+        currentMax[i] = Math.max(arr[i],currentMax[i+1]+arr[i])
+        max = Math.max(currentMax[i],max)
+    }
+    return max
+}
+
+let arr = [1,-2,0,3]
+console.log(maximumSum(arr))
