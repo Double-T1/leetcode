@@ -19,6 +19,65 @@ let helper= (nums,left=0,right=nums.length-1,playerOne=true,memo={}) => {
     return memo[left][right]
 }
 
+var PredictTheWinner2 = function(nums) {
+    return helper2(nums) >= 0
+};
 
-let nums = [1,5,233,7]
-console.log(PredictTheWinner(nums))
+let helper2= (nums,memo={},left=0,right=nums.length-1,turn=1) => {
+    if (left in memo && right in memo[left]) return memo[left][right]
+    if (!memo[left]) memo[left] = {}
+
+    if (left===right) {
+        return turn*nums[left]
+    } else {
+        let a = helper2(nums,memo,left+1,right,-turn) + turn*nums[left]
+        let b = helper2(nums,memo,left,right-1,-turn) + turn*nums[right]
+        
+        memo[left][right] = turn*Math.max(turn*a,turn*b)
+    }    
+    return memo[left][right]
+}
+
+//key observation: 
+//1. player one always starts first
+//2. player one and two always take turns
+//Thus, no matter which turn it is, the current player shall maximize the score on hand
+//while the score passed from the previous stage is always going to be consider a negative asset for the current player (subtraction)
+var PredictTheWinner3 = function(nums) {
+    return helper3(nums) >= 0
+};
+
+let helper3= (nums,memo={},left=0,right=nums.length-1) => {
+    if (left in memo && right in memo[left]) return memo[left][right]
+    if (!memo[left]) memo[left] = {}
+
+    if (left===right) {
+        return nums[left]
+    } else {
+        let a = nums[left] - helper2(nums,memo,left+1,right)
+        let b = nums[right] - helper2(nums,memo,left,right-1) 
+        
+        memo[left][right] = Math.max(a,b)
+    }    
+    return memo[left][right]
+}
+
+//bottom up
+var PredictTheWinner4 = function(nums) {
+    let dp = new Array(nums.length)
+    //left to right
+    for (let i=nums.length-1; i>=0; i--) {
+        for (let j=i; j<nums.length; j++) {
+            if (j===i) {
+                dp[j] = nums[i]
+            } else {
+                dp[j] = Math.max(nums[i]-dp[j],nums[j]-dp[j-1])
+            }
+        }
+    }
+    return dp[dp.length-1] >= 0
+};
+
+
+let nums = [1,5,2]
+console.log(PredictTheWinner4(nums))
