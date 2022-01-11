@@ -1,0 +1,19 @@
+var maxUncrossedLines = function(nums1, nums2) {
+    return helper(nums1,nums2)   
+};
+
+let helper = (nums1,nums2,index1=0,index2=0,memo={}) => {
+    if (index1 in memo && index2 in memo[index1]) return memo[index1][index2]
+    if (memo[index1] === undefined) memo[index1] = {}
+
+    if (index1===nums1.length || index2===nums2.length) {
+        memo[index1][index2] = 0
+    } else {
+        if (nums1[index1] === nums2[index2]) {
+            memo[index1][index2] = helper(nums1,nums2,index1+1,index2+1,memo) + 1
+        } else {
+            memo[index1][index2] = Math.max(helper(nums1,nums2,index1+1,index2,memo),helper(nums1,nums2,index1,index2+1,memo))
+        }
+    }
+    return memo[index1][index2]
+}
