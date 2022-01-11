@@ -1,0 +1,16 @@
+var getDescentPeriods = function(prices) {
+    let total = 1
+    let currentCount = 1
+    for (let i=1; i<prices.length; i++) {
+        if (prices[i]===prices[i-1]-1) {
+            currentCount++
+        } else {
+            currentCount = 1
+        }
+        total += currentCount
+    }     
+    return total
+};
+
+let prices = [8,6,7,7]
+console.log(getDescentPeriods(prices))
