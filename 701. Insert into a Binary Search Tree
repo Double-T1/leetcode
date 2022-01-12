@@ -1,0 +1,22 @@
+var insertIntoBST = function(root, val) {
+  if (!root) return new TreeNode(val)
+  let node = root
+  while (true) {
+    if (node.val<val) {
+      if (node.right) {
+        node = node.right
+      } else {
+        node.right = new TreeNode(val)
+        break;
+      }
+    } else {
+      if (node.left) {
+        node = node.left
+      } else {
+        node.left = new TreeNode(val)
+        break;
+      }
+    }
+  }
+  return root
+};
