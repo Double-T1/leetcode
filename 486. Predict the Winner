@@ -1,3 +1,5 @@
+https://leetcode.com/problems/predict-the-winner/
+
 var PredictTheWinner = function(nums) {
     let sum = nums.reduce((accu,ele) => accu + ele)
     return helper(nums) >= sum/2
@@ -78,6 +80,38 @@ var PredictTheWinner4 = function(nums) {
     return dp[dp.length-1] >= 0
 };
 
+//can we get a true or false result directly?
+//template form solution 3
+var PredictTheWinner5 = function(nums) {
+    let memo = {}
+    return helper5(nums,memo)
+};
+
+let helper5= (nums,memo,left=0,right=nums.length-1,sum=0) => {
+    //the answer is correct without this if statement, but why does this standard memoization changes the result?
+    if (memo[left] !==undefined && memo[left][right] !==undefined) {
+        return memo[left][right] === 1 
+    }
+    
+    
+    if (!memo[left]) memo[left] = {}
+    if (left>right) {
+        memo[left][right] = -1
+        if (sum>=0) {
+            memo[left][right] = 1
+        }
+        return sum>=0
+    } else {
+        let a = !helper5(nums,memo,left+1,right,nums[left]-sum)
+        let b = !helper5(nums,memo,left,right-1,nums[right]-sum) 
+        
+        memo[left][right] = -1
+        if (a || b ) {
+            memo[left][right] = 1
+        }
+        return a || b        
+    }    
+}
 
 let nums = [1,5,2]
 console.log(PredictTheWinner4(nums))
