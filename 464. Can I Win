@@ -2,65 +2,62 @@ var canIWin = function(maxChoosableInteger, desiredTotal) {
     let sum = (1+maxChoosableInteger)*maxChoosableInteger/2
     if (sum<desiredTotal) return false
     if (maxChoosableInteger>=desiredTotal) return true 
-    return helper2(maxChoosableInteger,desiredTotal)
+    return helper(maxChoosableInteger,desiredTotal)
 };
 
-//memo[state] == 1 means won, -1 means lost, undefined means unknown
-let helper2 = (maxChoosableInteger,desiredTotal,state=0,memo={}) => {
-    if (memo[state] !== undefined) return memo[state] === 1
+let helper = (maxChoosableInteger,desiredTotal,state=0,playerOne=true,memo={}) => {
+    if (memo[state] !== undefined) return memo[state]
+    
+    if (desiredTotal<=0) {
+        memo[state] = !playerOne
+    } else {
+        memo[state] = !playerOne
+        for (let i=1; i<=maxChoosableInteger; i++) {
+            if ((state&(1<<i))>0) continue
+            if (playerOne) {
+                if (helper(maxChoosableInteger,desiredTotal-i,state|(1<<i),false,memo)) {
+                    memo[state] = true
+                    break
+                }    
+            } else {
+                if (!helper(maxChoosableInteger,desiredTotal-i,state|(1<<i),true,memo)) {
+                    memo[state] = false
+                    break
+                }
+            }
+        }  
+    }
+    return memo[state] 
+}
+
+var canIWin3 = function(maxChoosableInteger, desiredTotal) {
+    let sum = (1+maxChoosableInteger)*maxChoosableInteger/2
+    if (sum<desiredTotal) return false
+    if (maxChoosableInteger>=desiredTotal) return true 
+    return helper3(maxChoosableInteger,desiredTotal)
+};
+
+//memo[state] == true means win for the current player
+//false means lose for the current player
+//and undefined means unknown
+let helper3 = (maxChoosableInteger,desiredTotal,state=0,memo={}) => {
+    if (memo[state] !== undefined) return memo[state]
     //desiredTotal<=maxChoosableInteger
     if (desiredTotal<=0) {
-        memo[state] = -1
         return false
     } else {
         // why here?
         for (let i=1; i<=maxChoosableInteger; i++) {
             if ((state&(1 << i))>0) continue
-            if (!helper2(maxChoosableInteger,desiredTotal-i,state|(1<<i),memo)) {
-                memo[state] = 1
+            if (!helper3(maxChoosableInteger,desiredTotal-i,state|(1<<i),memo)) {
+                memo[state] = true
                 return true
             }
         }
-        memo[state] = -1
-        return false
+        memo[state] = false
     }
-}
-
-//doesn't work, but why?
-var canIWin = function(maxChoosableInteger, desiredTotal) {
-    let sum = (1+maxChoosableInteger)*maxChoosableInteger/2
-    if (sum<desiredTotal) return false
-    let memo = {}
-    let state = 0
-    let x = helper(maxChoosableInteger,desiredTotal,state,true,memo)
-    return x
-};
-
-let helper = (maxChoosableInteger,desiredTotal,state=0,playerOne=true,memo={}) => {
-
-    if (desiredTotal<=maxChoosableInteger) {
-        memo[state] = playerOne
-    } else {
-        for (let i=1; i<=maxChoosableInteger; i++) {
-            if (state&1 === 1) continue
-            state |= (1<<i)
-            if (playerOne) {
-                if (helper(maxChoosableInteger,desiredTotal-i,state,false,memo)) {
-                    memo[state] = true
-                    break
-                }    
-            } else {
-                if (!helper(maxChoosableInteger,desiredTotal-i,state,true,memo)) {
-                    memo[state] = false
-                    break
-                }
-            }
-            state ^= (1<<i)
-        }  
-        memo[state] = !playerOne
-    }
-    return memo[state] 
+    return memo[state]
 }
 
 let  maxChoosableInteger = 4, desiredTotal = 6
-console.log(canIWin2(maxChoosableInteger,desiredTotal))
+console.log(canIWin(maxChoosableInteger,desiredTotal))
