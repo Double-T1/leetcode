@@ -1,0 +1,17 @@
+//greedy
+//can i prove it?
+var findMinArrowShots = function(points) {
+    points.sort((a,b) => a[0]-b[0])
+    let last = points[0]
+    let count = 1
+    for (let i=1; i<points.length; i++) {
+        if (last[1]>=points[i][0]) {
+            last[0] = points[i][0]
+            last[1] = Math.min(last[1],points[i][1])
+        } else {
+            last = points[i]
+            count++
+        }
+    }
+    return count
+};
