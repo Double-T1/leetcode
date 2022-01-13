@@ -87,30 +87,21 @@ var PredictTheWinner5 = function(nums) {
     return helper5(nums,memo)
 };
 
-let helper5= (nums,memo,left=0,right=nums.length-1,sum=0) => {
-    //the answer is correct without this if statement, but why does this standard memoization changes the result?
+let helper5= (nums,memo={},left=0,right=nums.length-1,sum=0) => {
     if (memo[left] !==undefined && memo[left][right] !==undefined) {
-        return memo[left][right] === 1 
+        return memo[left][right] 
     }
-    
-    
     if (!memo[left]) memo[left] = {}
+
     if (left>right) {
-        memo[left][right] = -1
-        if (sum>=0) {
-            memo[left][right] = 1
-        }
-        return sum>=0
+        memo[left][right] = sum>=0
     } else {
         let a = !helper5(nums,memo,left+1,right,nums[left]-sum)
         let b = !helper5(nums,memo,left,right-1,nums[right]-sum) 
         
-        memo[left][right] = -1
-        if (a || b ) {
-            memo[left][right] = 1
-        }
-        return a || b        
-    }    
+        memo[left][right] =  a || b        
+    }  
+    return memo[left][right]   
 }
 
 let nums = [1,5,2]
