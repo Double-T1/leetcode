@@ -1,0 +1,29 @@
+var myAtoi = function(s) {
+    let index=0
+    while(s[index]=== ' ') {
+        index++
+    }
+    
+    let sign = 1
+    if (s[index]=== '+' || s[index]==='-')    {
+        if (s[index]==='-') {
+            sign =-1
+        }
+        index++
+    } 
+    
+    let val =0
+    let bound = (1 << 31)>>>0
+    while(/[0-9]/.test(s[index])) {
+        let digit = parseInt(s[index],10)
+        val = val*10 + digit
+        index++
+        
+        if (val>=bound) {
+            val = bound
+            if (sign>0)val -=1
+            break
+        }
+    }
+    return sign*val
+};
