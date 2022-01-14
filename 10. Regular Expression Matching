@@ -1,0 +1,39 @@
+//always check if a star exist for the next index of p
+var isMatch = function(s, p) {
+    return helper(s,p)
+};
+
+let helper = (S,P,s=0,p=pUpdate(P,0),memo={}) => {
+    if (s in memo && p in memo[s]) return memo[s][p]
+    if (memo[s] === undefined) memo[s] = {}
+
+    if (s === S.length && p === P.length) {
+        memo[s][p] = true
+    } else {      
+        if (P[p] === '*') {
+            if (P[p-1] === '.' || P[p-1] === S[s]) {
+                let a = helper(S,P,s,pUpdate(P,p+1),memo)
+                let b = s<S.length? helper(S,P,s+1,p,memo) : false
+                memo[s][p] =  a || b 
+            } else {
+                memo[s][p] = helper(S,P,s,pUpdate(P,p+1),memo)
+            }
+        } else {
+            if (P[p] === '.' || P[p] === S[s]) {
+               let a = s<S.length? helper(S,P,s+1,pUpdate(P,p+1),memo) : false
+               memo[s][p] = a
+            } else {
+                memo[s][p] = false
+            }
+        }
+    }
+    return  memo[s][p]
+}
+
+let pUpdate = (P,p) => {
+    return P[p+1] === '*'? p+1 : p
+}
+
+
+let s = "a", p = ".*..a*"
+console.log(isMatch(s,p))
