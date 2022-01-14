@@ -1,0 +1,30 @@
+var isMatch = function(s, p) {
+    return helper(s,p)
+};
+
+let helper = (s,p,i=0,j=0,memo={}) => {
+    if (i in memo && j in memo[i]) return memo[i][j]
+    if (memo[i] === undefined) memo[i] = {}
+    if (i === s.length) {
+        if (j === p.length) {
+            memo[i][j] = true
+        } else {
+            if (p[j] === '*') {
+                memo[i][j] = helper(s,p,i,j+1)
+            } else {
+                memo[i][j] = false
+            }
+        }
+    } else {
+        if (p[j] === '*') {
+            memo[i][j] = helper(s,p,i,j+1) || helper(s,p,i+1,j)
+        } else {
+            if (p[j] === '?' || p[j] === s[i]) {
+                memo[i][j] = helper(s,p,i+1,j+1)
+            } else {
+                memo[i][j] = false
+            }
+        }
+    }
+    return memo[i][j]
+}
