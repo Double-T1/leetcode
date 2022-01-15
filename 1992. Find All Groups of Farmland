@@ -1,0 +1,25 @@
+var findFarmland = function(land) {
+    let ans = []
+    for (let i=0; i<land.length; i++) {
+        for (let j=0; j<land[i].length; j++) {
+            if (land[i][j] === 1) count(ans,land,i,j) 
+        }
+    }
+    return ans
+};
+
+let count = (ans,land,i,j) => {
+    let rowEnd,colEnd;
+    for (let m=i; m<land.length && land[m][j] === 1; m++) {
+        for (let n=j; n<land[m].length && land[m][n] === 1; n++) {
+            land[m][n] = 0
+            rowEnd = n
+        }
+        colEnd = m
+    }
+    ans.push([i,j,colEnd,rowEnd])
+    return
+}
+
+let land = [[1,0,0],[0,1,1],[0,1,1]]
+console.log(findFarmland(land))
