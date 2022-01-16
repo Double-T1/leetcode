@@ -1,0 +1,24 @@
+var stoneGame = function(piles) {
+    return helper(piles)>0
+};
+
+let helper= (piles,left=0,right=piles.length-1,memo={}) => {
+    if (left in memo && right in memo[left]) return memo[left][right]
+    if (!memo[left]) memo[left] = {}
+
+    if (left>right) {
+        memo[left][right] = 0
+    } else {
+        memo[left][right] = Math.max(piles[left] - helper(piles,left+1,right,memo),piles[right] - helper(piles,left,right-1,memo))
+    }
+    return memo[left][right]
+}
+
+//mathematical approach
+//since there are even piles with a total stones being odd
+var stoneGame2 = function(piles) {
+    return true
+};
+
+let   piles = [3,7,2,3]
+console.log(stoneGame(piles))
