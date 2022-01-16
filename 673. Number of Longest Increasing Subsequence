@@ -1,0 +1,31 @@
+var findNumberOfLIS = function(nums) {
+    let times = []
+    let dist = []
+    let max = 0
+    for (let i=0; i<nums.length; i++) {
+        dist[i] = 1
+        times[i] = 1
+        for (let j=i-1; j>=0; j--) {
+            if (nums[j]<nums[i]) {
+                if (dist[j]+1>dist[i]) {
+                    dist[i] = dist[j]+1
+                    times[i] = times[j]
+                } else if (dist[j]+1 === dist[i]) {
+                    times[i] += times[j]
+                }
+            }
+        }
+        max = Math.max(max,dist[i])
+    }
+
+    let ans = 0
+    for (let i=0; i<dist.length; i++) {
+        if (dist[i] === max) {
+            ans += times[i]
+        }
+    }
+    return ans
+};
+
+let nums = [2,2,2,2,2]
+console.log(findNumberOfLIS(nums))
