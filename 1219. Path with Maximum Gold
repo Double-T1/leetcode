@@ -1,0 +1,29 @@
+//brute force
+var getMaximumGold = function(grid) {
+    let max = 0
+    for (let i=0; i<grid.length; i++) {
+        for (let j=0; j<grid[i].length; j++) {
+            if (grid[i][j] === 0) continue
+            max = Math.max(max,dfs(grid,i,j))
+        }
+    }
+    return max
+};
+
+let dfs = (grid,i,j) => {
+    let temp = grid[i][j]
+    grid[i][j] = 0
+    let max = temp
+    let actionSpace = [[i+1,j],[i-1,j],[i,j+1],[i,j-1]]
+    for ([i,j] of actionSpace) {
+        if (i>=0 && i<grid.length && j>=0 && j<grid[i].length && grid[i][j] !== 0) {
+            max = Math.max(dfs(grid,i,j)+temp,max)
+        }
+    }
+    grid[i][j+1] = temp
+    return max
+}
+
+
+let grid =[[1,0,7,0,0,0],[2,0,6,0,1,0],[3,5,6,7,4,2],[4,3,1,0,2,0],[3,0,5,0,20,0]]
+console.log(getMaximumGold2(grid))
