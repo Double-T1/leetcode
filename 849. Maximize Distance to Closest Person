@@ -18,5 +18,25 @@ var maxDistToClosest = function(seats) {
     return max
 };
 
+//space optimized
+var maxDistToClosest2 = function(seats) {
+    let left = -1
+    let right = -1
+    let max = 0
+    for (let i=0; i<seats.length; i++) {
+        if (seats[i] === 1) {
+            left = right
+            right = i
+            if (left>=0) {
+                max = Math.max(max,Math.floor((right-left)/2))
+            } else {
+                max = right
+            }
+        }
+    }
+    max = Math.max(max,(seats.length-1-right))
+    return max
+};
+
 let seats = [0,1]
 console.log(maxDistToClosest(seats))
