@@ -1,0 +1,63 @@
+var stoneGameII = function(piles) {
+    let prev = 0
+    for (let i=0; i<piles.length; i++) {
+        piles[i] = prev + piles[i]
+        prev = piles[i]
+    }
+    piles.unshift(0)
+    return helper(piles)
+};
+
+let helper = (piles,i=1,M=1,toMax=true,memo={}) => {
+    if (i in memo && M in memo[i] && toMax in memo[i][M]) return memo[i][M][toMax]
+    if (!memo[i]) memo[i] = {}
+    if (!memo[i][M]) memo[i][M] = {}
+
+    if (i === piles.length) {
+        memo[i][M][toMax] = 0
+    } else {
+        if (toMax) {
+            let max = 0
+            for (let x=1; x<=2*M && i+x<=piles.length; x++) {
+                max = Math.max(max,helper(piles,i+x,Math.max(x,M),false,memo)+piles[i+x-1]-piles[i-1])
+            }
+            memo[i][M][toMax] = max
+        } else {
+            let min = Number.MAX_SAFE_INTEGER
+            for (let x=1; x<=2*M  && i+x<=piles.length; x++) {
+                min = Math.min(min,helper(piles,i+x,Math.max(x,M),true,memo))
+            }
+            memo[i][M][toMax] = min
+        }
+    }
+    return memo[i][M][toMax]
+}
+
+var stoneGameII2 = function(piles) {
+    let suff = 0
+    for (let i=piles.length-1; i>=0; i--) {
+        piles[i] = suff + piles[i]
+        suff = piles[i]
+    }
+    return helper2(piles)
+};
+
+//the player will maximize its ouput at each round
+//meaning it will minimize the output from previous round
+let helper2 = (piles,i=0,M=1,memo={}) => {
+    if (i in memo && M in memo[i]) return memo[i][M]
+    if (!memo[i]) memo[i] = {}
+
+    if (i === piles.length) {
+        return 0
+    } else {
+        let min = Number.MAX_SAFE_INTEGER
+        for (let x=1; x<=2*M && i+x<=piles.length; x++) {
+            min = Math.min(min,helper2(piles,i+x,Math.max(x,M),memo))
+        }
+        memo[i][M] = piles[i] - min
+        return memo[i][M]
+    }
+}
+let  piles = [2,7,9,4,4]
+console.log(stoneGameII(piles))
