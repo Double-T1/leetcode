@@ -1,0 +1,49 @@
+//time: O(nlogn) + O((n**2)*n)
+var minCost = function(n, cuts) {
+    cuts.sort((a,b) => a-b)
+    cuts.unshift(0)
+    cuts.push(n)
+    return helper2(cuts)
+};
+
+let helper2 = (cuts,i=0,j=cuts.length-2,memo={}) => {
+    if (i in memo && j in memo[i]) return memo[i][j]
+    if (memo[i] === undefined) memo[i] = {}
+
+    if (i===j) {
+        memo[i][j] = 0
+    } else {
+        let ans = Number.MAX_SAFE_INTEGER
+        for (let k=i+1; k<=j; k++) {
+            ans = Math.min(ans,helper2(cuts,i,k-1,memo) + helper2(cuts,k,j,memo) + cuts[j+1] - cuts[i])
+        }
+        memo[i][j] = ans
+    }
+    return memo[i][j]
+}
+
+var minCost2 = function(n, cuts) {
+    cuts.sort((a,b) => a-b)
+    cuts.unshift(0)
+    cuts.push(n)
+    
+    let dp = new Array(cuts.length)
+        .fill()
+        .map(() => new Array(cuts.length))
+
+    for (let i=cuts.length-2; i>=0; i--) {
+        for (let j=i; j<cuts.length-1; j++) {
+            if (i===j) {
+                dp[i][j] = 0
+            } else {
+                dp[i][j] = Number.MAX_SAFE_INTEGER
+                for (let k=i+1; k<=j; k++) {
+                    dp[i][j] = Math.min(dp[i][j],dp[i][k-1]+dp[k][j]+ cuts[j+1] - cuts[i])
+                }
+            }
+        }
+    }
+    return dp[0][cuts.length-2]
+};
+let  n = 9, cuts = [5,6,1,4,2]
+console.log(minCost2(n,cuts))
