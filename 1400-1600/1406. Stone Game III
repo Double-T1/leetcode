@@ -1,0 +1,35 @@
+var stoneGameIII = function(stoneValue) {
+    let x = helper(stoneValue)
+    if (x>0) return 'Alice'
+    if (x<0) return 'Bob'
+    return 'Tie'
+};
+
+//at each round, the current player maximize its outpout, while minimize the previous players return
+let helper = (stoneValue,current=0,memo={}) => {
+    if (current in memo) return memo[current]
+
+    if (current === stoneValue.length) {
+        memo[current] = 0
+    } else {
+        let max = Number.MIN_SAFE_INTEGER
+        for (let i=0; i<3 && i+current<stoneValue.length; i++) {
+            max = Math.max(max,add(stoneValue,current,i+1) - helper(stoneValue,current+i+1))
+        }
+        memo[current] = max
+    }
+    return memo[current]
+}
+
+let add = (stoneValue,i,times) => {
+    let ans = 0
+    while (times) {
+        ans += stoneValue[i]
+        i++
+        times--
+    }
+    return ans
+}
+
+let values = [1,2,3,7]
+console.log(stoneGameIII(values))
