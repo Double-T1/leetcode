@@ -16,5 +16,27 @@ let helper = (s,t,i=0,j=0,memo ={}) => {
     return memo[i][j]
 }
 
-let  s = "babgbag", t = "bag"
-console.log(numDistinct(s,t))
+//bottom-up
+var numDistinct2 = function(s, t) {
+    let dp = new Array(t.length+1)
+
+    for (let i=s.length; i>=0; i--) {
+        let diaganol = 0
+        for (let j=t.length; j>=0; j--) {
+            if (i === s.length || j === t.length) {
+                diaganol = dp[j]
+                dp[j] = j === t.length ? 1 : 0
+            } else {
+                let temp = dp[j]
+                dp[j] = dp[j]
+                if (s[i] === t[j]) dp[j] += diaganol
+                diaganol = temp
+            }
+        }
+    }
+
+    return dp[0]
+};
+
+let s = "babgbag", t = "bag"
+console.log(numDistinct2(s,t))
