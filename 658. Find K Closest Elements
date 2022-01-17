@@ -1,0 +1,53 @@
+//time: O(logn+ k)
+var findClosestElements = function(arr, k, x) {
+    let left = 0
+    let right = arr.length
+    while (left<right) {
+        let mid = left + Math.floor((right-left)/2)
+        if (arr[mid]>x) {
+            right = mid
+        } else {
+            left = mid+1
+        }
+    }  
+
+    //left will be smallest number that is greater than x => represent it by right from now on
+    //then we find the biggest number that is smaller than or equal to x => denote it with left
+    right = left
+    
+    if (right===0) return arr.slice(0,k)
+    if (right===arr.length) return arr.slice(right-k,right)
+
+    while (arr[left]>x) {
+        left--
+    }
+
+    while (k) { 
+        let leftV = left>=0? x-arr[left] : Number.MAX_SAFE_INTEGER
+        let rightV = right<arr.length? arr[right]-x : Number.MAX_SAFE_INTEGER 
+        if (leftV>rightV) {
+            right++
+        } else {
+            left--
+        }
+        k--
+    }   
+    return arr.slice(left+1,right)
+};
+
+//O(n)
+var findClosestElements2 = function(arr, k, x) {
+    let left = 0
+    let right = arr.length-1
+    while (right-left>=k) {
+        if (arr[right]-x>=x-arr[left]) {
+            right--
+        } else {
+            left++
+        }
+    }  
+    return arr.slice(left,right+1)
+};
+
+let arr = [0,1,1,1,2,3,6,7,8,9], k=9, x=4
+console.log(findClosestElements(arr,k,x))
