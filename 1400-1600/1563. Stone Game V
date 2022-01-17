@@ -1,0 +1,68 @@
+//If the value of the two rows are equal, Bob lets Alice decide which row will be thrown away.
+var stoneGameV = function(stoneValue) {
+    for (let i=1; i<stoneValue.length; i++) {
+        stoneValue[i] += stoneValue[i-1]
+    }
+    stoneValue.unshift(0)
+    return helper(stoneValue)
+};
+
+//stoneValue is prefixSum
+let helper = (stoneValue,left=1,right=stoneValue.length-1,memo={}) => {
+    if (left in memo && right in memo[left]) return memo[left][right]
+    if (memo[left] === undefined) memo[left] = {}
+
+    if (left === right) {
+        memo[left][right] = 0
+    } else {
+        let max = 0
+        for (let i=0; i<(right-left); i++) {
+            //[left,left+i] && [left+i+1,right]
+            let leftSum = stoneValue[left+i]-stoneValue[left-1]
+            let rightSum = stoneValue[right]-stoneValue[left+i]
+            if (leftSum<=rightSum) {
+                max = Math.max(max,helper(stoneValue,left,left+i,memo)+leftSum)
+            } 
+            if (rightSum<=leftSum) {
+                max = Math.max(max,helper(stoneValue,left+i+1,right,memo)+rightSum)
+            }
+        }
+        memo[left][right] = max
+    }
+    return memo[left][right]
+}
+
+//bottom-up
+var stoneGameV2 = function(stoneValue) {
+    for (let i=1; i<stoneValue.length; i++) {
+        stoneValue[i] += stoneValue[i-1]
+    }
+    stoneValue.unshift(0)
+    
+    let dp = new Array(stoneValue.length)
+        .fill()
+        .map(() => new Array(stoneValue.length))
+    for (let left=stoneValue.length-1; left>=1; left--) {
+        for (let right=left; right<stoneValue.length; right++) {
+            dp[left][right] = 0
+            if (left !== right) {
+                for (let i=0; i<(right-left); i++) {
+                    //[left,left+i] && [left+i+1,right]
+                    let leftSum = stoneValue[left+i]-stoneValue[left-1]
+                    let rightSum = stoneValue[right]-stoneValue[left+i]
+                    if (leftSum<=rightSum) {
+                        dp[left][right] = Math.max(dp[left][right],dp[left][left+i]+leftSum)
+                    } 
+                    if (rightSum<=leftSum) {
+                        dp[left][right] = Math.max(dp[left][right],dp[left+i+1][right]+rightSum)
+                    }
+                }
+            }
+        }
+    }
+    return dp[1][stoneValue.length-1]
+};
+
+
+let stoneValue = [6,2,3,4,5,5]
+console.log(stoneGameV2(stoneValue))
