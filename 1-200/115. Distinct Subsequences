@@ -1,0 +1,20 @@
+var numDistinct = function(s, t) {
+    return helper(s,t)
+};
+
+let helper = (s,t,i=0,j=0,memo ={}) => {
+    if (i in memo && j in memo[i]) return memo[i][j]
+    if (memo[i] === undefined) memo[i] = {}
+
+    if (i === s.length || j === t.length) {
+        memo[i][j] = j === t.length ? 1 : 0
+    } else {
+        let ans = helper(s,t,i+1,j,memo)
+        if (s[i] === t[j]) ans += helper(s,t,i+1,j+1,memo) 
+        memo[i][j] = ans
+    }
+    return memo[i][j]
+}
+
+let  s = "babgbag", t = "bag"
+console.log(numDistinct(s,t))
