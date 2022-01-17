@@ -1,0 +1,45 @@
+//brute force
+var getMoneyAmount = function(n) {
+    return helper(1,n)
+};
+
+let helper = (left,right,memo={}) => {
+    if (left>=right) return 0 
+    
+    if (left in memo && right in memo[left]) return memo[left][right]
+    if (memo[left] === undefined) memo[left] = {}
+
+    let min = Number.MAX_SAFE_INTEGER
+    for (let i=left; i<=right; i++) {
+        min = Math.min(min,Math.max(helper(left,i-1,memo),helper(i+1,right,memo)) + i)
+    }
+    memo[left][right] = min
+    return min
+}
+
+//bottom-up
+var getMoneyAmount2 = function(n) {
+    let dp = new Array(n+1)
+        .fill()
+        .map(() => new Array(n+1))
+
+    for (let i=n; i>=1; i--) {
+        for (let j=1; j<=n; j++) {
+            if (i>=j) {
+                dp[i][j] = 0
+            } else {
+                dp[i][j] = Number.MAX_SAFE_INTEGER
+                for (let k=i; k<=j; k++) {
+                    let one = k-1>i? dp[i][k-1] : 0
+                    let two = k+1<n? dp[k+1][j] : 0
+                    let max = Math.max(one,two) + k
+                    dp[i][j] = Math.min(dp[i][j],max)
+                }
+            }
+        }
+    }
+    return dp[1][n]
+};
+
+
+console.log(getMoneyAmount2(10))
