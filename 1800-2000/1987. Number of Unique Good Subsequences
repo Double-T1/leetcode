@@ -25,6 +25,7 @@ var numberOfUniqueGoodSubsequences = function(binary) {
     return ans.length%mod
 };
 
+//time: O(n)
 var numberOfUniqueGoodSubsequences2 = function(binary) {
     let total = 0
     let mod = (10**9)+7
