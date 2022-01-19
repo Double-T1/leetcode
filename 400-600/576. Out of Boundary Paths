@@ -1,0 +1,61 @@
+var findPaths = function(m, n, maxMove, startRow, startColumn) {
+    return helper(m,n,maxMove,startRow,startColumn)
+};
+
+let helper = (m,n,maxMove,i,j,memo={}) => {
+    if (i in memo && j in memo[i] && maxMove in memo[i][j]) {
+        return memo[i][j][maxMove]
+    }
+    if (!memo[i]) memo[i] = {}
+    if (memo[i][j] === undefined) memo[i][j] = {}
+
+    if (maxMove === 0) {
+        memo[i][j][maxMove] = 0
+    } else {
+        let ans = 0
+        let actionSpace = [[i+1,j],[i-1,j],[i,j+1],[i,j-1]]
+        for (let [k,l] of actionSpace) {
+            if (k<0 || k>=m || l<0 || l>=n) {
+                ans++
+            } else {
+                ans += helper(m,n,maxMove-1,k,l,memo)
+            }
+        }
+        memo[i][j][maxMove] = ans%((10**9)+7)
+    }
+    return memo[i][j][maxMove]
+}
+
+//bottom-up
+//not all subproblems are actually required, so it would cost more time then top-down, but with less space
+var findPaths2 = function(m, n, maxMove, startRow, startColumn) {
+    let dp = new Array(m)
+        .fill()
+        .map(() => new Array(n).fill(0))
+    let dup = new Array(m)
+        .fill()
+        .map(() => new Array(n))
+    for (let move=1; move<=maxMove; move++) {
+        for (let i=0; i<m; i++) {
+            for (let j=0; j<n; j++) {
+                let ans = 0
+                let actionSpace = [[i+1,j],[i-1,j],[i,j+1],[i,j-1]]
+                for (let [k,l] of actionSpace) {
+                    if (k<0 || k>=m || l<0 || l>=n) {
+                        ans++
+                    } else {
+                        ans += dp[k][l]
+                    }
+                }
+                dup[i][j] = ans%((10**9)+7)
+            }
+        }
+        let temp = dup
+        dup = dp
+        dp = temp
+    }
+    return dp[startRow][startColumn]
+};
+
+let m = 36, n = 5, maxMove = 50, startRow = 15, startColumn = 3
+console.log(findPaths2(m,n,maxMove,startRow,startColumn))
