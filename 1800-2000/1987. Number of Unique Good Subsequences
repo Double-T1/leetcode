@@ -1,0 +1,51 @@
+//brute force
+//heap out of memory
+//time: O(n**2)
+//space: O(2**n)
+var numberOfUniqueGoodSubsequences = function(binary) {
+    let set = new Set()
+    let ans = []
+    let mod = 10**9+7
+    for (let i=0; i<binary.length; i++) {
+        let val = parseInt(binary[i],10)
+        let size = ans.length
+        for (let j=0; j<size; j++) {
+            let num = (ans[j] << 1)| val
+            if (!set.has(num)) {
+                set.add(num)
+                ans.push(num)
+            }
+        }
+        if (!set.has(val)) {
+            set.add(val)
+            ans.push(val)
+        }
+        
+    }
+    return ans.length%mod
+};
+
+var numberOfUniqueGoodSubsequences2 = function(binary) {
+    let total = 0
+    let mod = (10**9)+7
+    let map = new Map()
+    for (let i=0; i<binary.length; i++) {
+        let current = 0
+        if (map.has('0')) current--
+        current += (total+1-cull(map,binary[i]))%mod
+        total += current
+        map.set(binary[i],(map.get(binary[i])+current))
+    }
+    return total%mod
+};
+
+let cull = (map,num) => {
+    if (map.has(num)) {
+        return map.get(num)
+    } else {
+        map.set(num,0)
+        return 0
+    }
+}
+let binary ="0100000101101001010011111000000000111111001100000011100110111010011111001111000110111000110110010101010010110111000000000100110111100100100001000101001001110110011011111000101001000001101101010111111000000111101010001010011010111111001011110110010011110100110101000001010110100001110011101000111100000011110011111010101110110111110110110111010011001101101111100001011010010100000100011111010011100110110011010111000000111110010010001010100101101000011100100010000100111110100011111101101001111011100011"
+console.log(numberOfUniqueGoodSubsequences2(binary))
