@@ -1,0 +1,12 @@
+var countNumbersWithUniqueDigits = function(n) {
+    let dp = []
+    dp[0] = 1
+    let product = 9
+    for (let i=1; i<=n; i++) {
+        dp[i] = dp[i-1] + product
+        product *= (10-i) 
+    }
+    return dp[n]
+};
+
+console.log(countNumbersWithUniqueDigits(3))
