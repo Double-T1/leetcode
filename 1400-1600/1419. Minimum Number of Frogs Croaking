@@ -1,0 +1,42 @@
+var minNumberOfFrogs = function(croakOfFrogs) {
+    let dp = new Array(5).fill(0)
+    //c is 0, r is 1, o is 2, a is 3, k is 4
+    let current = 0
+    let max = 0
+    for (let i=0; i<croakOfFrogs.length; i++) {
+        let val = convert(croakOfFrogs[i])
+        //valid char
+        if (val === 0) {
+            dp[val]++
+            current++
+            max = Math.max(max,current)
+        } else if (dp[val-1]>0) {
+            dp[val-1]--
+            dp[val]++
+            if (val === 4) {
+                current--
+            }
+        } else {
+            return -1
+        }
+    }    
+    return current === 0? max : -1
+};
+
+let convert = (char) => {
+    switch(char) {
+        case 'c': 
+            return 0
+        case 'r':
+            return 1
+        case 'o':
+            return 2
+        case 'a':
+            return 3
+        case 'k':
+            return 4
+    }
+}
+
+let croakOfFrogs = "crocakcroraoakk"
+console.log(minNumberOfFrogs(croakOfFrogs))
