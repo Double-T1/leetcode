@@ -1,0 +1,47 @@
+//brute force
+//try all potential k
+var minEatingSpeed = function(piles, h) {
+    let speed = 1
+    while (true) {
+        let hourSpent = 0
+        for (let pile of piles) {
+            hourSpent += Math.ceil(pile/speed)
+        }
+        if (hourSpent==h) {
+            return speed
+        } else {
+            speed++
+        }
+    }
+};
+
+//optimized
+var minEatingSpeed2 = function(piles, h) {
+    let max = 0
+    for (let i=0; i<piles.length; i++) {
+        max = Math.max(max,piles[i])
+    }
+
+    let left = 0
+    let right = max
+    while (left<right) {
+        let mid = left + Math.floor((right-left)/2)
+        if (hourSpent(mid)<=h) {
+            right = mid
+        } else {
+            left = mid+1
+        }
+    }
+    return right
+};
+
+let hourSpent = (speed) => {
+    let hourSpent = 0
+    for (let pile of piles) {
+        hourSpent += Math.ceil(pile/speed)
+    }
+    return hourSpent
+}
+
+let piles = [30,11,23,4,20], h = 6
+console.log(minEatingSpeed2(piles,h))
