@@ -1,0 +1,39 @@
+var countHighestScoreNodes = function(parents) {
+    let left = []
+    let right = []
+    for (let i=1; i<parents.length; i++) {
+        let p = parents[i]
+        if (left[p] === undefined) {
+            left[p] = i
+        } else {
+            right[p] = i
+        }
+    }
+    let max = [0,0]
+    recur(left,right,max,parents.length,0)
+    return max[1]
+};
+
+let recur = (left,right,max,total,node) => {
+    if (node === undefined) return 0
+    let leftV = recur(left,right,max,total,left[node])
+    let rightV = recur(left,right,max,total,right[node])
+    let parent = total-leftV-rightV-1
+    let product = z(parent)*z(leftV)*z(rightV)
+
+    if (max[0]<product) {
+        max[0] = product
+        max[1] = 1 
+    } else if (max[0] === product) {
+        max[1]++
+    }
+    return leftV+rightV+1
+}
+
+let z = (num) => {
+    if (num===0) return 1
+    return num
+}
+
+let parents = [-1,2,0,2,0]
+console.log(countHighestScoreNodes(parents))
