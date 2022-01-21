@@ -1,0 +1,42 @@
+//brute force
+//time: O(n**2)
+var canCompleteCircuit = function(gas, cost) {
+    for (let i=0; i<gas.length; i++) {
+        let prev = 0
+        let steps = gas.length
+        let j=i
+        while (steps) {
+            let current = prev + gas[j] - cost[j]
+            if (current<0) break
+            steps--
+            prev = current
+            j = (j+1)%gas.length
+        }
+        if (steps===0) return i
+    }
+    return -1
+};
+
+//optimized
+//start at the start of the biggest positive subarray sum
+var canCompleteCircuit2 = function(gas, cost) {
+    let total = 0
+    let sum = 0
+    let start = 0
+    for (let i=0; i<gas.length; i++) {
+        let val = gas[i]-cost[i]
+        total += val
+        sum += val
+        if (sum<0) {
+            sum = 0
+            start = i+1
+        }
+    }
+    if (total<0) return -1
+    return start
+};
+
+
+
+let  gas = [5,1,2,3,4], cost = [4,4,1,5,1]
+console.log(canCompleteCircuit2(gas,cost))
