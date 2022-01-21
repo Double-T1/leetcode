@@ -1,0 +1,27 @@
+var maxProduct = function(root) {
+    let total = 0
+    let queue = [root]
+    while (queue.length) {
+        let node = queue.pop()
+        total += node.val
+        if(node.left) queue.unshift(node.left)
+        if(node.right) queue.unshift(node.right)
+    }
+
+    let max = [0]
+    let mod = 10**9+7
+    recur(root,max,total%mod,mod)
+    return max[0]%mod
+};
+
+let recur = (node,max,total,mod) => {
+    if (!node) {
+        return 0
+    } else {
+        let left = recur(node.left,max,total,mod)
+        let right = recur(node.right,max,total,mod)
+        let val = node.val
+        max[0] = Math.max(max[0],((total-right)*right),((total-left)*left))
+        return (val+left+right)%mod 
+    }
+}
