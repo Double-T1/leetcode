@@ -1,0 +1,41 @@
+//start from the vertex with the lowest inDegree that is greater than 0
+var findAllRecipes = function(recipes, ingredients, supplies) {
+    let ans = []
+    let set = new Set()
+    for (let i=0; i<supplies.length; i++) {
+        set.add(supplies[i])
+    }
+    supplies = set
+    let recipe2 = new Map()
+    for (let i=0; i<recipes.length; i++) {
+        recipe2.set(recipes[i],i)
+    }
+
+    for (let i=0; i<recipes.length; i++) {
+        helper(recipes,ingredients,supplies,ans,i,recipe2)
+    }
+    return ans
+};
+
+let helper = (recipes,ingredients,supplies,ans,i,recipe2) => {
+    if (!recipe2.has(recipes[i])) return false 
+    recipe2.delete(recipes[i])
+    for (let ingredient of ingredients[i]) {
+        if (!supplies.has(ingredient)) {
+            if (recipe2.has(ingredient)) {
+                if (!helper(recipes,ingredients,supplies,ans,recipe2.get(ingredient),recipe2)) return false 
+            } else {
+                recipe2.set(recipes[i],i)
+                return false
+            }
+        } 
+    }
+    supplies.add(recipes[i])
+    ans.push(recipes[i])
+    return true
+}
+
+
+
+let recipes = ["ju","fzjnm","x","e","zpmcz","h","q"], ingredients =[["d"],["hveml","f","cpivl"],["cpivl","zpmcz","h","e","fzjnm","ju"],["cpivl","hveml","zpmcz","ju","h"],["h","fzjnm","e","q","x"],["d","hveml","cpivl","q","zpmcz","ju","e","x"],["f","hveml","cpivl"]], supplies = ["f","hveml","cpivl","d"]
+console.log(findAllRecipes(recipes,ingredients,supplies))
