@@ -1,0 +1,28 @@
+var countPairs = function(deliciousness) {
+    let arr = []
+    let two = 1
+    //the maximum possible sum is 2 to the power of 21 
+    for (let i=0; i<=22; i++) {
+        arr[i] = two
+        two = two << 1
+    }
+
+    let map = new Map()
+    let count = 0
+    for (let i=0; i<deliciousness.length; i++) {
+        let val = deliciousness[i]
+        for (let j=0; j<arr.length; j++) {
+            if (arr[j]<val) continue
+            let target = arr[j]-val
+            if (map.has(target) && map.get(target)>0) {
+                count += map.get(target)
+                count %= 10**9+7
+            }
+        }
+        if (!map.has(val)) map.set(val,0)
+        let a = map.get(val)
+        a = (a+1)%(10**9+7)
+        map.set(val,a)
+    }
+    return count
+};
