@@ -1,0 +1,23 @@
+var tallestBillboard = function(rods) {
+    let sum = rods.reduce((accu,ele) => accu+ele)
+    return helper(rods,Math.ceil(sum/2))
+};
+
+let helper = (rods,half,i=0,sum=0,memo={}) => {
+    if (i in memo && sum in memo[i]) return memo[i][sum]
+    if (!memo[i]) memo[i] = {}
+
+    if (rods.length === i || sum>half || sum<-half) {
+        if (sum === 0) {
+            memo[i][sum] = 0
+        } else {
+            return Number.MIN_SAFE_INTEGER
+        }
+    } else {
+        memo[i][sum] =Math.max(helper(rods,half,i+1,sum,memo),helper(rods,half,i+1,sum+rods[i],memo)+rods[i],helper(rods,half,i+1,sum-rods[i],memo))
+    }
+    return memo[i][sum]
+}
+
+let  rods = [1,2,3,6]
+console.log(tallestBillboard(rods))
