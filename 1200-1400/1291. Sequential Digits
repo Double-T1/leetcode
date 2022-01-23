@@ -1,0 +1,43 @@
+var sequentialDigits = function(low, high) {
+    let ans = []
+    let digit = 1
+    let base = 0
+    let increment = 0
+    let num = low
+    while (num) {
+        base = base*10 + digit
+
+        digit++
+        increment = increment*10 + 1
+        num = Math.floor(num/10)
+    }
+    
+    let val = base
+    while (val<low) {
+        if (val%10 === 9) {
+            base = base*10 + digit
+            digit++
+            increment = increment*10 + 1
+            val = base
+        } else {
+            val += increment
+        }
+    }
+
+    while (val>=low && val<=high) {
+        ans.push(val) 
+        //prepare num for the next round
+        if (val%10 === 9) {
+            base = base*10 + digit
+            digit++
+            increment = increment*10 + 1
+            val = base
+        } else {
+            val += increment
+        }
+    }
+    return ans
+};
+
+let low = 8511, high = 23553
+console.log(sequentialDigits(low,high))
