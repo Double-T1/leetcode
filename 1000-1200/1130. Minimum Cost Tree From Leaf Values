@@ -1,0 +1,38 @@
+var mctFromLeafValues = function(arr) {
+    return helper(arr)
+};
+
+let helper = (arr,i=0,j=arr.length-1,memo={},memo2={}) => {
+    if (i in memo && j in memo[i]) return memo[i][j]
+    if (!memo[i]) memo[i] = {}
+
+    if (i===j) {
+        memo[i][j] = 0
+    } else {
+        let min = Number.MAX_SAFE_INTEGER
+        for (let k=i; k<j; k++) {
+            min = Math.min(min,helper(arr,i,k,memo,memo2)+helper(arr,k+1,j,memo,memo2)+findMax(arr,i,k,memo2)*findMax(arr,k+1,j,memo2))
+        }
+        memo[i][j] = min
+    }
+    return memo[i][j]
+}
+
+let findMax = (arr,m,n,memo2) => {
+    if (m in memo2 && n in memo2[m]) return memo2[m][n]
+    if (!memo2[m]) memo2[m] = {}
+
+    if (m === n) {
+        return arr[m]
+    } else {
+        if (m in memo2) {
+            memo2[m][n] = Math.max(findMax(arr,m,n-1,memo2),arr[n])
+        } else {
+            memo2[m][n] = Math.max(findMax(arr,m+1,n,memo2),arr[m])
+        } 
+        return memo2[m][n]
+    }
+}
+
+let  arr = [6,2,4]
+console.log(mctFromLeafValues(arr))
