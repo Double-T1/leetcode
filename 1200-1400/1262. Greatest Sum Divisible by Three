@@ -1,6 +1,4 @@
 //heap out of memory
-//time: O(2**n)
-//space: O(2**n)
 var maxSumDivThree = function(nums) {
     return helper(nums)
 };
@@ -22,8 +20,6 @@ let helper = (nums,i=0,sum=0,memo={}) => {
 }
 
 //using hashtable
-//time: O(n)
-//space: O(1)
 var maxSumDivThree2 = function(nums) {
     let map = [0,0,0]
     for (let i=0; i<nums.length; i++) {
@@ -41,5 +37,40 @@ var maxSumDivThree2 = function(nums) {
     return map[0]
 };
 
+//from solution 1
+//chaching with relevant information only
+var maxSumDivThree3 = function(nums) {
+    return helper3(nums)
+};
+
+let helper3 = (nums,i=0,res=0,memo={}) => {
+    if (i in memo && res in memo[i]) return memo[i][res]
+    if (memo[i] === undefined) memo[i] = {}
+
+    if (i === nums.length) {
+        if (res === 0) {
+            memo[i][res] = 0
+        } else {
+            memo[i][res] = -Infinity
+        }
+    } else {
+        memo[i][res] = Math.max(helper3(nums,i+1,res,memo),helper3(nums,i+1,(res+nums[i])%3,memo)+nums[i])
+    }
+    return memo[i][res]
+}
+
+//bottom up
+var maxSumDivThree4 = function(nums) {
+    let dp = [0,-Infinity,-Infinity]
+    for (let i=nums.length-1; i>=0; i--) {
+        let dup = []
+        for (let j=2; j>=0; j--) {
+            dup[j] = Math.max(dp[j],dp[(j+nums[i])%3]+nums[i])
+        }
+        dp = dup
+    }
+    return dp[0]
+};
+
 let  nums = [1,2,3,4,4]
-console.log(maxSumDivThree2(nums))
+console.log(maxSumDivThree4(nums))
