@@ -54,5 +54,26 @@ let helper2 = (nums,current,target,k,visited=[],index=0) => {
     }
 }
 
+//much better time complexity
+//time: O(n*(2**n)))
+var canPartitionKSubsets3 = function(nums, k) {
+    let sum = nums.reduce((accu,ele) => accu+ele)
+    if (sum%k !== 0) return false
+    let target = sum/k
+    let upBound = 1<<nums.length
+    let dp = []
+    dp[0] = 0
+
+    for (let mask=0; mask<upBound; mask++) {
+        if (dp[0] === undefined) continue
+        for (let i=0; i<nums.length; i++) {
+            if ((mask&(1<<i))==0 && dp[mask] + nums[i]<=target) {
+                dp[mask|(1<<i)] = (dp[mask]+nums[i])%target
+            }
+        }
+    }
+    return dp[upBound-1] === 0
+};
+
 let  nums = [1,2,3,4], k = 3
 console.log(canPartitionKSubsets2(nums,k))
