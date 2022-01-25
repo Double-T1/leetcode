@@ -1,0 +1,26 @@
+//backtrack + hashmap + prefixSum
+//find the number of targetSum ending at each node
+var pathSum2 = function(root, targetSum) {
+    let hashMap = new Map()
+    hashMap.set(0,1)
+    return dfs2(root,targetSum,hashMap)
+};
+
+let dfs2 = (node,targetSum,hashMap,prev=0) => {
+    if (!node) {
+        return 0
+    } else {   
+        let accu = 0
+        let sum = node.val + prev
+        let diff = sum - targetSum
+
+        if (hashMap.has(diff)) accu += hashMap.get(diff)
+        if (!hashMap.has(sum)) hashMap.set(sum,0)
+        hashMap.set(sum,hashMap.get(sum)+1)
+
+        accu += dfs2(node.left,targetSum,hashMap,sum) + dfs2(node.right,targetSum,hashMap,sum)
+        //clear out the added sum
+        hashMap.set(sum,hashMap.get(sum)-1)
+        return accu
+    }
+}
