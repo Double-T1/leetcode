@@ -1,0 +1,27 @@
+var flipMatchVoyage = function(root, voyage) {
+    let stack = [root]
+    let j = 0
+    let ans = []
+    while (stack.length) {
+        let node = stack.pop()
+        if (node.val !== voyage[j]) {
+            return [-1]
+        } else if (j === voyage.length-1) {
+            if (node.left || node.right || stack.length>0) return [-1]
+        } else {
+            let second = node.left
+            let first = node.right
+
+            if (second && second.val !== voyage[j+1]) {
+                ans.push(node.val)
+                second = node.right
+                first = node.left
+            } 
+
+            if(first) stack.push(first)
+            if(second) stack.push(second)
+            j++
+        }
+    }
+    return ans
+};
