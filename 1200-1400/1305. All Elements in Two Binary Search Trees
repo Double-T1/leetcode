@@ -1,0 +1,31 @@
+var getAllElements = function(root1, root2) {
+    let arr1 = []
+    let arr2 = []
+    inorder(root1,arr1)
+    inorder(root2,arr2)
+    
+    let i1 = 0
+    let i2 = 0
+    let arr = []
+    while (i1<arr1.length || i2<arr2.length) {
+        if (i2===arr2.length || arr1[i1]>arr2[i2]) {
+            arr.push(arr1[i1])
+            i1++
+        } else {
+            arr.push(arr2[i2])
+            i2++
+        }
+    }
+    return arr
+};
+
+let inorder = (node,arr) => {
+    if (!node) return
+
+    inorder(node.left,arr)
+    arr.push(node.val)
+    inorder(node.right,arr)
+    return
+}
+
+
