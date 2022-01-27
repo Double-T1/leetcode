@@ -1,0 +1,31 @@
+var canCross = function(stones) {
+    if (stones[1]-stones[0] !== 1) return false
+    return helper(stones)
+};
+
+let helper = (stones,i=1,k=1,memo={}) => {
+    if (i in memo && k in memo[i]) return memo[i][k]
+    if (!memo[i]) memo[i] = {}
+
+    if (i === stones.length-1) {
+        return true
+    } else {
+        let current = stones[i]
+        let next = i
+        for (let j=-1; j<=1; j++) {
+            if (k+j <= 0) continue
+            while (next<stones.length-1 && current+k+j > stones[next+1]) {
+                next++
+            }
+            if (current+k+j === stones[next+1] && helper(stones,next+1,k+j,memo)) {
+                memo[i][k] = true
+                return true
+            }  
+        }
+        memo[i][k] = false
+    }
+    return memo[i][k]
+}
+
+let  stones = [0,2]
+console.log(canCross(stones))
