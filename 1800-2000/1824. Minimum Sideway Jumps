@@ -1,0 +1,59 @@
+//Runtim Error: too much space required
+//SIGSEV: stack overflow
+var minSideJumps = function(obstacles) {
+    let memo = new Array(obstacles.length)
+        .fill()
+        .map(() => new Array(4))
+    return  helper(obstacles,0,2,memo)
+};
+
+//beware to not be trapped in a loop of jumping back and forth at the same index
+//undefined means not yet visited
+//-1 means visited
+//n>=0 means the minimum required side jump to the end from this state 
+let helper = (obstacles,i=0,currentLane=2,memo) => {
+    if (i in memo && currentLane in memo[i]) return memo[i][currentLane]
+    if (memo[i] === undefined) memo[i] = {}
+
+    if (i === obstacles.length-1) {
+        memo[i][currentLane] = 0
+    } else {
+        memo[i][currentLane] =  Number.MAX_SAFE_INTEGER
+        //side jump or move one step forward
+        //1. one step forward
+        if (obstacles[i+1] !== currentLane) memo[i][currentLane] = Math.min(memo[i][currentLane],helper(obstacles,i+1,currentLane,memo)) 
+        
+        //2. side jump
+        for (let j=1; j<=3; j++) {
+            if (j === currentLane || j === obstacles[i]) continue
+            memo[i][currentLane] = Math.min(memo[i][currentLane],helper(obstacles,i,j,memo)+1)   
+        }
+
+    }
+    return memo[i][currentLane]
+}
+
+//Observation: given that there are at most 1 stone at each lane, we side jump only when we need to
+//ie. there is a stone in the front
+var minSideJumps2 = function(obstacles) {
+    let dp = new Array(4).fill(0)
+    for (let i=obstacles.length-2; i>=0; i--) {
+        let dup = []
+        for (let j=1; j<=3; j++) {
+            dup[j] = Number.MAX_SAFE_INTEGER
+            if (obstacles[i] === j) continue
+            if (obstacles[i+1] !== j) {
+                dup[j] = Math.min(dup[j],dp[j])
+            } else {
+                for (let k=1; k<=3; k++) {
+                    if (k==j || k===obstacles[i] || k===obstacles[i+1]) continue       
+                    dup[j] = Math.min(dup[j],dp[k]+1)
+                }
+            }
+        }
+        dp = dup
+    }
+    return dp[2]
+};
+let obstacles = [0,2,1,0,3,0]
+console.log(minSideJumps2(obstacles))
