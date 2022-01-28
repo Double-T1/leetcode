@@ -1,0 +1,40 @@
+class TrieNode {
+    constructor(val='',end=false) {
+        this.val = val
+        this.end = end
+        this.children = new Map()
+    }
+}
+
+//either sort words, or fun through it twich
+var longestWord = function(words) {
+    let root = new TrieNode()
+    //build first then check
+    for (let word of words) {
+        let node = root
+        for (let i=0; i<word.length; i++) {
+            let char = word[i]
+            if (!node.children.has(char)) {
+                node.children.set(char,new TrieNode(char))
+            } 
+            node = node.children.get(char)
+        }
+        node.end = true
+    }
+
+    
+    //check
+    let ans = ''
+    for (let word of words) {
+        let node = root
+        for (let i=0; i<word.length; i++) {
+            let char = word[i]
+            node = node.children.get(char)
+            if (!node.end) break
+        }
+        if (node.end && (word.length>ans.length || (word.length===ans.length && word<ans))) {
+            ans = word
+        }
+    }
+    return ans
+};
