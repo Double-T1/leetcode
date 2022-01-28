@@ -1,0 +1,48 @@
+//build a suffix tree
+//slow
+class TrieNode {
+    constructor(val='',end=false) {
+        this.val = val
+        this.end = end
+        this.children = new Map()
+    }
+}
+
+var StreamChecker = function(words) {
+    this.root = new TrieNode()
+    this.word = ''
+
+    for (let word of words) {
+        let node = this.root
+        for (let i=word.length-1; i>=0; i--) {
+            let char = word[i]
+            if (!node.children.has(char)) {
+                node.children.set(char,new TrieNode(char))
+            }
+            node = node.children.get(char)
+        }
+        node.end = true
+    }
+};
+
+/** 
+ * @param {character} letter
+ * @return {boolean}
+ */
+StreamChecker.prototype.query = function(letter) {
+    this.word += letter
+    let word = this.word
+    let node = this.root
+    for (let i=word.length-1; i>=0; i--) {
+        let char = word[i]
+        if (!node.children.has(char)) {
+            return false
+        }
+        node = node.children.get(char)
+        if (node.end) return true
+    }
+    return false
+};
+
+let stream = new StreamChecker(['abc','yz'])
+console.log(stream.query('x'),stream.query('y'),stream.query('z'))
