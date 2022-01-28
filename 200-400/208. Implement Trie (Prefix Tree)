@@ -1,0 +1,63 @@
+class TrieNode {
+    constructor(val='',end=false) {
+        this.val= val
+        this.children= new Array(26)
+        this.end = end
+    }
+}
+
+var Trie = function() {
+    this.root = new TrieNode()
+};
+
+/** 
+ * @param {string} word
+ * @return {void}
+ */
+Trie.prototype.insert = function(word) {
+    let node = this.root
+    for (let i =0; i<word.length; i++) {
+        let char = word[i]
+        let code = char.charCodeAt(0) - 'a'.charCodeAt(0)
+        if (node.children[code] === undefined) {
+            node.children[code] = new TrieNode(char)
+        }
+        node = node.children[code]
+    }
+    node.end = true
+    return 
+};
+
+/** 
+ * @param {string} word
+ * @return {boolean}
+ */
+Trie.prototype.search = function(word) {
+    let node = this.root
+    for (let i =0; i<word.length; i++) {
+        let code = word[i].charCodeAt(0) - 'a'.charCodeAt(0)
+        if (node.children[code] === undefined) {
+            return false
+        } else {
+            node = node.children[code]
+        }
+    }
+    return node.end === true 
+};
+
+/** 
+ * @param {string} prefix
+ * @return {boolean}
+ */
+Trie.prototype.startsWith = function(prefix) {
+    let node = this.root
+    for (let i =0; i<prefix.length; i++) {
+        let code = prefix[i].charCodeAt(0) - 'a'.charCodeAt(0)
+        if (node.children[code] === undefined) {
+            return false
+        } else {
+            node = node.children[code]
+        }
+    }
+    return true
+};
