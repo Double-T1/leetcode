@@ -1,0 +1,69 @@
+class TrieNode {
+    constructor(val='',end=false) {
+        this.val = val
+        this.end = end
+        this.children = new Map()
+    }
+}
+
+
+var MagicDictionary = function() {
+    this.root = new TrieNode()
+    this.insert = (word) => {
+        let node = this.root
+        for (let i=0; i<word.length; i++) {
+            let char = word[i]
+            if (!node.children.has(char)) {
+                node.children.set(char,new TrieNode(char))
+            }
+            node = node.children.get(char)
+        }
+        node.end = true 
+        return
+    }
+};
+
+/** 
+ * @param {string[]} dictionary
+ * @return {void}
+ */
+MagicDictionary.prototype.buildDict = function(dictionary) {
+    for (let word of dictionary) {
+        this.insert(word)
+    }
+    return
+};
+
+/** 
+ * @param {string} searchWord
+ * @return {boolean}
+ */
+MagicDictionary.prototype.search = function(searchWord) {
+    let node = this.root
+    
+    let recur = (node,searchWord,oneChange=false,index=0) => {
+        if (index === searchWord.length) {
+            return oneChange === true && node.end === true
+        } else {
+            let char = searchWord[index]
+            if (!node.children.has(char)) {
+                if (oneChange) return false
+                for (let value of node.children.values()) {
+                    if (recur(value,searchWord,true,index+1)) return true
+                }
+                return false
+            } else {
+                let res = recur(node.children.get(char),searchWord,oneChange,index+1)
+                if(!oneChange) {
+                    for (let value of node.children.values()) {
+                        if (value.val === char) continue
+                        res ||= recur(value,searchWord,true,index+1)
+                    }
+                }
+                return res 
+            }
+        }
+    }
+
+    return recur(node,searchWord)
+};
