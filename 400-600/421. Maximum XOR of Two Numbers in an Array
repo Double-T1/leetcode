@@ -1,0 +1,23 @@
+var findMaximumXOR = function(nums) {
+    let max = 0
+
+    for (let i=31; i>=0; i--) {
+        let bitmask = max
+        bitmask |= (1<<i)
+        let set = new Set()
+        for (let num of nums) {
+            let bit = num & bitmask
+            let target = bitmask ^ bit
+            if (set.has(target)) {
+                max |= (1<<i)
+                break
+            } else {
+                set.add(bit)
+            }
+        }
+    }
+    return max
+};
+
+let nums = [14,70,53,83,49,91,36,80,92,51,66,70]
+console.log(findMaximumXOR(nums))
