@@ -1,0 +1,52 @@
+class trieNode {
+    constructor(val='',end=false) {
+        this.val = val
+        this.end = end
+        this.children = new Array(26)
+    }
+}
+
+var WordDictionary = function() {
+    this.head = new trieNode()
+};
+
+WordDictionary.prototype.addWord = function(word) {
+    let node = this.head
+    
+    for (let i=0; i<word.length; i++) {
+        let char = word[i]
+        let code = char.charCodeAt(0) - 'a'.charCodeAt(0)
+        if (node.children[code] === undefined) {
+            node.children[code] = new trieNode(char)
+        }
+        node = node.children[code]
+    }
+    node.end = true
+    return 
+};
+
+WordDictionary.prototype.search = function(word) {
+    let node = this.head
+    
+    let backtrack = (node,word,index=0) => {
+        if (index === word.length) return node.end === true
+
+        let char = word[index]
+        if (char === '.') {
+            for (let j=0; j<26; j++) {
+                if (node.children[j] === undefined) continue
+                if (backtrack(node.children[j],word,index+1)) return true
+            }
+            return false
+        } else {
+            let code = char.charCodeAt(0) - 'a'.charCodeAt(0)
+            if (node.children[code] !== undefined) {
+                return backtrack(node.children[code],word,index+1)
+            } else {
+                return false
+            }
+        }
+    }
+
+    return backtrack(node,word)
+};
