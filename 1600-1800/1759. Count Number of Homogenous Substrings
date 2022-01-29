@@ -1,0 +1,17 @@
+var countHomogenous = function(s) {
+    let total = 0
+    let current = 0
+    let char = ''
+    for (let i=0; i<s.length; i++) {
+        if (s[i] === char) {
+            current++
+            current %= 10**9 +7
+        } else {
+            char = s[i]
+            current = 1
+        }
+        total += current
+        total %= 10**9 +7
+    }
+    return total
+};
