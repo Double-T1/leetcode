@@ -1,0 +1,150 @@
+//time: O(2**n)
+//memoization is almost usless in this case
+//at least asymptotically indifferent
+//out of memory
+var minRefuelStops = function(target, startFuel, stations) { 
+    stations.push([target,0])
+    let fuel = startFuel - stations[0][0]
+    let x = helper(stations,fuel)
+    return x>=Number.MAX_SAFE_INTEGER? -1: x
+};
+
+let helper = (stations,fuel,i=0,memo=[]) => {
+    if (i in memo && fuel in memo[i]) return memo[i][fuel]
+    if (memo[i] === undefined) memo[i] = {}
+
+    if (fuel<0) {
+        return Number.MAX_SAFE_INTEGER
+    } else if (i === stations.length-1) {
+        memo[i][fuel] = 0
+    } else {
+        let dist = stations[i+1][0]-stations[i][0]
+        memo[i][fuel] = Math.min(helper(stations,fuel-dist,i+1,memo),helper(stations,fuel+stations[i][1]-dist,i+1,memo)+1)
+    }
+    return memo[i][fuel]
+}
+
+//reconsidering the goal and state parameters
+//we want to establish overlapping subproblems, and fuel is not it(quite similar to the knapsack problem)
+//hence we consider replacing it with the number of stations we stopped at, represented by j
+//and the imperative becomes the longest distance we could travel with j stations at the i station, dp[i][j]
+
+//DP with a little greedy
+//reverse knapsack
+//O(n**2)
+//O(n)
+var minRefuelStops2 = function(target, startFuel, stations) {
+    if (stations.length===0) {
+        let res = 0
+        if (startFuel<target) res = -1
+        return res
+    }
+    let dp = new Array(stations.length+1).fill(startFuel)
+    let min = stations.length+1
+
+    for (let i=0; i<stations.length; i++) {
+        for (let j=i+1; j>=0; j--) {
+            if (j===0) {
+                dp[j] = startFuel 
+            } else {
+                let dist = stations[i][0]
+                let temp = -1
+                if (dp[j]>=dist) temp = Math.max(temp,dp[j]) 
+                if (dp[j-1]>=dist)  temp = Math.max(temp,dp[j-1]+stations[i][1])
+                dp[j] = temp
+            }
+
+            if (dp[j]>=target) {
+                min = Math.min(min,j)
+            }
+        }
+    }    
+    return min === stations.length+1? -1: min
+};
+
+//can we improve it even more?
+//since there is a greedy element in it, then probably yes
+//time: O(nlogn)
+//space: O(n)
+var minRefuelStops3 = function(target, startFuel, stations) {
+    stations.push([target,0])
+    let maxHeap = []
+    let dist = startFuel
+    let i=0
+    let count = 0
+    while (i<stations.length) {
+        let [pos,fuel] = stations[i]
+        while (maxHeap.length>0 && dist<pos) {
+            dist += popTop(maxHeap) 
+            count++
+        }
+        if (dist<pos) return -1
+
+        insert(maxHeap,fuel)
+        i++
+    }
+    return count
+};
+
+
+let insert = (maxHeap,val) => {
+    maxHeap.push(val)
+    let current = maxHeap.length-1
+    
+    //bubble up
+    while(current>0) {
+        let parent = current%2===1? (current-1)/2 : (current-2)/2
+        
+        if (maxHeap[parent]<val) {
+            swap(maxHeap,parent,current)
+            current = parent
+        } else {
+            break
+        }
+    }
+    return 
+}
+
+let popTop = (maxHeap) => {
+    let ans = maxHeap[0]
+    swap(maxHeap,0,maxHeap.length-1)
+    maxHeap.pop()
+    let current = 0
+    let val = maxHeap[0]
+    while (2*current+1<maxHeap.length) {
+        let index1 = 2*current+1
+        let index2 = 2*current+2
+        let child1 = maxHeap[index1]
+        let child2 = maxHeap[index2]
+
+        if (child2 === undefined) {
+            if (child1>val) {
+                swap(maxHeap,index1,current)
+                current = index1
+            } else {
+                break
+            }
+        } else {
+            if (child1>child2 && child1>val) {
+                swap(maxHeap,index1,current)
+                current = index1
+            } else if (child2>val) {
+                swap(maxHeap,index2,current)
+                current = index2
+            } else {
+                break
+            }
+        }
+    }
+    return ans
+}
+
+let swap = (arr,a,b) => {
+    let temp = arr[a]
+    arr[a] = arr[b]
+    arr[b] = temp
+    return
+}
+
+let target = 100, startFuel = 50, stations = [[60,50]]
+console.log(minRefuelStops3(target,startFuel,stations))
