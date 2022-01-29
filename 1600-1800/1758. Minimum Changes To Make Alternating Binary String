@@ -1,0 +1,10 @@
+var minOperations = function(s) {
+    let len = s.length
+    let temp = '0'
+    let count = 0
+    for (let i=0; i<len; i++) {
+        if (s[i] !== temp) count++
+        temp = temp === '0'? '1' : '0'
+    }
+    return Math.min(count,len-count)
+};
