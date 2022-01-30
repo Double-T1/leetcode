@@ -1,0 +1,69 @@
+//modify the array in place
+
+//O(1) space
+//O(n) time
+//swapping
+//reverse the whole array first, then reverse the relevant subarrays
+var rotate = function(nums, k) {
+    if (nums.length === 1) return nums
+    k %= nums.length
+
+    //reverse the entire array
+    reverse(nums,0,nums.length-1)
+
+    //from 0 to k-1
+    reverse(nums,0,k-1)
+
+    //from k to end
+    reverse(nums,k,nums.length-1)
+
+    return nums
+};
+
+let reverse = (nums,left,right) => {
+    while (left<right) {
+        swap(nums,left,right)
+        left++
+        right--
+    }
+    return
+}
+
+let swap = (arr,a,b) => {
+    let temp = arr[a]
+    arr[a] = arr[b]
+    arr[b] = temp
+    return
+}
+
+//O(n) space
+//time: O(n)
+var rotate2 = function(nums, k) {
+    if (nums.length === 1) return nums
+    k %= nums.length
+    let arr = []
+    let j = nums.length-k
+    for (let i=0; i<j; i++) {
+        arr[i+k] = nums[i]
+    }
+    for (let i=j; i<nums.length; i++) {
+        arr[i-j] = nums[i]
+    }
+    for (let i=0; i<nums.length; i++) {
+        nums[i] = arr[i]
+    }
+    return 
+};
+
+//O(1) space
+//O(k*n) time
+//TLE
+var rotate3 = function(nums, k) {
+    if (nums.length === 1) return nums
+    k %= nums.length
+    for (let i=0; i<k; i++) {
+        nums.unshift(nums.pop())
+    }
+    return nums
+};
+
