@@ -1,0 +1,112 @@
+//brute force
+//time: O(n**2)
+var maxProfit = function(prices) {
+    let max = 0
+    for (let buy=0; buy<prices.length-1; buy++) {
+        for (let sell=buy+1; sell<prices.length; sell++) {
+            max = Math.max(max,prices[sell]-prices[buy])
+        }
+    }
+    return max
+};
+
+//time: O(2*n) => O(n)
+var maxProfit2 = function(prices) {
+    return helper2(prices)
+};
+
+let helper2 = (prices,i=0,isHolding=false,memo=[]) => {
+    if (i === prices.length) return 0
+    if (i in memo && isHolding in memo[i]) return memo[i][isHolding]
+    if (memo[i] === undefined) memo[i] = {}
+    
+    if (isHolding) {
+        //sell or not
+        //if not, then proceed to next index
+        let hold = helper2(prices,i+1,isHolding,memo)
+
+        //if sell, then return
+        let sell = prices[i]
+        memo[i][isHolding] = Math.max(hold,sell)
+    } else {
+        //buy or not 
+        let buy = helper2(prices,i+1,true,memo)-prices[i]
+        let not = helper2(prices,i+1,isHolding,memo)
+        memo[i][isHolding] = Math.max(buy,not)
+    }
+    return memo[i][isHolding]
+}
+
+//bottom-up for solution 2
+//O(n)
+var maxProfit3 = function(prices) {
+    let dp = [0,0] //denote index 0 as holding, 1 as not holding
+    for (let i=prices.length-1; i>=0; i--) {
+        dp[1] = Math.max(dp[0]-prices[i],dp[1])
+        dp[0] = Math.max(dp[0],prices[i])
+    }
+    return dp[1]
+    /**
+     * better practice:
+     * let bought = 0
+     * let sold = 0
+     * for (let i=prices.length-1; i>=0; i--) {
+     *      sold = Math.max(bought-prices[i],sold)
+     *      bought = Math.max(bought,prices[i])
+     * } 
+     * return sold
+     */
+};
+
+//can we do top-down through iteration? 
+//in this case, yes => with a bit greedy? Kadane much?
+//essentially shrinked the space complexity
+var maxProfit4 = function(prices) {
+    let bought = prices[0]
+    let ans = 0
+    for (let i=1; i<prices.length; i++) {
+        if (prices[i]<bought) {
+            bought = prices[i]
+        } else {
+            ans = Math.max(ans,prices[i]-bought)
+        }
+    }
+    return ans
+    /**
+     * for (let i=0; i<prices.length; i++) {
+     *      ans = Math.max(ans,bought-prices[i])
+     *      bought = Math.max(prices[i],bought)
+     * }
+     */
+};
+
+/**
+ * is solution 4 and 3 the same thing? not quite
+ * look at solution 5 for topological difference
+ */
+
+//from solution 4, we could reformulate a transition function
+var maxProfit5 = function(prices) {
+    return helper5(prices)[1]
+}
+
+let helper5 = (prices,i=prices.length-1,memo=[]) => {
+    if (i === 0) {
+        return [prices[0],0] 
+    } else {
+        let [bought,sold] = helper5(prices,i-1,memo)  
+        if (prices[i]<bought) {
+            bought = prices[i]
+        } else {
+            sold = Math.max(sold,prices[i]-bought)
+        }
+        return [bought,sold]
+    }
+}
+
+//there is another way to convert this question into max subarrray sum and utilize Kadane
+
+
+
+let prices = [7,1,5,3,6,4]
+console.log(maxProfit5(prices))
