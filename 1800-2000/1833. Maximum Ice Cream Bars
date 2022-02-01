@@ -1,0 +1,10 @@
+var maxIceCream = function(costs, coins) {
+    costs.sort((a,b) => a-b)
+    let count = 0
+    for (let cost of costs) {
+        coins -= cost
+        if (coins<0) break
+        count++
+    }
+    return count
+};
