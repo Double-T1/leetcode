@@ -1,0 +1,26 @@
+//brute force 
+//O(n**2)
+
+//here O(n)
+var partitionDisjoint = function(nums) {
+    let max = [nums[0]]
+    for (let i=1; i<nums.length; i++) {
+        max[i] = Math.max(nums[i],max[i-1])
+    }
+
+    let min = new Array(nums.length)
+    min[min.length-1] = nums[nums.length-1]
+    for (let i=nums.length-2; i>=0; i--) {
+        min[i] = Math.min(nums[i],min[i+1])
+    }
+
+    //find the last of the left subarray
+    for (let i=0; i<max.length-1; i++) {
+        if (max[i]<=min[i+1]) {
+            return i+1
+        }
+    }
+};
+
+let nums = [1,1,1,0,6,12]
+console.log(partitionDisjoint(nums))
