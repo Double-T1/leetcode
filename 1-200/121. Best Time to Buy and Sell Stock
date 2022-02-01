@@ -61,6 +61,12 @@ var maxProfit3 = function(prices) {
 //can we do top-down through iteration? 
 //in this case, yes => with a bit greedy? Kadane much?
 //essentially shrinked the space complexity
+
+//the idea: what would be the highest profit if we stop at index i? (very similar to how Kadane and LIS works)
+//since profit at i === arr[i]-arr[j], where j<i 
+//so to maximize profit, we record the smallest number out of all possible j
+//hence, our transition function changes since we are considering non-overlapping problems from i=0 to i=end
+//yet, each of these non-overlapping problems share overlapping subproblems, hecnce the introduction of DP 
 var maxProfit4 = function(prices) {
     let bought = prices[0]
     let ans = 0
