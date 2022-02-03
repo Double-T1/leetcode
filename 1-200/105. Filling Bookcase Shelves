@@ -1,0 +1,20 @@
+var minHeightShelves = function(books, shelfWidth) {
+    return helper(books,shelfWidth)
+};
+
+let helper = (books,shelfWidth,i=0,width=0,levelHeight=0,memo=[]) => {
+    if (i in memo && width in memo[i] && levelHeight in memo[i][width]) return memo[i][width][levelHeight]
+    if (memo[i] === undefined) memo[i] = {}
+    if (memo[i][width] === undefined) memo[i][width] = {}
+
+    if (i === books.length) {
+        memo[i][width][levelHeight] = levelHeight
+    } else {
+        let ans = helper(books,shelfWidth,i+1,books[i][0],books[i][1]) + levelHeight 
+        if (width+books[i][0]<=shelfWidth) {
+            ans = Math.min(ans,helper(books,shelfWidth,i+1,width+books[i][0],Math.max(levelHeight,books[i][1])))
+        } 
+        memo[i][width][levelHeight] = ans
+    }
+    return memo[i][width][levelHeight]
+}
