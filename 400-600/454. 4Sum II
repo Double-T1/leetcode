@@ -1,0 +1,26 @@
+var fourSumCount = function(nums1, nums2, nums3, nums4) {
+  let map = new Map()
+  
+  for(let i = 0; i<nums1.length; i++) {
+      for (let j=0; j<nums2.length; j++) {
+        if (!map.has(nums1[i]+nums2[j])) {
+          map.set(nums1[i]+nums2[j], 1)
+        } 
+        else {
+          map.set(nums1[i]+nums2[j], map.get(nums1[i]+nums2[j])+1)
+        }
+      }
+  }
+  
+  let count = 0;
+  for (let k =0; k<nums3.length; k++) {
+      for(let l =0; l<nums4.length; l++) {
+        let target = (nums3[k] + nums4[l])*(-1)
+        if (map.has(target)) {
+          count += map.get(target)
+        }
+      }
+  }
+  
+  return count
+};
