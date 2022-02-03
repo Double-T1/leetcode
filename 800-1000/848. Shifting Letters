@@ -1,0 +1,19 @@
+var shiftingLetters = function(s, shifts) {
+    for (let i=shifts.length-2; i>=0; i--) {
+        shifts[i] += shifts[i+1]
+    }
+    let ans = ''
+    for (let i=0; i<s.length; i++) {
+        ans += shift(s[i],shifts[i])
+    }
+    return ans
+};
+
+let shift = (char,dist) => {
+    dist %= 26
+    let target = (char.charCodeAt(0) - 'a'.charCodeAt(0) + dist) % 26 + 'a'.charCodeAt(0)
+    return String.fromCharCode(target) 
+}
+
+let s = "aaa", shifts = [1,2,3]
+console.log(shiftingLetters(s,shifts))
