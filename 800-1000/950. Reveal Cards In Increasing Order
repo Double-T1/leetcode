@@ -1,0 +1,10 @@
+var deckRevealedIncreasing = function(deck) {
+    deck.sort((a,b) => a-b)
+    let ans = [deck.pop()]
+    while (deck.length) {
+        let val = deck.pop()
+        ans.unshift(ans.pop())
+        ans.unshift(val)
+    }
+    return ans
+};
