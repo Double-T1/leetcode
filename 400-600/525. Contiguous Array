@@ -1,0 +1,24 @@
+var findMaxLength = function(nums) {
+    let map = new Map() //record the smallest index with the corresponding number of zeros
+    map.set(0,-1)
+    let numOfZeros = 0
+    let len = 0
+    for (let i=0; i<nums.length; i++) {
+        let val = nums[i]
+        if (val === 0) {
+            numOfZeros++
+        } else {
+            numOfZeros--
+        }
+
+        if (map.has(numOfZeros)) {
+            len = Math.max(len,i-map.get(numOfZeros))
+        } else {
+            map.set(numOfZeros,i)
+        }
+    }
+    return len
+};
+
+let nums = [0,1,0]
+console.log(findMaxLength(nums))
