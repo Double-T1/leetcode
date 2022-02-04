@@ -1,0 +1,29 @@
+var addOneRow = function(root, val, depth) {
+    let pseudoRoot = new TreeNode()
+    pseudoRoot.left = root
+    let queue = [pseudoRoot]
+    depth--
+    while (depth) {
+        let size = queue.length
+        while (size) {
+            let node = queue.pop()
+            if (node.left) queue.unshift(node.left)
+            if (node.right) queue.unshift(node.right)
+            size--
+        }
+        depth--
+    }
+
+    while (queue.length) {
+        let node = queue.pop()
+        let leftNode = new TreeNode(val)
+        let rightNode = new TreeNode(val)
+
+        if (node.left) leftNode.left = node.left
+        if (node.right) rightNode.right = node.right
+
+        node.left = leftNode
+        node.right = rightNode
+    }
+    return pseudoRoot.left
+};
