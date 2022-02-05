@@ -1,0 +1,42 @@
+var jobScheduling = function(startTime, endTime, profit) {
+    let schedule = []
+    for (let i=0; i<startTime.length; i++) {
+        schedule[i] = [startTime[i],endTime[i],profit[i]]
+    }
+    schedule.sort((a,b) => a[1]-b[1])
+    
+    let map = new Map() //record the largest profix till certain end
+    map.set(0,0)
+    let max = 0
+    //what is the max profit till end of i
+    for (let i=0; i<schedule.length; i++) {
+        let prevIndex = binarySearch(schedule,schedule[i][0])
+        let prevEnd = prevIndex===-1? 0: schedule[prevIndex][1]
+        max = Math.max(max,schedule[i][2] + map.get(prevEnd))
+
+        if (!map.has(schedule[i][1]) || map.get(schedule[i][1])<max) {
+            map.set(schedule[i][1],max)
+        }
+    }
+    return max 
+};
+
+//find the latest ending time that is smaller than or equal to the current starting time
+let binarySearch = (schedule,start) => {
+    let left = -1
+    let right = schedule.length-1
+    while (left<right) {
+        let mid = left + Math.ceil((right-left)/2)
+        if (schedule[mid][1]<=start) {
+            left = mid
+        } else {
+            right = mid-1
+        }
+    }
+    return right
+}
+
+
+
+let  startTime = [1,2,3,3], endTime = [3,4,5,6], profit = [50,10,40,70]
+console.log(jobScheduling(startTime,endTime,profit))
