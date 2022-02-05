@@ -1,0 +1,47 @@
+//dp brute force
+//time: O(n**2)
+var twoEggDrop = function(n) {
+    return helper(n)
+};
+
+let helper = (n,eggs=2,memo=[]) => {
+    if (eggs === 1 || n<=1) return n
+    if (n in memo) return memo[n]
+
+    let ans = Number.MAX_SAFE_INTEGER
+    for (let i=1; i<=n; i++) {
+        //broke and not broke
+        ans = Math.min(ans,Math.max(helper(i-1,1,memo),helper(n-i,2,memo))+1)
+    }
+    memo[n] = ans
+    return ans
+}
+
+//bottom-up
+var twoEggDrop2 = function(n) {
+    let dp = [0]
+    for (let r=1; r<=n; r++) {
+        dp[r] = Number.MAX_SAFE_INTEGER
+        for (let s=1; s<=r; s++) {
+            dp[r] = Math.min(dp[r],Math.max(s-1,dp[r-s])+1)
+        }
+    }
+    return dp[n]
+};
+
+//brute force
+//much faster
+//not really brute force anymore, a pattern/heuristic is imposed
+var twoEggDrop3 = function(n) {
+    let m = 0
+    let scope = m
+    while (scope<n) {
+        m++
+        scope += m
+    }
+    return m
+};
+
+
+
+console.log(twoEggDrop3(100))
