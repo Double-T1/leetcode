@@ -1,0 +1,66 @@
+//TLE
+//time: O(k*n*n)
+var superEggDrop = function(k, n) {
+    return helper(k,n)
+};
+
+let helper = (k,n,memo=[]) => {
+    if (k === 1 || n<=1) return n
+    if (k in memo && n in memo[k]) return memo[k][n]
+    if (memo[k] === undefined) memo[k] = []
+
+    let ans = Number.MAX_SAFE_INTEGER
+    for (let i=1; i<=n; i++) {
+        //break or not break
+        ans = Math.min(ans,Math.max(helper(k-1,i-1,memo),helper(k,n-i,memo))+1)
+    }
+    memo[k][n] = ans
+    return ans
+}
+
+//bottom-up
+//space-optimized
+//space: O(n)
+var superEggDrop2 = function(k, n) {
+    let prevK = []
+    for (let eggs=1; eggs<=k; eggs++) {
+        let dp = []
+        for (let floors=0; floors<=n; floors++) {
+            dp[floors] = Number.MAX_SAFE_INTEGER
+            if (eggs === 1 || floors<=1) {
+                dp[floors] = floors
+                continue
+            }
+            for (let i=1; i<=floors; i++) {
+                dp[floors] = Math.min(dp[floors],Math.max(prevK[i-1],dp[floors-i])+1)
+            }
+        }
+        prevK = dp
+    }
+    return prevK[n]
+};
+
+//with k eggs?
+//x(k,m) = 1 + x(k-1,m) + x(k-1,m-1) 
+//time: O(k*n)
+//space: O(k)
+var superEggDrop3 = function(k, n) {
+    let dp = new Array(k+1).fill(0)
+    let m = 0
+    while (dp[k]<n) {
+        m++
+        for (let j=k; j>=1; j--) {
+            if (j === 1) {
+                dp[j] = m 
+            } else {
+                dp[j] = 1 + dp[j] + dp[j-1]
+            }
+        }        
+    }
+    return m
+};
+
+
+
+let k=3,n=14
+console.log(superEggDrop3(k,n))
