@@ -1,0 +1,28 @@
+//brute force
+//O(n**2)
+var getSumAbsoluteDifferences = function(nums) {
+    let ans = []
+    for (let i=0; i<nums.length; i++) {
+        ans[i] = 0
+        for (let j=0; j<nums.length; j++) {
+            ans[i] += Math.abs(nums[i]-nums[j]) 
+        }
+    }
+    return ans
+};
+
+//time: O(n)
+var getSumAbsoluteDifferences2 = function(nums) {
+    let ans = [0]
+    for (let i=1; i<nums.length; i++) {
+        ans[0] += Math.abs(nums[0] - nums[i])
+    }
+
+    for (let i=1; i<nums.length; i++) {
+        let diff = nums[i] - nums[i-1]
+        //plus the amount of numbers that is smaller than it
+        //minus the amount of number 
+        ans[i] = ans[i-1] + diff*i - diff*(nums.length-i) 
+    }
+    return ans
+};
