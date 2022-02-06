@@ -1,0 +1,49 @@
+//create artificial base cases
+//1. never go into the negative positions
+//2. position and speed never get pass target*2
+//3. never revisit the same spot with the same speed
+//we can prove all of the above correct
+
+//bfs
+var racecar = function(target) {
+    //from 0 to target
+    let speedQ = [1]
+    let posQ = [0]
+    let visited = []
+    visited[toKey(0,1)] = true
+    visited[toKey(0,-1)] = true
+    let steps = 0
+    while (posQ.length) {
+        let size=posQ.length
+        steps++
+        while (size) {
+            let s = speedQ.pop()
+            let p = posQ.pop()
+            
+            //accelerate
+            let newP = p + s
+            let newS = s*2
+            if (newP === target) return steps
+            if (newS<2*target && newP<2*target && newP>0) {
+                posQ.unshift(newP)
+                speedQ.unshift(newS)
+            }
+            
+            //turn direction
+            newS = s>0? -1: 1
+            key = toKey(p,newS)
+            if (!visited[key]) {
+                visited[key] = true
+                posQ.unshift(p)
+                speedQ.unshift(newS)
+            }
+            size--
+        }
+    } 
+
+};
+
+let toKey = (pos,speed) => {
+    return (pos<<2)|(speed+1)
+}
+
