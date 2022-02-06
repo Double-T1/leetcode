@@ -1,0 +1,44 @@
+//straight forward
+//FATAL ERROR: AlignedAlloc Allocation failed - process out of memory
+//time: O(n*(2**n))
+//space: O(2**n)
+var xorGame = function(nums) {
+    let xor = nums[0]
+    for (let i=1; i<nums.length; i++) {
+        xor ^= nums[i]
+    }
+    let memo = []
+    helper(nums,xor,0,memo)
+    return memo
+};
+
+let helper = (nums,xor,bitmask=0,memo) => {
+    if (bitmask in memo) return memo[bitmask]
+
+    if (xor === 0) {
+        memo[bitmask] = true
+    } else {
+        for (let i=0; i<nums.length; i++) {
+            if ((bitmask&(1<<i))===0) {
+                if (!helper(nums,xor^nums[i],bitmask|(1<<i),memo)) {
+                    memo[bitmask] = true
+                    return true
+                }
+            }
+        }
+        memo[bitmask] = false
+    }
+    return memo[bitmask]
+}
+
+//key observation
+//Math proof
+var xorGame2 = function(nums) {
+    let xor = nums.reduce((accu,ele) => accu^ele)
+    return xor%2 === 0
+};
+
+
+
+let nums = [0,0,0,2,2,0,2,1,2,0,0,0,2,0,2,1,0,0,2,2,1,0,2,1,1,2,2,0,0,2,1,0,0,2,1,1,0,2,2,1,0,0,0,0,1,2,1,2,1,0]
+console.log(xorGame2(nums))
