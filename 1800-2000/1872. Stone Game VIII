@@ -1,0 +1,57 @@
+//TLE
+//time: O(n**2)
+var stoneGameVIII = function(stones) {
+    return helper(stones)
+};
+
+let helper = (stones,left=stones[0],i=0,memo=[]) => {
+    if (i>=stones.length-1) return 0
+    if (i in memo) return memo[i]
+
+    let ans = Number.MIN_SAFE_INTEGER
+    let sum = left
+    for (let x=i+1; x<stones.length; x++) {
+        sum += stones[x]
+        ans = Math.max(ans,sum - helper(stones,sum,x,memo))
+    }
+    memo[i] = ans
+    return memo[i]
+}
+
+//bottom-up
+var stoneGameVIII2 = function(stones) {
+    for (let i=1; i<stones.length; i++) {
+        stones[i] += stones[i-1]
+    }
+
+    let dp = []
+    dp[stones.length-1] = 0
+    for (let i=stones.length-2; i>=0; i--) {
+        dp[i] = Number.MIN_SAFE_INTEGER
+        for (let x=i+1; x<stones.length; x++) {
+            dp[i] = Math.max(dp[i],stones[x] - dp[x])
+        } 
+    }
+    return dp[0]
+};
+
+//we can make it into O(n)
+//see that for each x, the corresponding value is stones[x] - dp[x] 
+//thus we can record the largest stones[j] - dp[j] till 
+var stoneGameVIII3 = function(stones) {
+    for (let i=1; i<stones.length; i++) {
+        stones[i] += stones[i-1]
+    }
+
+    let current = 0
+    let prev = stones[stones.length-1] 
+    for (let i=stones.length-2; i>=0; i--) {
+        current = prev
+        prev = Math.max(prev,stones[i]-current)
+    }
+    return current
+};
+
+
+let stones = [-1,2,-3,4,-5]
+console.log(stoneGameVIII3(stones))
