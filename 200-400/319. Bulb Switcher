@@ -1,0 +1,25 @@
+//simulation
+//time: O(logn)
+var bulbSwitch = function(n) {
+    let perfect = 0
+    while ((perfect+1)**2<=n) {
+        perfect++
+    }
+    return perfect
+};
+
+//binarySearch
+//find the biggest number with its square smaller than or equal to n
+var bulbSwitch2 = function(n) {
+    let left = 0
+    let right = Number.MAX_SAFE_INTEGER
+    while (left<right) {
+        let mid = left + Math.ceil((right-left)/2)
+        if (mid**2<=n) {
+            left = mid 
+        } else {
+            right = mid-1
+        }
+    }
+    return right
+};
