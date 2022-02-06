@@ -1,0 +1,69 @@
+//worst would be n to the power of n runtime
+
+//brute force simulation
+//generate all permutations
+//time: O(n!)
+var countArrangement = function(n) {
+    let arr = new Array(n)
+    //think of it as 1-indexed
+    for (let i=0; i<arr.length; i++) {
+        arr[i] = i+1
+    }
+    return helper(arr)
+};
+
+let helper = (arr,i=0) => {
+    if (i === arr.length-1) {
+        if (isValid(i+1,arr[i])) return 1
+        return 0
+    } else {
+        let sum = 0
+        for (let index=i; index<arr.length; index++) {
+            if (isValid(i+1,arr[index])) {
+                swap(arr,index,i)
+                sum += helper(arr,i+1)
+                swap(arr,index,i)
+            }
+        }
+        return sum
+    }
+}
+
+let isValid = (a,b) => {
+    return a%b === 0 || b%a === 0
+}
+
+let swap = (arr,a,b) => {
+    let temp = arr[a]
+    arr[a] = arr[b]
+    arr[b] = temp
+    return
+}
+
+//time optimized
+//O(n*(2^n))
+var countArrangement2 = function(n) {
+    return helper2(n)
+};
+
+//whether to traverse form 1 to n or from n to 1 actually matters a lot
+//if we go from j=n to j>=1, the runtime could be immensely reduced
+//since the larger slots has lesser candidates, so filtering them out first could reduce the unsuccessful branching
+let helper2 = (n,j=n,state=0,memo=[]) => {
+    if (j === 0) return 1
+    if (state in memo) return memo[state]
+    
+    let sum = 0
+    //whether to traverse form 1 to n or from n to 1 matters here as well
+    //if we go from i=n to i>=1, the runtime could be reduced with the same reason above
+    for (let i=1,bit; i<=n; i++) {
+        bit = 1<<i
+        if ((state&bit)>0) continue
+        if (j%i===0 || i%j===0) {
+            sum += helper2(n,j-1,state|bit,memo)
+        }
+    }
+    memo[state] = sum
+    return sum
+}
+console.log(countArrangement2(6))
