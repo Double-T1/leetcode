@@ -1,0 +1,24 @@
+var removeDuplicates = function(nums) {
+    let fast = 0
+    let slow = 0 
+    let valueBeforeSlow = nums[0]
+    let count = 0
+
+    while(fast<nums.length) {
+        nums[slow] = nums[fast]
+        if (valueBeforeSlow === nums[slow]) {
+            count++
+        } else {
+            count =1
+        }
+
+        if (count>2) {
+            fast++
+        } else {
+            valueBeforeSlow = nums[slow]
+            fast++
+            slow++
+        }
+    }
+    return slow
+}
