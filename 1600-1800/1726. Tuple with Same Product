@@ -1,0 +1,20 @@
+//find a*b = c*d then times 8 for each such combination
+//O(n**2)
+var tupleSameProduct = function(nums) {
+    let map = new Map()
+    let ans = 0
+    //all elements are distinct !!!
+    for (let i=0; i<nums.length; i++) {
+        for (let j=i+1; j<nums.length; j++) {
+            let p = nums[i]*nums[j]
+            if (map.has(p)) {
+                let x = map.get(p)
+                ans += x*8
+                map.set(p,x+1)
+            } else {
+                map.set(p,1)
+            }
+        }
+    }
+    return ans
+};
