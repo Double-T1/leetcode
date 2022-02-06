@@ -1,0 +1,20 @@
+//straight forward
+//he decided to minimize the score's difference. 
+//Alice's goal is to maximize the difference in the score.
+//return the difference in Alice and Bob's score if they both play optimally.
+var stoneGameVII = function(stones) {
+    let sum = stones.reduce((accu,ele) => accu+ele)
+    return helper(sum,stones)
+};
+
+let helper = (score,stones,i=0,j=stones.length-1,memo=[]) => {
+    if (i===j) return 0
+    if (i in memo && j in memo[i]) return memo[i][j]
+    if (memo[i] === undefined) memo[i] = []
+     //remove left stone or right stone
+    memo[i][j] = Math.max(score-stones[i] - helper(score-stones[i],stones,i+1,j,memo), score-stones[j] - helper(score-stones[j],stones,i,j-1,memo))
+    return memo[i][j]
+}
+
+let stones = [5,3,1,4,2]
+console.log(stoneGameVII(stones))
