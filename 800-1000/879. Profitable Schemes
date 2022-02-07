@@ -1,0 +1,94 @@
+//0/1 knapsack
+//goal: find the number of ways to accrue profit greater than or equal to minProfit
+//s.t the number of participants <=  n
+//easy way would be to use bitmask and try every combination: O(n*2^n) 
+var profitableSchemes = function(n, minProfit, group, profit) {
+    return helper(group,profit,n,minProfit)
+};
+
+//minProft has to be <= 0
+//n has to be >= 0
+let helper = (group,profit,headCount,currentP,state=0,i=0,memo=[]) => {
+    if (i === group.length) {
+        if (currentP<=0) return 1
+        return 0
+    }
+
+    if (i in memo && state in memo[i]) return memo[i][state]
+    if (memo[i] === undefined) memo[i] = []
+    let sum = helper(group,profit,headCount,currentP,state,i+1,memo)%(10**9+7) //not include current
+    if (headCount>=group[i]) sum += helper(group,profit,headCount-group[i],currentP-profit[i],state|(1<<i),i+1,memo)%(10**9+7)
+    memo[i][state] = sum%(10**9+7)
+    return memo[i][state]
+}
+
+//O(N*maximumProfit*headcount)
+//N being the length of group
+var profitableSchemes2 = function(n, minProfit, group, profit) {
+    let memo =[]
+    return helper2_2(group,profit,n,0,0,memo,minProfit)
+};
+
+//minProft has to be <= 0
+//n has to be >= 0
+let helper2 = (group,profit,headCount,currentP,i=0,memo=[]) => {
+    if (i === group.length) {
+        if (currentP<=0) return 1
+        return 0
+    }
+
+    if (i in memo && headCount in memo[i] && currentP in memo[i][headCount]) return memo[i][headCount][currentP]
+    if (memo[i] === undefined) memo[i] = {}
+    if (memo[i][headCount] === undefined) memo[i][headCount] = {}
+    let sum = helper2(group,profit,headCount,currentP,i+1,memo)%(10**9+7) //not include current
+    if (headCount>=group[i]) sum += helper2(group,profit,headCount-group[i],currentP-profit[i],i+1,memo)%(10**9+7)
+    memo[i][headCount][currentP] = sum%(10**9+7)
+    return memo[i][headCount][currentP]
+}
+
+let helper2_2 = (group,profit,headCount,currentP,i=0,memo=[],minProfit) => {
+    if (i === group.length) {
+        if (currentP>=minProfit) return 1
+        return 0
+    }
+
+    if (i in memo && headCount in memo[i] && currentP in memo[i][headCount]) return memo[i][headCount][currentP]
+    if (memo[i] === undefined) memo[i] = {}
+    if (memo[i][headCount] === undefined) memo[i][headCount] = {}
+    let sum = helper2_2(group,profit,headCount,currentP,i+1,memo,minProfit)%(10**9+7) //not include current
+    if (headCount>=group[i]) sum += helper2_2(group,profit,headCount-group[i],currentP+profit[i],i+1,memo,minProfit)%(10**9+7)
+    memo[i][headCount][currentP] = sum%(10**9+7)
+    return memo[i][headCount][currentP]
+}
+
+
+//from solution 2
+//to reduce space complexity
+var profitableSchemes3 = function(n, minProfit, group, profit) {
+    let sum = profit.reduce((accu,ele) => accu+ele)
+
+    let dp = new Array(n+1)
+        .fill()
+        .map(() => new Array(sum+1))
+    for (let i=group.length; i>=0; i--) {
+        for (let h=n; h>=0; h--) {
+            for (let p=0; p<=sum; p++) {
+                if (i === group.length) {
+                    if (p>=minProfit) {
+                        dp[h][p] = 1
+                    } else {
+                        dp[h][p] = 0
+                    }
+                } else {
+                    if (h>=group[i] && p+profit[i]<=sum) dp[h][p] = (dp[h][p] + dp[h-group[i]][p+profit[i]])%(10**9+7)
+                }
+            }
+        }
+    }
+    
+    return dp[n][0]
+};
+
+
+let n = 10, minProfit = 5, group = [2,3,5], profit = [6,7,8]
+console.log(profitableSchemes3(n,minProfit,group,profit))
