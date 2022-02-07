@@ -1,0 +1,39 @@
+//a ds that insert O(1), delete O(1), count the amount of distinct charater O(1)
+//hashtable approach
+//we could cut down the space with ease
+var numSplits = function(s) {
+    let map = new Map()
+    let table = []
+    let total = 0
+    for (let char of s) {
+        if (!map.has(char)) {
+            total++
+            map.set(char,0)
+        } 
+        let x = map.get(char)
+        map.set(char,x+1)
+
+        table.push(total)
+    }
+    
+    let table2 = []
+    let map2 = new Map()
+    total = 0
+    for (let i=s.length-1; i>=0; i--) {
+        let char = s[i]
+        if (!map2.has(char)) {
+            total++
+            map2.set(char,0)
+        } 
+        let x = map2.get(char)
+        map2.set(char,x+1)
+
+        table2[i] = total
+    }
+
+    let count = 0
+    for (let i=0; i<s.length-1; i++) {
+        if (table[i] === table2[i+1]) count++
+    }
+    return count
+};
