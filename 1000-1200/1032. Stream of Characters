@@ -44,5 +44,52 @@ StreamChecker.prototype.query = function(letter) {
     return false
 };
 
+
+//much faster, since we use array instead of map to indicate children
+//also, we record the max Depth of the trie tree, thus avoiding unnecessary search
+class TrieNode {
+    constructor() {
+        this.children = []
+        this.end = false
+    }
+}
+
+var StreamChecker = function(words) {
+    this.root = new TrieNode()
+    this.depth = 0
+    this.word = ''
+    
+    for (let word of words) {
+        let node = this.root
+        for (let i=word.length-1; i>=0; i--) {
+            let char = word[i]
+            let k = char.charCodeAt(0) - 'a'.charCodeAt(0)
+            if (node.children[k] === undefined) {
+                node.children[k] = new TrieNode()
+            }
+            node = node.children[k]
+        }
+        node.end = true
+        this.depth = Math.max(this.depth,word.length)
+    }
+};
+
+
+StreamChecker.prototype.query = function(letter) {
+    this.word = letter + this.word
+    let len = Math.min(this.word.length,this.depth)
+    let word = this.word
+    let node = this.root
+    
+    for (let i=0; i<len; i++) {
+        let char = word[i]
+        let k = char.charCodeAt(0) - 'a'.charCodeAt(0)
+        if (node.children[k] === undefined) return false
+        node = node.children[k]
+        if (node.end) return true
+    }
+    return false
+};
+
 let stream = new StreamChecker(['abc','yz'])
 console.log(stream.query('x'),stream.query('y'),stream.query('z'))
