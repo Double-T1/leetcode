@@ -1,0 +1,29 @@
+var minimumDistance = function(word) {
+    return helper(word)
+};
+
+let helper = (word,i=0,f1=toKey(word[0]),f2=26,memo=[]) => {
+    if (i === word.length-1) return 0
+    
+    if (i in memo && f1 in memo[i] && f2 in memo[i][f1]) return memo[i][f1][f2]
+    if (memo[i] === undefined) memo[i] = []
+    if (memo[i][f1] === undefined) memo[i][f1] = []
+
+    let newkey = toKey(word[i+1])
+    memo[i][f1][f2] = Math.min(helper(word,i+1,newkey,f2,memo)+dist(f1,newkey),helper(word,i+1,f1,newkey,memo)+dist(f2,newkey))
+    return memo[i][f1][f2]
+}
+
+let toKey = (char) => {
+    return char.charCodeAt(0) - 'A'.charCodeAt(0)
+}
+
+let dist = (a,b) => {
+    if (a === 26 || b === 26) return 0
+    let jDiff = a%6 - b%6
+    let iDiff = Math.floor(a/6) - Math.floor(b/6) 
+    return Math.abs(jDiff) + Math.abs(iDiff)
+} 
+
+let word = "HAPPY"
+console.log(minimumDistance(word))
