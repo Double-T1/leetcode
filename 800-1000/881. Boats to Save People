@@ -1,0 +1,56 @@
+//time: O(nlogn)
+//be careful of the edge cases
+var numRescueBoats = function(people, limit) {
+    people.sort((a,b) => a-b)
+    
+    //find the biggest number that is smaller than or equal to limit/2
+    //which is effectively, the end of the left hand side (where all elements are smaller than or equal to limit/2)
+    let pointer1 = binarySearch(people,Math.floor(limit/2))
+    //edge cases
+    //1. if pointer1 === -1
+    //2. if pointer1 === people.length-1 => pointer2 === people.length
+    //we deal with them both below
+
+    //start from the smallest number that is greater than limit/2
+    let pointer2 = pointer1+1
+    let count = 0
+    let smallerLeft = pointer1+1
+    while (true) {
+        if (pointer2===people.length) {
+            count += Math.ceil(smallerLeft/2)
+            break
+        }
+
+        let index = binarySearch(people,limit-people[pointer2],pointer1)
+        if (index === -1) {
+            count += Math.ceil(smallerLeft/2) + people.length-pointer2
+            break
+        } else {
+            count += 1 
+            smallerLeft-- //count all the unpaired smaller numbers
+
+            pointer1 = index-1 //what if pointer1 becomes -1
+            pointer2++ //what if pointer2 exceeds the array
+            //what if the above two happened at the same time? 
+        }
+    }
+
+    return count
+};
+
+//find the greatest number that is smaller than or equal to target
+let binarySearch = (arr,target,right=arr.length-1,left=-1) => {
+    while (left<right) {
+        let mid = left + Math.ceil((right-left)/2)
+        if (arr[mid]<=target) {
+            left = mid
+        } else {
+            right = mid-1
+        }
+    }
+    return right
+}
+
+
+let  people =[2,5], limit = 7
+console.log(numRescueBoats(people,limit))
