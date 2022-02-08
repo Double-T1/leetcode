@@ -1,0 +1,48 @@
+//all have a label of 1-9
+var pathsWithMaxScore = function(board) {
+    let mod = 10**9+7
+    let dp = new Array(board.length)
+        .fill()
+        .map(() => new Array(board.length).fill(-1))
+    let last = dp.length-1
+    dp[last][last] = 0
+    let path = new Array(board.length)
+        .fill()
+        .map(() => new Array(board.length).fill(0))
+    path[last][last] = 1
+
+    //for the last row
+    //at least 2 rows
+    for (let j=last-1; j>=0; j--) {
+        if (board[last][j] === 'X' || dp[last][j+1] === -1) continue
+        dp[last][j] = dp[last][j+1] + parseInt(board[last][j])
+        path[last][j] = 1
+    }
+
+    for (let i=last-1; i>=0; i--) {
+        for (let j=last; j>=0; j--) {
+            let char = board[i][j]
+            if (char === 'E') char = '0'
+            if (char === 'X') continue
+            if (j === last) {
+                if (dp[i+1][j]>=0) {
+                    dp[i][j] = dp[i+1][j] + parseInt(char)
+                    path[i][j] += path[i+1][j]
+                } 
+            } else {
+                dp[i][j] = Math.max(dp[i+1][j+1],dp[i+1][j],dp[i][j+1])
+                if (dp[i][j] === -1) continue
+                if (dp[i][j] === dp[i+1][j+1]) path[i][j] += path[i+1][j+1]
+                if (dp[i][j] === dp[i+1][j]) path[i][j] += path[i+1][j]
+                if (dp[i][j] === dp[i][j+1]) path[i][j] += path[i][j+1]
+                dp[i][j] += parseInt(char)
+                path[i][j] %= mod
+            }
+        }
+    }
+    last = dp[0][0] === -1? 0 : dp[0][0]
+    return [last,path[0][0]]
+};
+
+let board = ["E11","XXX","11S"]
+console.log(pathsWithMaxScore(board))
