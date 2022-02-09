@@ -1,0 +1,61 @@
+//time: O(n**3)
+var minCut = function(s) {
+    return helper2(s)-1
+};
+
+//not finding cuts, but finding the number of valid substrings here
+let helper2 = (s,i=0,memo=[]) => {
+    if (i === s.length) return 0
+    if (i in memo) return memo[i]
+    let cut = Number.MAX_SAFE_INTEGER
+    for (let j=i; j<s.length; j++) {
+        if (!isPalindrome(s,i,j)) continue
+        cut = Math.min(cut,helper2(s,j+1,memo)+1)
+    }
+    memo[i] = cut
+    return cut
+}
+
+let isPalindrome = (s,i,j) => {
+    let x = i+j
+    let left = Math.floor(x/2)
+    let right = left+1
+    if (x%2 === 0) right = left
+    while (left>=i && right<=j) {
+        if (s[left] !== s[right]) return false
+        left--
+        right++
+    }
+    return true
+}
+
+//bottom up
+var minCut2 = function(s) {
+    let dp = new Array(s.length)
+    dp.push(0)
+    for (let i=s.length-1; i>=0; i--) {
+        dp[i] = Number.MAX_SAFE_INTEGER
+        for (let j=s.length-1; j>=i; j--) {
+            if (!isPalindrome2(s,i,j)) continue
+            dp[i] = Math.min(dp[i],dp[j+1]+1)
+        }
+    }
+    return dp[0]-1
+};
+
+let isPalindrome2 = (s,i,j) => {
+    let x = i+j
+    let left = Math.floor(x/2)
+    let right = left+1
+    if (x%2 === 0) right = left
+    while (left>=i && right<=j) {
+        if (s[left] !== s[right]) return false
+        left--
+        right++
+    }
+    return true
+}
+
+
+let s = "aab"
+console.log(minCut2(s))
