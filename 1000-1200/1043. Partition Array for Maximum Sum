@@ -1,0 +1,74 @@
+//brute force
+//time: O(n*k) 
+var maxSumAfterPartitioning = function(arr, k) {
+    return helper(arr,k)
+};
+
+let helper = (arr,k,len=1,i=0,largestNum=arr[0],memo=[]) => {
+    if (i in memo && len in memo[i]) return memo[i][len]
+    if (memo[i] === undefined) memo[i] = []
+
+    if (i === arr.length-1) {
+        memo[i][len] = largestNum*len
+    } else {
+        //cut it off here or not
+        //cut off here
+        let ans = helper(arr,k,1,i+1,arr[i+1],memo) + largestNum*len
+
+        //not to cut here only when subarray length <= k
+        if (len<k) ans = Math.max(ans,helper(arr,k,len+1,i+1,Math.max(largestNum,arr[i+1]),memo))
+        
+        memo[i][len] = ans
+    }
+    return memo[i][len]
+}
+
+//bottom-up
+//topological order constraint: have to store at least two stage of data
+var maxSumAfterPartitioning2 = function(arr, k) {
+    let dp = new Array(arr.length)
+        .fill()
+        .map(() => new Array(k+1)) // never go to 0
+    let len = arr.length
+    let largestNum = arr[len-1]
+    for (let j=1; j<=k; j++) {
+        dp[len-1][j] = largestNum*j
+        largestNum = Math.max(largestNum,arr[len-1-j])
+    }   
+    
+    for (let i=arr.length-2; i>=0; i--) {
+        largestNum = arr[i]
+        for (let j=1; j<=k; j++) {
+            dp[i][j] = dp[i+1][1] + largestNum*j
+            if (j<k) dp[i][j] = Math.max(dp[i][j],dp[i+1][j+1])
+            largestNum = Math.max(largestNum,arr[i-j])
+        }
+    }
+    return dp[0][1]
+};
+
+//space optimized => O(k)
+var maxSumAfterPartitioning3 = function(arr, k) {
+    let dp =new Array(k+1) // never go to 0
+    let len = arr.length
+    let largestNum = arr[len-1]
+    for (let j=1; j<=k; j++) {
+        dp[j] = largestNum*j
+        largestNum = Math.max(largestNum,arr[len-1-j])
+    }   
+    
+    let dup = new Array(k+1)
+    for (let i=arr.length-2; i>=0; i--) {
+        largestNum = arr[i]
+        for (let j=1; j<=k; j++) {
+            dup[j] = dp[1] + largestNum*j
+            if (j<k) dup[j] = Math.max(dup[j],dp[j+1])
+            largestNum = Math.max(largestNum,arr[i-j])
+        }
+        dp = dup
+        dup = []
+    }
+    return dp[1]
+};
+let arr = [1,4,1,5,7,3,6,1,9,9,3], k = 4
+console.log(maxSumAfterPartitioning3(arr,k))
