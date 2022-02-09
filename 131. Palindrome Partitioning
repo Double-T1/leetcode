@@ -1,3 +1,30 @@
+//fastest way possible without revalidate a palindrome
+var partition = function(s) {
+    let arr = []
+    backtrack2(arr,s)
+    return arr
+};
+
+//the topological order of palindrome checking and traversing the string are at odds
+let backtrack2 = (supArr,s,i=0,subArr=[],valid=[]) => {
+    if (i === s.length) {
+        supArr.push([...subArr])
+        return
+    } else {
+        //for each i, we look forward j indices
+        for (let j=i; j<s.length; j++) {
+            if (s[i] === s[j] && (i+1>j-1 || valid[i+1][j-1])) {
+                if (valid[i] === undefined) valid[i] = []
+                valid[i][j] = true
+                subArr.push(s.slice(i,j+1))
+                backtrack2(supArr,s,j+1,subArr,valid)
+                subArr.pop()
+            }
+        }
+        return
+    }
+}
+
 var partition = function(s) {
     let ans = []
     backtracking(ans,s)
