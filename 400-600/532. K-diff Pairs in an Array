@@ -1,0 +1,26 @@
+var findPairs = function(nums, k) {
+    nums.sort((a,b) => a-b) //small to large
+    let count = 0
+    let len = nums.length
+    for (let i=0; i<len; i++) {
+        if (i>0  && nums[i] === nums[i-1]) continue
+        //can be reduce by binary search
+        let left = i+1
+        let right = len
+        while (left < right) {
+            let mid = left + Math.floor((right-left)/2)
+            if (nums[mid]-nums[i] === k) {
+                count++ 
+                break
+            }
+
+            if (nums[mid]-nums[i] > k) {
+                right = mid
+            } else {
+                left = mid+1
+            }
+        }
+    }
+    return count
+};
+
