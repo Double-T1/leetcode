@@ -30,6 +30,8 @@ let isPalindrome = (s,i,j) => {
 }
 
 //bottom up
+//time: O(n**3)
+//space: O(n)
 var minCut2 = function(s) {
     let dp = new Array(s.length)
     dp.push(0)
@@ -56,6 +58,51 @@ let isPalindrome2 = (s,i,j) => {
     return true
 }
 
+//time optimized => using the feature of a palindrome
+//time: O(n^2)
+var minCut3 = function(s) {
+    let dp = [] // what is the most cut from index 0 to index i
+    let valid = []
+    for (let i=0; i<s.length; i++) {
+        //edge case of j===i
+        valid[i] = []
+        dp[i] = i
+        for (let j=0; j<=i; j++) {
+            if (s[i] === s[j] && (j+1>i-1 || valid[j+1][i-1])) {
+                valid[j][i] = true
+                let prev = j>0? dp[j-1]+1 : 0
+                dp[i] = Math.min(dp[i],prev)                
+            }
+        }
+    }
+    return dp[s.length-1]
+};
+
+//space optimized => using the feature of a palindrome
+//time: O(n^2)
+//space: O(n)
+var minCut4 = function(s) {
+    let dp = new Array(s.length)
+    //the maximum amount of cut for s[:i]
+    for (let i=0; i<dp.length; i++) {
+        dp[i] = i
+    }
+    
+    for (let i=0; i<dp.length; i++) {
+        //odd length
+        for (let j=0; j<=i && j+i<dp.length && s[i-j] === s[i+j]; j++) {
+            let prev = i-j>0? dp[i-j-1] : -1
+            dp[i+j] = Math.min(prev+1,dp[i+j])
+        }
+
+        //even length
+        for (let j=1; j<=i && j+i-1<dp.length && s[i-j] === s[i+j-1]; j++) {
+            let prev = i-j>0? dp[i-j-1] : -1
+            dp[i+j-1] = Math.min(prev+1,dp[i+j-1])
+        }
+    }
+    return dp[s.length-1]
+};
 
 let s = "aab"
-console.log(minCut2(s))
+console.log(minCut3(s))
