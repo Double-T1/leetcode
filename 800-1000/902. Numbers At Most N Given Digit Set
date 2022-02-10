@@ -1,0 +1,61 @@
+//returns the number of x<=n that is composed exclusively of digit in digits
+var atMostNGivenDigitSet = function(digits, n) {
+    //calculate all possibilities with leading zeros
+    let total = 0
+    let len = digits.length
+    let current = len
+    let num = Math.floor(n/10)
+    while (num>0) {
+        total += current
+        current *= len
+        num = Math.floor(num/10)
+    }
+    return helper(digits,n.toString()) + total
+};
+
+//key observation
+//the digit in digits range from 1-9
+//yet for candidates smaller than n, they may have preceeding zeros
+let helper = (digits,n,i=0,isSmaller=false,memo=[]) => {
+    if (i === n.length) return 1
+    if (i in memo && isSmaller in memo[i]) return memo[i][isSmaller]
+    if (memo[i] === undefined) memo[i] = {}
+
+    //if the previous digit is already smaller
+    if (isSmaller) {
+        memo[i][isSmaller] = digits.length**(n.length-i)
+        return memo[i][isSmaller]
+    } 
+
+    //match the digit, with leading zeros, or is smaller by digits from digit space
+    let digit = n[i]
+    let ans = 0
+    //find if we could match it
+    let x = binarySearch(digits,digit)
+    if (digits[x] === digit) {
+        ans += helper(digits,n,i+1,false,memo)
+        x--
+    } 
+    
+    //try all smaller digit from digit
+    ans += helper(digits,n,i+1,true,memo)*(x+1)
+    memo[i][isSmaller] = ans
+    return ans
+}
+
+//all the compared elements are string here, not the best practice
+//find the largest element that is smaller than or equal to target
+let binarySearch = (arr,target,left=-1,right=arr.length-1) => {
+    while (left<right) {
+        let mid = left + Math.ceil((right-left)/2)
+        if (arr[mid]<=target) {
+            left = mid
+        } else {
+            right = mid-1
+        }
+    }
+    return right
+}
+
+let digits = ["1","3","5","7"], n = 100
+console.log(atMostNGivenDigitSet(digits,n))
