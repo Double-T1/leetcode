@@ -13,7 +13,7 @@ let helper = (num,pos=0,isSmaller=false,memo=[]) => {
     if (memo[pos] === undefined) memo[pos] = {}
 
     if (isSmaller) {
-        memo[pos][isSmaller] = helper(num,pos+1,isSmaller,memo)*10 + (10**(num.length-pos-1))
+        memo[pos][isSmaller] = helper(num,pos+1,isSmaller,memo)*10 + (10**(num.length-pos-1)) //logn for exponential
     } else {
         let current = parseInt(num[pos])
         //go smaller or stay equal
@@ -21,7 +21,7 @@ let helper = (num,pos=0,isSmaller=false,memo=[]) => {
         if (current>=2) smaller += 10**(num.length-pos-1)//gaurantee to cover a 1 
 
         let equal = helper(num,pos+1,false,memo)
-        if (current===1) equal += pos<num.length-1? parseInt(num.slice(pos+1)) + 1 : 1 //this part sucks
+        if (current===1) equal += pos<num.length-1? parseInt(num.slice(pos+1)) + 1 : 1 //this part sucks, logn each for parsing and slicing
         memo[pos][isSmaller] = smaller + equal
     }
     return memo[pos][isSmaller]
@@ -38,7 +38,7 @@ let helper2 = (n,num=n.toString(),pos=0,isSmaller=false,base=10**(num.length-1),
     if (memo[pos] === undefined) memo[pos] = {}
 
     if (isSmaller) {
-        memo[pos][isSmaller] = helper2(n,num,pos+1,isSmaller,base/10,memo)*10 + (10**(num.length-pos-1))
+        memo[pos][isSmaller] = helper2(n,num,pos+1,isSmaller,base/10,memo)*10 + (10**(num.length-pos-1)) 
     } else {
         let current = parseInt(num[pos])
         //go smaller or stay equal
