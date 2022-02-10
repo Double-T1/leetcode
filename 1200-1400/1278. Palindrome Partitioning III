@@ -1,0 +1,37 @@
+//Return the minimal number of characters that you need to change
+
+//decisions to make at each index 
+//1. whether cut off the substring here
+//2. whether to change the character here (inlcude this while checking isPalindrome)
+var palindromePartition = function(s, k) {
+    return helper(s,k)
+};
+
+let helper = (s,k,i=0,memo=[],memo2=[]) => {
+    if (i in memo && k in memo[i]) return memo[i][k]
+    if (memo[i] === undefined) memo[i] = []
+
+    if (k===1) {
+        memo[i][k] = minChange(s,i,s.length-1,memo2)
+    } else {
+        let changes = s.length
+        for (let j=i; j<s.length; j++) {
+            changes = Math.min(changes,minChange(s,i,j,memo2)+helper(s,k-1,j+1,memo,memo2))
+        }
+        memo[i][k] = changes
+    }
+    return memo[i][k]
+}
+
+//return the minimum amount of change to make s[i:j] a palindrome
+let minChange = (s,i,j,memo) => {
+    if (i in memo && j in memo[i]) return memo[i][j]
+    if (memo[i] === undefined) memo[i] = []
+    let ans = i+1>j-1? 0 : minChange(s,i+1,j-1,memo)
+    if(s[i] !== s[j]) ans += 1
+    memo[i][j] = ans
+    return ans
+}
+
+let s = "leetcode", k = 8
+console.log(palindromePartition(s,k))
