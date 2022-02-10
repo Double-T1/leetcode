@@ -1,8 +1,4 @@
-//Return the minimal number of characters that you need to change
-
-//decisions to make at each index 
-//1. whether cut off the substring here
-//2. whether to change the character here (inlcude this while checking isPalindrome)
+//time: 
 var palindromePartition = function(s, k) {
     return helper(s,k)
 };
@@ -11,7 +7,9 @@ let helper = (s,k,i=0,memo=[],memo2=[]) => {
     if (i in memo && k in memo[i]) return memo[i][k]
     if (memo[i] === undefined) memo[i] = []
 
-    if (k===1) {
+    if (i === s.length) {
+        return s.length
+    } else if (k===1) {
         memo[i][k] = minChange(s,i,s.length-1,memo2)
     } else {
         let changes = s.length
@@ -24,6 +22,7 @@ let helper = (s,k,i=0,memo=[],memo2=[]) => {
 }
 
 //return the minimum amount of change to make s[i:j] a palindrome
+//O(n)
 let minChange = (s,i,j,memo) => {
     if (i in memo && j in memo[i]) return memo[i][j]
     if (memo[i] === undefined) memo[i] = []
@@ -33,5 +32,65 @@ let minChange = (s,i,j,memo) => {
     return ans
 }
 
-let s = "leetcode", k = 8
-console.log(palindromePartition(s,k))
+//bottom-up
+//time: O(k*n*n)
+var palindromePartition2 = function(s, k) {
+    let dp = []
+    let memo = []
+    //for k===1
+    for (let i=0; i<s.length; i++) {
+        dp[i] = minChange2(s,i,s.length-1,memo)
+    }
+    dp.push(s.length)
+
+    for (let _k=2; _k<=k; _k++) {
+        for (let i=0; i<s.length; i++) {
+            dp[i] = s.length
+            for (let j=i; j<s.length; j++) {
+                dp[i] = Math.min(dp[i],minChange2(s,i,j,memo)+dp[j+1])
+            }
+        }
+    }
+    return dp[0]
+};
+
+let minChange2 = (s,i,j,memo) => {
+    if (i in memo && j in memo[i]) return memo[i][j]
+    if (memo[i] === undefined) memo[i] = []
+    let ans = i+1>j-1? 0 : minChange2(s,i+1,j-1,memo)
+    if(s[i] !== s[j]) ans += 1
+    memo[i][j] = ans
+    return ans
+}
+
+//bottom-up twice
+//time: O(k*n*n)
+var palindromePartition3 = function(s, k) {
+    let dp = []
+    let memo = []
+    //precompute the palindrome
+    for (let j=0; j<s.length; j++) {
+        for (let i=j; i>=0; i--) {
+            if (memo[i] === undefined) memo[i] = []
+            memo[i][j] = i+1>j-1? 0 : memo[i+1][j-1]
+            if (s[i] !== s[j]) memo[i][j] += 1
+        }
+    }
+    //for k===1
+    for (let i=0; i<s.length; i++) {
+        dp[i] = memo[i][s.length-1]
+    }
+    dp.push(s.length)
+
+    for (let _k=2; _k<=k; _k++) {
+        for (let i=0; i<s.length; i++) {
+            dp[i] = s.length
+            for (let j=i; j<s.length; j++) {
+                dp[i] = Math.min(dp[i],memo[i][j]+dp[j+1])
+            }
+        }
+    }
+    return dp[0]
+};
+let s = "aea", k = 2
+console.log(palindromePartition3(s,k))
