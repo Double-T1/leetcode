@@ -1,0 +1,52 @@
+//return true if can split into three non-empty palidromic substring
+/**
+ * @param {string} s
+ * @return {boolean}
+ */
+var checkPartitioning = function(s) {
+    return helper(s)
+};
+
+let helper = (s,i=0,k=3,valid=[],memo=[]) => {
+    if (i in memo && k in memo[i]) return memo[i][k]
+    if (memo[i] === undefined) memo[i] = []
+
+    if (k===1) {
+        //valid[i+1][s.length-2] not yet computed??
+        memo[i][k] = isPalindrome(s,i,s.length-1,valid)
+    } else {
+        for (let j=i; j<s.length; j++) {
+            if (isPalindrome(s,i,j,valid)) {
+                valid[i][j] = true
+                if (helper(s,j+1,k-1,valid,memo)) {
+                    memo[i][k] = true 
+                    return true
+                }
+            } else {
+                valid[i][j] = false
+            }
+        }
+        memo[i][k] = false
+    }
+    return memo[i][k]
+}
+
+let isPalindrome = (s,i,j,valid) => {
+    if (valid[i] === undefined) valid[i] = []
+    if (valid[i][j] !== undefined) return valid[i][j]
+    if (s[i] !== s[j]) {
+        valid[i][j] = false
+        return false
+    } else {
+        if (i+1>j-1) {
+            valid[i][j] = true
+            return true
+        } else {
+            valid[i][j] = isPalindrome(s,i+1,j-1,valid)
+            return valid[i][j]
+        }
+    }
+}
+
+let s = "juchzcedhfesefhdeczhcujzzvbmoeombv"
+console.log(checkPartitioning(s))
