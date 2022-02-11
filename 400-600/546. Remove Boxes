@@ -1,0 +1,34 @@
+//inversely, the very last step would be an element that exists 1 to n times
+//suppose it is Ai value that stayed at last, and only Am and Aj have the same value, where m<i<j
+//the possible combinations are: 
+//Aj,Ai,Am,AjAi,AiAm,AjAm,AjAiAm 
+//so we have to try all of them => the problem is how, especially how to do that sequentially
+
+//dp(i,j,k):= the maximum result from s[i:j] with k elements that equal to s[j] from s[j+1:]
+var removeBoxes = function(boxes) {
+    return helper(boxes)
+};
+
+let helper = (boxes,i=0,j=boxes.length-1,k=0,memo=[]) => {
+    if (j<i) return 0
+    while (j-1>=i && boxes[j-1] === boxes[j]) j--, k++ //stop at the last same element that are contiguous
+
+    if (i in memo && j in memo[i] && k in memo[i][j]) return memo[i][j][k]
+    if (memo[i] === undefined) memo[i] = []
+    if (memo[i][j] === undefined) memo[i][j] = []
+
+    let ans = helper(boxes,i,j-1,0,memo) + (k+1)*(k+1) //divide the subarray and compute the last element firsts
+    //find the previous element that equals to s[j]
+    for (let m=i; m<j; m++) {
+        if (boxes[m] === boxes[j]) {
+            ans = Math.max(ans,helper(boxes,i,m,k+1,memo) + helper(boxes,m+1,j-1,0,memo))
+        }
+    }
+    memo[i][j][k] = ans
+    return ans
+}
+
+
+
+let boxes = [1,1,2,1]
+console.log(removeBoxes(boxes))
