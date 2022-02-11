@@ -32,3 +32,6 @@ let helper = (boxes,i=0,j=boxes.length-1,k=0,memo=[]) => {
 
 let boxes = [1,1,2,1]
 console.log(removeBoxes(boxes))
+
+awesome explanation:
+https://leetcode.com/problems/remove-boxes/discuss/101310/Java-top-down-and-bottom-up-DP-solutions
