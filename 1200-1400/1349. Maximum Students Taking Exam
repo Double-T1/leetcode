@@ -1,0 +1,92 @@
+//time: O(2^n) 
+//n:= rows*cols
+var maxStudents = function(seats) {
+    return helper(seats)
+};
+
+//maximum number of students
+//decision at each seats => to place or not to place
+//its left, upperleft, upperright and right can't have students => don't consider the right spot 
+//not traversed yet
+let helper = (seats,i=0,j=0,state=0,memo=[]) => {
+    if (j>seats[0].length-1) j=0, i++
+    if (i>seats.length-1) return 0
+    
+    if (state in memo) return memo[state]
+    //not to place
+    let ans = helper(seats,i,j+1,state,memo)
+
+    //place 
+    let cols = seats[0].length
+    let k = i*cols+j
+    if (seats[i][j] !== '#' && isAllowed(cols,state,i,j)) ans = Math.max(ans,helper(seats,i,j+1,state|(1<<k),memo)+1)
+
+    memo[state] = ans
+    return ans
+}
+
+//left,upperleft, upperright
+let isAllowed = (cols,state,i,j) => {
+    //left, upperleft
+    let ans = true
+    let k = i*cols+j
+    if (j>0) {
+        ans = ans && check(state,k-1) // for left
+        if (i>0) ans = ans && check(state,k-1-cols) //for upperleft
+    } 
+    if (j<cols-1 && i>0) ans = ans && check(state,k-cols+1) // for upperright
+    return ans
+}
+
+//if the seat is not occupied, return true
+//else return false
+//1 means occupied, 0 means not
+let check = (state,i) => {
+    return !(Math.floor(state/(2**i))%2)
+}
+
+//time: O(n*(2^rows))
+var maxStudents2 = function(seats) {
+    return helper2(seats)
+};
+
+let helper2 = (seats,i=0,j=0,state=0,memo=[]) => {
+    if (j>seats[0].length-1) j=0, i++
+    if (i>seats.length-1) return 0
+
+    if (i in memo && j in memo[i] && state in memo[i][j]) return memo[i][j][state]
+    if (memo[i] === undefined) memo[i] = []
+    if (memo[i][j] === undefined) memo[i][j] = []
+    
+    //not to place
+    let ans = helper2(seats,i,j+1,update(state,seats[0].length,0),memo)
+
+    //place 
+    if (seats[i][j] !== '#' && isAllowed2(seats,state,i,j)) ans = Math.max(ans,helper2(seats,i,j+1,update(state,seats[0].length,1),memo)+1)
+    memo[i][j][state] = ans
+    return ans
+}
+
+let update = (state,m,c) => {
+    return ((state<<1)|c)%(2**(m+1))
+}
+
+//left,upperleft, upperright
+let isAllowed2 = (seats,state,i,j) => {
+    //left, upperleft
+    let ans = true
+    let cols = seats[0].length
+    if (j>0) {
+        ans =ans && check2(state,0) // for left
+        if (i>0) ans = ans && check2(state,cols) //for upperleft
+    } 
+    if (j<cols-1 && i>0) ans = ans && check2(state,cols-2) // for upperright
+    return ans
+}
+
+let check2 = (state,i) => {
+    return !(Math.floor(state/(2**i))%2)
+}
+
+let seats = [[".","#","#","#","#",".","."],["#",".",".",".","#",".","#"],[".",".","#",".","#",".","#"],["#","#","#","#",".",".","#"],["#","#",".","#","#","#","#"],[".","#","#","#","#",".","."]]
+console.log(maxStudents(seats))
