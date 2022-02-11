@@ -1,0 +1,46 @@
+var checkInclusion = function(s1, s2) {
+    let map = new Map()
+    let count = 0
+    for (let char of s1) {
+        if (!map.has(char)) {
+            map.set(char,1)
+            count++
+        } else {
+            let x = map.get(char)
+            map.set(char,x+1)
+        }
+    }    
+    
+    let len = s1.length
+    for (let i=0; i<s2.length; i++) {
+        let char = s2[i]
+        if (map.has(char)) {
+            let x = map.get(char)
+            map.set(char,x-1)
+            if (x === 1) {
+                count--
+            } else if (x === 0) {
+                count++
+            }
+        }
+        
+        if (count === 0) return true
+
+        if (i-len+1>=0) {
+            char = s2[i-len+1]
+            if (map.has(char)) {
+                let x = map.get(char)
+                map.set(char,x+1)
+                if (x === -1) {
+                    count--
+                } else if (x === 0) {
+                    count++
+                }
+            }
+        }
+    }
+    return false
+};
+
+let s1="abc", s2="cccccbabbbaaaa"
+console.log(checkInclusion(s1,s2))
