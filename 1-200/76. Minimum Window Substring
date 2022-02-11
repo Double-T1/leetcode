@@ -1,0 +1,48 @@
+//s and t consist of uppercase and lowercase English letters.
+//observation:
+//1. the window always start with a char of t and end with a char of t
+var minWindow = function(s, t) {
+    let count = 0
+    let map = new Map()
+    for (let char of t) {
+        if (!map.has(char)) {
+            map.set(char,1)
+            count++
+        } else {
+            let x = map.get(char)
+            map.set(char,x+1)
+        }
+    }
+
+    let record = []
+    let ans = [0,s.length]
+    for (let i=0; i<s.length; i++) {
+        let char = s[i]
+        if (map.has(char)) {
+            record.push(i)
+            let x = map.get(char)
+            map.set(char,x-1)
+            if (x === 1) count--
+            
+            //shrink the window
+            //when the leftmost character appears too much in our current window
+            //then we could discard the leftmost one
+            while (map.get(s[record[0]])<0) {
+                let y = map.get(s[record[0]])
+                map.set(s[record[0]],y+1)
+                record.shift()
+            }
+
+            if (count <= 0 && ans[1]-ans[0]>record[record.length-1]-record[0]) {
+                ans[0] = record[0]
+                ans[1] = record[record.length-1]
+            }
+        }
+    }
+    return ans[1] - ans[0] === s.length? '' : s.slice(ans[0],ans[1]+1)  
+};
+
+
+
+let s = "aaaaaaaaaaaabbbbbcdd", t = "abcdd"
+console.log(minWindow(s,t))
