@@ -1,0 +1,115 @@
+//brute force => put all extroverts together and put introverts as far away as possible
+//Probably TLE or OOM
+var getMaxGridHappiness = function(m, n, introvertsCount, extrovertsCount) {
+    return helper(m-1,n-1,introvertsCount,extrovertsCount)
+};
+
+
+//reverse grid from bottom right to top left
+//the key is how to memoize this problem
+//two bitmask? => O(3^(mn))
+let helper = (i,j,introvertsCount,extrovertsCount,grid=new Array(i+1).fill().map(() =>new Array(j+1).fill(0)),isIn=0,isEx=0,memo=[]) => {
+    if (isIn in memo && isEx in memo[isIn]) return memo[isIn][isEx]
+    if (memo[isIn] === undefined) memo[isIn] = []
+
+    if (i<0) {
+        if (introvertsCount>0 || extrovertsCount>0) memo[isIn][isEx] = Number.MIN_SAFE_INTEGER
+        memo[isIn][isEx] = 0
+    } else {
+        //either place an introvert, or place an extrovert, or skip
+        //1. to skip
+        let _i = i, _j = j-1
+        if(_j<0) _i = i-1, _j = grid[0].length-1
+        let ans = helper(_i,_j,introvertsCount,extrovertsCount,grid,isIn,isEx,memo)
+
+        let k = i*grid[0].length+j
+        //2. place an introvert
+        if(introvertsCount>0) {
+            grid[i][j] = -30
+            ans = Math.max(ans,helper(_i,_j,introvertsCount-1,extrovertsCount,grid,isIn|(1<<k),isEx,memo)+evalualte(grid,i,j)+120)
+            grid[i][j] = 0
+        } 
+
+        //3. place an extrovert
+        if (extrovertsCount>0) {
+            grid[i][j] = 20
+            ans = Math.max(ans,helper(_i,_j,introvertsCount,extrovertsCount-1,grid,isIn,isEx|(1<<k),memo)+evalualte(grid,i,j)+40)
+            grid[i][j] = 0
+        }
+
+        memo[isIn][isEx] = ans
+    }
+    return memo[isIn][isEx]
+}
+
+let evalualte = (grid,i,j) => {
+    let score = 0
+    if (i+1<grid.length && grid[i+1][j] !== 0) {
+        score += grid[i+1][j] + grid[i][j]
+    } 
+    if (j+1<grid[0].length && grid[i][j+1] !== 0) {
+        score += grid[i][j+1] + grid[i][j]
+    }
+    return score
+}
+
+//bottom-up
+//optimize the space complexity, shrink the memoization space and not use the grid
+//space: O() 
+var getMaxGridHappiness2 = function(m, n, introvertsCount, extrovertsCount) {
+    let gain = [0,-30,20]
+    //to get the status of a 
+    //given the range of status, only the previous below and right element are allowed
+    //below => one row below, hence a difference of (col count) 
+    //right => one element before
+    let get = (bitmask,i) => {
+        return Math.floor(bitmask/(3**i))%3
+    }
+
+    let evalualte = (below,right,i,j,current) => {
+        let score = 0
+        if (i+1<m && below !== 0) {
+            score += gain[below] + gain[current]
+        } 
+        if (j+1<n && right !== 0) {
+            score += gain[right] + gain[current]
+        }
+        return score
+    }
+
+    //since the bitmask only store n information, 
+    let update = (bitmask,c) => {
+        return (bitmask*3 + c)%(3**n)
+    }
+    let memo = []
+    let helper = (i,j,introvertsCount,extrovertsCount,status=0,memo) => {
+        if (i<0 || introvertsCount+extrovertsCount === 0) return 0
+
+        if (i in memo && j in memo[i] && introvertsCount in memo[i][j] && extrovertsCount in memo[i][j][introvertsCount] && status in memo[i][j][introvertsCount][extrovertsCount]) return memo[i][j][introvertsCount][extrovertsCount][status]
+        if (memo[i] === undefined) memo[i] = []
+        if (memo[i][j] === undefined) memo[i][j] = []
+        if (memo[i][j][introvertsCount] === undefined) memo[i][j][introvertsCount] = []
+        if (memo[i][j][introvertsCount][extrovertsCount] === undefined) memo[i][j][introvertsCount][extrovertsCount] = []
+        
+        let _i = i, _j = j-1
+        if(_j<0) _i = i-1, _j = n-1
+        let ans = helper(_i,_j,introvertsCount,extrovertsCount,update(status,0),memo)
+        let below = get(status,n-1), right = get(status,0)
+        //place an introvert
+        if (introvertsCount>0) {
+            ans = Math.max(ans,helper(_i,_j,introvertsCount-1,extrovertsCount,update(status,1),memo)+120+evalualte(below,right,i,j,1))
+        }
+
+        //place an extrovert
+        if (extrovertsCount>0) {
+            ans = Math.max(ans,helper(_i,_j,introvertsCount,extrovertsCount-1,update(status,2),memo)+40+evalualte(below,right,i,j,2))
+        }
+        memo[i][j][introvertsCount][extrovertsCount][status] = ans
+        return memo[i][j][introvertsCount][extrovertsCount][status] 
+    }
+
+    return helper(m-1,n-1,introvertsCount,extrovertsCount,0,memo)
+};
+
+let m = 3, n = 1, introvertsCount = 1, extrovertsCount = 3
+console.log(getMaxGridHappiness2(m,n,introvertsCount,extrovertsCount))
