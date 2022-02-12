@@ -1,0 +1,74 @@
+//brute force: O(d^k)
+
+//better
+//the array starts from a mailbox and end at a mailbox
+//essentially, we have to split the array into k subarrays, each correspond to one mailbox
+//and within each subarray, we have to find the minimizing spot (mid?)
+//the question becomes, how do we optimially divide the array into k parts
+
+//brute force
+var minDistance = function(houses, k) {
+    houses.sort((a,b)=> a-b)
+    return helper(houses,0,houses.length-1,k)
+};
+
+let helper = (houses,i,j,k,memo=[],memo2=[]) => {
+    if (k === j-i+1) return 0
+    if (k>j-i+1) return Number.MAX_SAFE_INTEGER
+    if (k === 1) return dist(houses,i,j,memo2)
+    if (i in memo && j in memo[i] && k in memo[i][j]) return memo[i][j][k]
+    if (memo[i] === undefined) memo[i] = []
+    if (memo[i][j] === undefined) memo[i][j] = []
+
+    let min = Number.MAX_SAFE_INTEGER
+    for (let p=i; p<j; p++) {
+        min = Math.min(min,helper(houses,i,p,k-1,memo,memo2)+dist(houses,p+1,j,memo2),helper(houses,p+1,j,k-1,memo,memo2)+dist(houses,i,p,memo2))
+    }
+    memo[i][j][k] = min
+    return min
+}
+
+let dist = (houses,i,j,memo2) => {
+    if (i>=j) return 0
+    if (i in memo2 && j in memo2[i]) return memo2[i][j]
+    if (memo2[i] === undefined) memo2[i] = []
+
+    memo2[i][j] = dist(houses,i+1,j-1,memo2) + houses[j]-houses[i]
+    return memo2[i][j] 
+}
+
+//time optimized => 100% on leetcode,compare to 6.67% above
+//only when k is within the range it is considered
+//time: O(k*(n^2))
+var minDistance2 = function(houses, k) {
+    houses.sort((a,b)=> a-b)
+    return helper2(houses,0,houses.length-1,k)
+};
+
+let helper2 = (houses,i,j,k,memo=[],memo2=[]) => {
+    if (k === 1) return dist2(houses,i,j,memo2)
+    if (i in memo && j in memo[i] && k in memo[i][j]) return memo[i][j][k]
+    if (memo[i] === undefined) memo[i] = []
+    if (memo[i][j] === undefined) memo[i][j] = []
+
+    let min = dist2(houses,k+i-1,j,memo2)
+    //let k === 1 always be at the end => p-i+1>=k-1 => p=k+i-2
+    for (let p=k+i-1; p<j; p++) {
+        min = Math.min(min,helper2(houses,i,p,k-1,memo,memo2)+dist2(houses,p+1,j,memo2))
+    }
+    memo[i][j][k] = min
+    return min
+}
+
+let dist2 = (houses,i,j,memo2) => {
+    if (i>=j) return 0
+    if (i in memo2 && j in memo2[i]) return memo2[i][j]
+    if (memo2[i] === undefined) memo2[i] = []
+
+    memo2[i][j] = dist2(houses,i+1,j-1,memo2) + houses[j]-houses[i]
+    return memo2[i][j] 
+}
+let houses =[178,40,129,145,189,134,68,84,67,162,73,80,133,101,71,6,165,53,126,180,24,1,119,196,65,153], k = 9
+console.log(minDistance2(houses,k))
+
+
