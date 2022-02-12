@@ -1,0 +1,54 @@
+var nextPermutation = function(nums) {
+    let last = nums.length-1
+    while (last>=1 && nums[last]<=nums[last-1]) {
+        last--
+    }
+    //case 1: no next premu, last will be 0
+    //case 2: current is the smallest, last will stay nums.length-1
+    //case 3: 0<last<nums.length-1
+
+    let l=0, r=nums.length-1
+    //what if last stayed at last?
+    if (last>0) {
+        let target = nums[last-1]
+        let left = last-1
+        let right = nums.length-1
+        //find the smallest number that is bigger than target number => bound to have an answer
+        while (left<right) {
+            let mid = left + Math.ceil((right-left)/2)
+            if (nums[mid]>target) {
+                left = mid
+            } else {
+                right = mid-1
+            }
+        }
+        
+        swap(nums,right,last-1)
+        l = last
+    }
+
+    allSwap(nums,l,r)
+    return nums
+};
+
+let allSwap = (arr,left,right) => {
+    while (left<right) {
+        let temp = arr[left]
+        arr[left] = arr[right]
+        arr[right] = temp
+
+        left++
+        right--
+    }
+    return 
+}
+
+let swap = (arr,a,b) => {
+    let temp = arr[a]
+    arr[a] = arr[b]
+    arr[b] = temp
+    return
+}
+
+let nums = [1,1,5]
+console.log(nextPermutation(nums))
