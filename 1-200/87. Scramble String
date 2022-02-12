@@ -1,0 +1,39 @@
+//try all combinations of s2 and check with s2
+//s1.length === s2.length
+var isScramble = function(s1, s2) {
+    return helper(s2,s1)
+};
+
+//subproblems: O(n^4) but the length of s1 and s2 match all the time => O(n^3)
+//transition per subproblem: O(n)? actually O(len)
+//time: O(n^3)
+let helper = (str,target,i=0,j=str.length-1,ti=0,tj=target.length-1,memo=[]) => {
+    if (i in memo && j in memo[i] && ti in memo[i][j] && tj in memo[i][j][ti]) return memo[i][j][ti][tj]
+    if (memo[i] === undefined) memo[i] = []
+    if (memo[i][j] === undefined) memo[i][j] = []
+    if (memo[i][j][ti] === undefined) memo[i][j][ti] = []
+
+    if (i === j) {
+        memo[i][j][ti][tj] = str[i] === target[ti]
+    } else {
+        //chooose a k, i<=k<j and swap or not
+        //k being the end of the new left subarray
+        //works only with j-i === tj-ti
+        let len = j-i
+        for (let k=0; k<len; k++) {
+            if (helper(str,target,i+k+1,j,ti,tj-k-1,memo) && helper(str,target,i,i+k,tj-k,tj,memo)) {
+                memo[i][j][ti][tj] = true
+                return true
+            }
+            if (helper(str,target,i,i+k,ti,ti+k,memo) && helper(str,target,i+k+1,j,ti+k+1,tj,memo)) {
+                memo[i][j][ti][tj] = true
+                return true
+            }
+        }
+        memo[i][j][ti][tj] = false
+    }
+    return memo[i][j][ti][tj]
+}
+
+let s1 = "a", s2 = "b"
+console.log(isScramble(s1,s2))
