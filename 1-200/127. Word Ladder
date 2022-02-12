@@ -1,0 +1,85 @@
+//1. endword has to exist within the graph
+//2. create a graph, where words with one different char are linked (brute force O(n**2))
+//5000 words in wordlist, can we build the graph in faster ways?
+//also create a map from word to its spot in the graph
+//3. beginWord could be in or not in the wordList
+
+//Goal: find the spsp of endWord and beginWord
+
+//1. efficiently build a graph => record the index of the different char for each edge/pair?
+//brute force first
+//time: O((n^2)*w)+O(n+n^2)
+//TLE from the graph formation => need a better string checking
+var ladderLength = function(beginWord, endWord, wordList) {
+    let adj = []
+    //record the index of endWord and beginWord
+    let endIndex = -1 
+    let beginIndex = -1
+    for (let i=0; i<wordList.length; i++) {
+        let word = wordList[i]
+        if (word === endWord) endIndex = i
+        else if (word === beginWord) beginIndex = i
+        for (let j=i+1; j<wordList.length; j++) {
+            if (oneDiffCheck(word,wordList[j])) {
+                if (adj[i] === undefined) adj[i] = []
+                if (adj[j] === undefined) adj[j] = []
+                adj[i].push(j)
+                adj[j].push(i)
+            }
+        }
+
+    }
+    if (endIndex === -1) return 0
+    
+    if (beginIndex === -1) {
+        beginIndex = wordList.length
+        for (let i=0; i<wordList.length; i++) {
+            if (oneDiffCheck(word,beginWord)) {
+                if (adj[i] === undefined) adj[i] = []
+                adj[i].push(beginIndex)
+            }
+        }
+    }
+
+    //BFS, using two stacks
+    let mainStack = [endIndex]
+    let childStack = [] 
+    let visited = []
+    visited[endIndex] = true
+    let dist = 2 //at least two since end !== begin
+    while (mainStack.length) {
+        let size = mainStack.length
+        while (size) {
+            let vertex = mainStack.pop()
+            size--
+            if (adj[vertex] === undefined) continue
+            for (let end of adj[vertex]) {
+                if (visited[end]) continue
+                if (end === beginIndex) return dist
+                childStack.push(end)
+                visited[end] = true
+            }
+        }
+        dist++
+        mainStack = childStack
+        childStack = []
+    }
+    return 0
+};
+
+//all words have the same length, and are all unique => at least one difference char
+let oneDiffCheck = (word1,word2) => {
+    let oneDiff = false
+    for (let i=0; i<word1.length; i++) {
+        if (word1[i] !== word2[i]) {
+            if (oneDiff) return false
+            oneDiff = true
+        }
+    }
+    return true
+}
+
+"dog"
+
+let  beginWord = "hot", endWord = "dog", wordList = ["hot","dog"]
+console.log(ladderLength(beginWord,endWord,wordList))
