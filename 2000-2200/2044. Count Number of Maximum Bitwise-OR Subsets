@@ -1,0 +1,27 @@
+var countMaxOrSubsets = function(nums) {
+    let ans = [-1,0]
+    helper(nums,ans)
+    return ans[1]
+};
+
+let helper= (nums,max,or=0,i=0) => {
+    if (i === nums.length) {
+        if (or>max[0]) {
+            max[0] = or
+            max[1] = 1
+        } else if (or === max[0]) {
+            max[1]++
+        }
+        return
+    } else {
+        //include current index or not
+        //1. include
+        helper(nums,max,or|nums[i],i+1)
+        //2. not
+        helper(nums,max,or,i+1)
+        return
+    }
+}
+
+let nums = [2,2,2]
+console.log(countMaxOrSubsets(nums))
