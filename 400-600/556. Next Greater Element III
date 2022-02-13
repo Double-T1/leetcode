@@ -1,0 +1,39 @@
+//same as next permutation
+//smallest integer which has exactly the same digits existing in the integer n 
+//and is greater in value than n
+//Note that the returned integer should fit in 32-bit integer, 
+//if there is a valid answer but it does not fit in 32-bit integer, return -1.
+var nextGreaterElement = function(n) {
+    let limit = 2**31-1
+    let stack = [n%10]
+    n = Math.floor(n/10)
+    while (n && n%10>=stack[stack.length-1]) {
+        stack.push(n%10)
+        n = Math.floor(n/10)
+    }
+    if (n === 0) return -1
+    
+    let digit = n%10
+    n = Math.floor(n/10)
+    let left = 0
+    let right = stack.length
+    //find the smallest value that is bigger than digit
+    while (left<right) {
+        let mid = left + Math.floor((right-left)/2)
+        if (stack[mid]>digit) {
+            right = mid
+        } else {
+            left = mid+1
+        }
+    }
+    let temp = stack[right]
+    stack[right] = digit
+    n = n*10 + temp
+    for (let i=0; i<stack.length; i++) {
+        n = n*10 + stack[i]
+    }
+    return n > limit? -1: n
+};
+
+let n = 2147483486
+console.log(nextGreaterElement(n))
