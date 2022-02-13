@@ -1,0 +1,34 @@
+//a little greedy => if adjacent index is the same char
+//consider them the same print and roll over automatically
+//we could go even faster if we augment the string to be without repeated contiguous chars 
+//time: O(n^3)
+//the idea is that we only count the print at the last char for the current print 
+//ie, if a print stops at index j, then we add it into the answer
+var strangePrinter = function(s) {
+    return helper(s)
+}
+
+//at each state, we only look at the possibile length of painting the color of s[i] in s[i:j]
+//
+let helper = (s,i=0,j=s.length-1,memo=[]) => {
+    if (i>j) return 0
+    while (i+1<=j && s[i] === s[i+1]) i++ //traverse through all the index that has the same char
+    if (i === j) return 1
+
+    if (i in memo && j in memo[i]) return memo[i][j]
+    if (memo[i] === undefined) memo[i] = []
+
+    let ans = helper(s,i+1,j,memo)+1
+    for (let n=i+2; n<=j; n++) {
+        if (s[n] === s[i]) {
+            ans = Math.min(ans,helper(s,i+1,n-1,memo)+helper(s,n,j,memo))
+            while (n+1<=j && s[i] === s[n+1]) n++
+            n++
+        }
+    }
+    memo[i][j] = ans
+    return memo[i][j]
+}
+
+let s = "dddccbdbababaddcbcaabdbdddcccddbbaabddb"
+console.log(strangePrinter(s))
