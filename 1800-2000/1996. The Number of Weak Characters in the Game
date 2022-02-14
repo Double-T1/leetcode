@@ -1,0 +1,43 @@
+//brute force:
+//check all pairs: O(n^2)
+var numberOfWeakCharacters = function(properties) {
+    properties.sort((a,b) => a[0]-b[0])
+    let count = 0
+    for (let i=0; i<properties.length; i++) {
+        let [a,d] = properties[i]
+        for (let j=i+1; j<properties.length; j++) {
+            if (properties[j][0]>a && properties[j][1]>d) {
+                count++
+                break
+            }
+        }
+    }
+    return count
+};
+
+//time:(nlogn)
+var numberOfWeakCharacters2 = function(properties) {
+    properties.sort((a,b) => {
+        if (a[0] === b[0]) {
+            return b[1] - a[1]
+        } else {
+            return a[0] - b[0]
+        }
+    })
+    let stack = [properties[0][1]]
+    let count = 0
+    for (let i=1; i<properties.length; i++) {
+        let d = properties[i][1]
+        while (stack.length && stack[stack.length-1]<d) {
+            count++
+            stack.pop()
+        }
+        stack.push(d)
+    }
+    return count
+};
+
+
+
+let properties = [[1,1],[2,2],[2,1],[1,2]]
+console.log(numberOfWeakCharacters2(properties))
