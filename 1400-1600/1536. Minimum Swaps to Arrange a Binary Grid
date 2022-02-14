@@ -1,0 +1,37 @@
+var minSwaps = function(grid) {
+    let arr = []
+    let swap = (arr,a,b) => {
+        let temp = arr[a]
+        arr[a] = arr[b]
+        arr[b] = temp
+        return
+    }
+    
+    for (let i=grid.length-1; i>=0; i--) {
+        let zero = grid.length
+        for (let j=grid.length-1; j>=0; j--) {
+            if (grid[i][j] === 1) {
+                zero = grid.length-j-1
+                break
+            }
+        }
+        arr.push(zero)
+    }
+
+    //what if i == 0?? edge case
+    let count = 0
+    for (let i=arr.length-1; i>=0; i--) {
+        if (arr[i]>=i) continue
+        for (let j=i-1; j>=0; j--) {
+            if (arr[j]>=i) {
+                while(j<i) swap(arr,j,j+1), j++, count++
+                break
+            } 
+        }
+        if (arr[i]<i) return -1
+    }
+    return count
+};
+
+let grid = [[0,0],[0,1]]
+console.log(minSwaps(grid))
