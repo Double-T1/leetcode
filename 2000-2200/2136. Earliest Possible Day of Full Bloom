@@ -1,0 +1,15 @@
+//time: O(nlogn)
+var earliestFullBloom = function(plantTime, growTime) {
+    let arr = []
+    for (let i=0; i<plantTime.length; i++) {
+        arr[i] = [plantTime[i],growTime[i]]
+    }
+    arr.sort((a,b) => b[1]-a[1])
+    let max = 0
+    let accu = 0
+    for (let i=0; i<arr.length; i++) {
+        accu += arr[i][0]
+        max = Math.max(max,accu + arr[i][1])
+    }
+    return max
+};
