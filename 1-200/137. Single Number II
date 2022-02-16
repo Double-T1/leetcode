@@ -10,6 +10,22 @@ var singleNumber = function(nums) {
 /**
 amazing detail analysis on bit representationhttps://leetcode.com/problems/single-number-ii/discuss/43295/Detailed-explanation-and-generalization-of-the-bitwise-operation-method-for-single-numbers
 
+for this case:
+"(ones ^ A[i]) & ~twos" basically means perform the above mentioned operation if and only if A[i] is not present in the set "twos". So to write it in layman:
+
+   IF the set "ones" does not have A[i]
+       Add A[i] to the set "ones" if and only if its not there in set "twos"
+   ELSE
+       Remove it from the set "ones"
+"(twos^ A[i]) & ~ones" basically means:
+
+   IF the set "twos" does not have A[i]
+       Add A[i] to the set "twos" if and only if its not there in set "ones"
+   ELSE
+       Remove it from the set "twos"
+
+
+
 trying to find all positions that has 3k+1 flipped bits
 if one bit only: 11101, with one and two 
 at index 0: one = 1, two = 0
@@ -36,6 +52,6 @@ _one = one^arr[i]&(~two)
 _two = two^arr[i]&(~_one)
 
 ^:= find if the sum of bits = 2m
-&:= make sure both bits are flipped
-|:= make sure at least one bit is flipped
+&:= make sure both bits are flipped => whether the element is in the set 
+|:= make sure at least one bit is flipped 
 */
