@@ -1,0 +1,41 @@
+var singleNumber = function(nums) {
+    let one=0, two=0
+    for (let num of nums) {
+        one = one^num&(~two)
+        two = two^num&(~one)
+    }
+    return one
+};
+
+/**
+nlogn: done
+
+trying to find all positions that has 3k+1 flipped bits
+if one bit only: 11101, with one and two 
+at index 0: one = 1, two = 0
+at index 1: one = 0, two = 1
+at index 2: one = 0, two = 0
+at index 3: one = 0, two = 0
+at index 4: one = 1, two = 0
+given the setup of the q, two will def be 0 at the end
+the answer will be one
+
+transition of one and two: (arr[i] = current)
+for one:
+if (arr[i] === 1) {
+    if (one === 0 && two === 0) one=1, two=0 
+    if (one === 0 && two === 1) one=0, two=0
+    if (one === 1 && two === 0) one=0, two=1 
+} else {
+    if (one === 0 && two === 0) one=0, two=0
+    if (one === 0 && two === 1) one=0, two=1
+    if (one === 1 && two === 0) one=1, two=0 
+}
+
+_one = one^arr[i]&(~two)
+_two = two^arr[i]&(~_one)
+
+^:= find if the sum of bits = 2m
+&:= make sure both bits are flipped
+|:= make sure at least one bit is flipped
+*/
