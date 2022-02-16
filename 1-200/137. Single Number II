@@ -8,7 +8,7 @@ var singleNumber = function(nums) {
 };
 
 /**
-nlogn: done
+amazing detail analysis on bit representationhttps://leetcode.com/problems/single-number-ii/discuss/43295/Detailed-explanation-and-generalization-of-the-bitwise-operation-method-for-single-numbers
 
 trying to find all positions that has 3k+1 flipped bits
 if one bit only: 11101, with one and two 
