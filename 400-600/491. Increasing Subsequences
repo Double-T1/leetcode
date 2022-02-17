@@ -1,0 +1,24 @@
+var findSubsequences = function(nums) {
+    let arr = []
+    let visited = new Set()
+    for (let i=0; i<nums.length; i++) {
+        if (visited.has(nums[i])) continue
+        visited.add(nums[i])
+        backtrack(arr,nums,i)
+    }
+    return arr
+};
+
+let backtrack = (supArr,nums,i,subArr=[nums[i]]) => {
+    if (subArr.length>=2) supArr.push([...subArr])
+    let visited = new Set()
+    for (let j=i+1; j<nums.length; j++) {
+        if (!visited.has(nums[j]) && nums[j]>=nums[i]) {
+            visited.add(nums[j])
+            subArr.push(nums[j])
+            backtrack(supArr,nums,j,subArr)
+            subArr.pop()
+        }
+    }
+    return
+}
