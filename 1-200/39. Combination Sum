@@ -1,0 +1,19 @@
+let backtrack = (supArr,candidates,target,i=0,subArr=[]) => {
+    if(target === 0) supArr.push([...subArr])
+
+    if(i<candidates.length && target>=candidates[i]) {
+        backtrack(supArr,candidates,target,i+1,subArr) //not
+        subArr.push(candidates[i])
+        backtrack(supArr,candidates,target-candidates[i],i,subArr) //include
+        subArr.pop()
+    }
+    return
+}
+
+var combinationSum = function(candidates, target) {
+    candidates.sort((a,b) => a-b)
+    let arr = []
+    backtrack(arr,candidates,target)
+    return arr
+};
+
