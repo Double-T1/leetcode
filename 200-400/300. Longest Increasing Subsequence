@@ -37,3 +37,22 @@ var lengthOfLIS = function(nums) {
     }
     return deck.length
 };
+
+//time: O(n^2)
+var lengthOfLIS = function(nums) {
+    nums.unshift(Number.MIN_SAFE_INTEGER)
+    return helper(nums)-1
+};
+
+let helper = (nums,i=0,memo=[]) => {
+    if (i in memo) return memo[i]
+
+    let ans = 0
+    for (let j=i+1; j<nums.length; j++) {
+        if (nums[j]>nums[i]) {
+            ans = Math.max(ans,helper(nums,j,memo))
+        }
+    }
+    memo[i] = ans+1
+    return memo[i]
+}
