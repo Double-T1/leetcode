@@ -1,0 +1,36 @@
+var insert = function(intervals, newInterval) {
+    let left = 0
+    let right = intervals.length
+    let s = newInterval[0]
+    while (left<right) {
+        let mid = left + Math.floor((right-left)/2)
+        if (intervals[mid][1]>=s) right = mid
+        else left = mid+1
+    }
+    if (left===intervals.length) {
+        intervals.push(newInterval)
+        return intervals
+    }
+    let ans = []
+    for (let i=0; i<left; i++) {
+        ans[i] = intervals[i]
+    }
+    while (left<intervals.length && newInterval[1]>=intervals[left][0]) {
+        newInterval[0] = Math.min(newInterval[0],intervals[left][0])
+        newInterval[1] = Math.max(newInterval[1],intervals[left][1])
+        left++
+    }
+    ans.push(newInterval)
+    for (let i=left; i<intervals.length; i++) {
+        ans.push(intervals[i])
+    }
+    return ans
+};
+
+/***
+ * let [s,e] of newInterval
+ * 1. find the smallest end in intervals that is larger than s => if no then insert to the end
+ * 2. check if they overlaps => yes then merge 
+ * if (e<start) no merge  
+ */
+
