@@ -1,0 +1,107 @@
+//brute force
+//1. 6*n vairations => beware of self-stacking => not possible
+//O(n^2)
+var maxHeight = function(cuboids) {
+    let createPermu = (supArr,arr,i=0) => {
+        if (i === arr.length) {
+            supArr.push([...arr])
+            return
+        } else {
+            for (let j=i; j<arr.length; j++) {
+                if (j===i || arr[j]!==arr[j-1]) {
+                    swap(arr,i,j)
+                    createPermu(supArr,arr,i+1) 
+                    swap(arr,i,j)
+                }
+            }
+            return
+        }
+    }
+    
+    let swap = (arr,a,b) => {
+        let temp = arr[a]
+        arr[a] = arr[b]
+        arr[b] = temp
+        return  
+    }
+    
+    let len = cuboids.length
+    let cub = []
+    for (let i=0; i<len; i++) {
+        let arr = []
+        cuboids[i].sort((a,b) => a-b)
+        createPermu(arr,cuboids[i])
+        cub = cub.concat(arr)
+    }
+    //for any i, any j that j>i should not be able to be stacked above i
+    //criteria: wj >= wi && lj >= li && hj >= hi 
+    //can't have: wj<wi || lj<li || hj<hi
+    cub.sort((a,b) => {
+        if (a[0] === b[0]) {
+            if (a[1] === b[1]) {
+                return a[2]-b[2]
+            } else {
+                return a[1]-b[1]
+            }
+        } else {
+            return a[0]-b[0]
+        }
+    })
+
+    let max = 1
+    let dp = []
+    for (let i=0; i<cub.length; i++) {
+        let [w,l,h] = cub[i]
+        dp[i] = h
+        for (let j=0; j<i; j++) {
+            if (w>=cub[j][0] && l>=cub[j][1] && h>=cub[j][2]) {
+                if (dp[j]+h>dp[i]) {
+                    dp[i] = dp[j]+h
+                }
+            }
+        }
+        max = Math.max(dp[i],max)
+    }
+    return max
+};
+
+
+//given that w1>=w2 && l1>=l2 && h1>=h2
+//if an answer has not the longest side as width or length
+//then it is guaranteed to have a flipped version where the longest side is the height
+//cuz small1>=small2 && mid1>=mid2 && large1>=large2 already sufficed
+//regardless of which of [small,mid,larget] is [width,length,height]
+//hence, its just shuffling them around
+var maxHeight2 = function(cuboids) {
+    cuboids.map((arr) => arr.sort((a,b)=> a-b))
+    //for random a,b which a<b, we can only guarantee wa<=wb
+    cuboids.sort((a,b) => {
+        if (a[0] === b[0]) {
+            if (a[1] === b[1]) {
+                return a[2]-b[2]
+            } else {
+                return a[1]-b[1]
+            }
+        } else {
+            return a[0]-b[0]
+        }
+    })
+
+    let max = 1
+    let dp = []
+    for (let i=0; i<cuboids.length; i++) {
+        let [w,l,h] = cuboids[i]
+        dp[i] = h
+        for (let j=0; j<i; j++) {
+            if (w>=cuboids[j][0] && l>=cuboids[j][1] && h>=cuboids[j][2]) {
+                if (dp[j]+h>dp[i]) {
+                    dp[i] = dp[j]+h
+                }
+            }
+        }
+        max = Math.max(dp[i],max)
+    }
+    return max
+};
+let cuboids = [[36,46,41],[100,15,100],[75,91,59],[13,82,64]]
+console.log(maxHeight2(cuboids))
