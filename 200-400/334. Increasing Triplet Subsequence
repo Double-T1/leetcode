@@ -1,0 +1,22 @@
+var increasingTriplet = function(nums) {
+    let binarySearch = (arr,left,right,target) => {
+        while (left<right) {
+            let mid = left + Math.floor((right-left)/2)
+            if (arr[mid]>=target) right = mid
+            else left = mid+1
+        }
+        return left
+    }
+    
+    let deck = []
+    for (let i=0; i<nums.length; i++) {
+        let j=binarySearch(deck,0,deck.length,nums[i])
+        if (j<deck.length) {
+            deck[j] = nums[i]
+        } else {
+            deck.push(nums[i])
+            if (deck.length>2) return true
+        }
+    }
+    return false
+};
