@@ -1,0 +1,31 @@
+var removeKdigits = function(num, k) {
+    let stack = [] //the stack shoould at most be length len
+    let len = num.length-k 
+    if (len === 0) return '0'
+    let current = 0
+    for (let i=0; i<num.length; i++) {
+        let left = num.length-i
+        while (current>0 && current+left>len && stack[stack.length-1]>num[i]) {
+            stack.pop()
+            current--
+        }
+        if (current<len) stack.push(num[i]), current++;
+        if (current+left-1===len) {
+            stack.push(num.slice(i+1))
+            break
+        }
+    }    
+    //trim out the zeros at front
+    let i = 0, str=stack.join('')
+    while (str[i] === '0') i++
+    str = str.slice(i)
+    return str===''? '0': str
+};
+
+/**
+given the constraint=> O(n) or O(nlogn)
+1. O(n*k) => close to O(n^2)
+2. knowing that the length of new number/string will be num.length-k
+=> keep a non-decreasing/increasing(?) stack till the left numbers in the num string makes up the length of the stack
+=> O(n)
+*/
