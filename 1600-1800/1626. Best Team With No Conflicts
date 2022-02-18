@@ -1,0 +1,32 @@
+var bestTeamScore = function(scores, ages) {
+    let pair = []
+    for (let i=0; i<scores.length; i++) {
+        pair[i] = [scores[i],ages[i]]
+    }
+    pair.sort((a,b) => {
+        if (a[1]===b[1]) {
+            return a[0]-b[0]
+        } else {
+            return a[1]-b[1]
+        }
+    })
+    let dp = []
+    let max = 0
+    //edge case of same age
+    for (let i=0; i<pair.length; i++) {
+        dp[i] = pair[i][0]
+        for (let j=0; j<i; j++) {
+            if (pair[j][0]<=pair[i][0]) {
+                dp[i] = Math.max(dp[i],dp[j]+pair[i][0])
+            }
+        }
+        max = Math.max(max,dp[i])
+    }
+    return max
+};
+
+/**
+younger player <= older player
+1. sort by ages, young to old
+find the maximum sum of non-decreasing sequence 
+*/
