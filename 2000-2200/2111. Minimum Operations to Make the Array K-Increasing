@@ -1,0 +1,49 @@
+//k*floor(n/k)*log(n/k) => n*log(n/k)
+//time: O(nlog(n/k)) 
+var kIncreasing = function(arr, k) {
+    let sum = 0
+    for (let i=0; i<k; i++) {
+        sum += helper(arr,i,k)
+    }
+    return sum
+};
+//look k-ahead
+let helper = (arr,m,k) => {
+    let deck = []
+    let len = 0
+    for (let i=m; i<arr.length; i+=k) {
+        let j = binarySearch(deck,0,deck.length,arr[i]) //find the smallest value that is greater than target
+        deck[j] = arr[i]
+        len++ 
+    }
+    return len-deck.length
+}
+
+let binarySearch = (arr,left,right,target) => {
+    while (left<right) {
+        let mid = Math.floor((right-left)/2)+left
+        if (arr[mid]>target) {
+            right = mid
+        } else {
+            left = mid+1
+        }
+    }
+    return left
+}
+
+let arr = [12,6,12,6,14,2,13,17,3,8,11,7,4,11,18,8,8,3], k = 1
+console.log(kIncreasing(arr,k))
+/**
+can change arr[i] into any positive integer.
+
+observation:
+any index i has to suffice arr[i-k]<=arr[i]<=arr[i+k]
+=> make arr[i] as small as possible 
+=> make arr[i] = arr[i-k] so that the chances it is smaller than arr[i+k] is higher or don't change
+
+rephrase: minimum moves to make a sequence non-decreasing
+[2,1] => 1 move
+[2,3,1] => 2 moves
+depneds on how many index has a next smaller element 
+=> each one index warrants one move
+*/
