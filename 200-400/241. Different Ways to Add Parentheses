@@ -1,0 +1,51 @@
+var diffWaysToCompute = function(expression) {
+    return helper(expression)
+};
+
+let helper = (expression,i=0,j=expression.length-1,memo=[]) => {
+    if (i in memo && j in memo[i]) return memo[i][j]
+    if (memo[i] == undefined) memo[i] = []
+
+    let ans = []
+    let pure = true
+    for (let s=i; s<=j; s++) {
+        if (/\d/.test(expression[s])) continue
+        pure = false
+        let left = helper(expression,i,s-1,memo)
+        let right = helper(expression,s+1,j,memo)
+        calculate(left,expression[s],right,ans)
+    }
+    if (pure) ans.push(parseInt(expression.slice(i,j+1)))
+    memo[i][j] = ans
+    return ans
+}   
+
+let which = (op) => {
+    let operation = (a,b) => a+b
+    switch(op) {
+        case '-':
+            operation = (a,b) => a-b
+            break
+        case '*':
+            operation = (a,b) => a*b
+            break
+    }
+    return operation
+}
+
+let calculate = (left,op,right,ans) => {
+    let operation = which(op)
+    for (let l of left) {
+        for (let r of right) {
+            ans.push(operation(l,r))
+        }
+    }
+    return ans
+}
+
+
+
+
+//beware of negative signs at the first element
+let expression =  "11+98*2"
+console.log(diffWaysToCompute(expression))
