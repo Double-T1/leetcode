@@ -1,0 +1,23 @@
+var monotoneIncreasingDigits = function(n) {
+    let str = n.toString()
+    let ans = []
+    //edge case of n===0
+    for(let i=0; i<str.length; i++) {
+        if (i===0 || str[i]>=str[i-1]) {
+            ans = ans*10 + parseInt(str[i])
+        } else {
+            i--
+            while(i>0 && str[i]===str[i-1]) {
+                ans = Math.floor(ans/10)
+                i--
+            }
+            ans--
+            i++
+            while (i<str.length) {
+                ans = ans*10 + 9
+                i++
+            }
+        }
+    }
+    return ans
+};
