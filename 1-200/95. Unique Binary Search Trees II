@@ -56,3 +56,41 @@ let repli = (node) => {
     dup.right = repli(node.right)
     return dup
 }
+
+//bottom-up
+var generateTrees2 = function(n) {
+    let dp = []
+    for (let start=n; start>=1; start--) {
+        if (dp[start]===undefined) dp[start] = []
+        for (let end=start; end<=n; end++) {
+            dp[start][end] = []
+            for (let i=start; i<=end; i++) {
+                let left = i===start? null : dp[start][i-1]
+                let right = i===end? null : dp[i+1][end]
+                attach2(i,left,right,dp[start][end])
+            }
+        }
+    }
+    return dp[1][n]
+};
+
+let attach2 = (rootVal,left,right,ans) => {
+    for (let l of left) {
+        for (let r of right) {
+            let root = new TreeNode(rootVal)
+            root.left = repli2(l)
+            root.right = repli2(r)
+            ans.push(root)
+        }
+    }
+    return
+}
+
+let repli2 = (node) => {
+    if (!node) return null
+
+    let dup = new TreeNode(node.val)
+    dup.left = repli2(node.left)
+    dup.right = repli2(node.right)
+    return dup
+}
