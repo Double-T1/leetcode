@@ -1,0 +1,58 @@
+var generateTrees = function(n) {
+    return helper(1,n)
+};
+
+class TreeNode {
+    constructor(val,left=null,right=null) {
+        this.val = val
+        this.left = left
+        this.right = right
+    }
+}
+
+let helper = (start,end,memo=[]) => {
+    if (start in memo && end in memo[start]) return memo[start][end]
+    if (memo[start] === undefined) memo[start] = []
+
+    if (start>end) {
+        memo[start][end] = [null]
+    } else {
+        let ans = []
+        for (let i=start; i<=end; i++) {
+            let left = helper(start,i-1,memo)
+            let right = helper(i+1,end,memo)
+            attach(i,left,right,ans)
+        }
+        memo[start][end] = ans
+    }
+    return memo[start][end]
+}
+
+/**
+ * 
+ * @param {number} rootVal 
+ * @param {TreeNode[]} left 
+ * @param {TreeNode[]} right 
+ * @param {TreeNode[]} ans 
+ * @returns 
+ */
+let attach = (rootVal,left,right,ans) => {
+    for (let l of left) {
+        for (let r of right) {
+            let root = new TreeNode(rootVal)
+            root.left = repli(l)
+            root.right = repli(r)
+            ans.push(root)
+        }
+    }
+    return
+}
+
+let repli = (node) => {
+    if (!node) return null
+
+    let dup = new TreeNode(node.val)
+    dup.left = repli(node.left)
+    dup.right = repli(node.right)
+    return dup
+}
