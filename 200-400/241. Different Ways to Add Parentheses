@@ -1,3 +1,5 @@
+time complexity: https://people.math.sc.edu/howard/Classes/554b/catalan.pdf
+
 var diffWaysToCompute = function(expression) {
     return helper(expression)
 };
