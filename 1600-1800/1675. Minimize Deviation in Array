@@ -1,0 +1,89 @@
+//basically just a clever way to tryout all the possibilities
+//time: O(n(logn)(logm)) 
+//m being the greatest number in nums
+//space: O(n)
+var minimumDeviation = function(nums) {
+    let maxHeap = []
+    //make all ele at its max
+    let min = Number.MAX_SAFE_INTEGER, max=Number.MIN_SAFE_INTEGER
+    nums.forEach(ele => {
+        if (ele%2===1) ele *= 2
+        min = Math.min(min,ele)
+        max = Math.max(max,ele)
+        insert(maxHeap,ele)
+    })
+    
+    let diff = max-min
+    while (maxHeap.length) {
+        let ele = removeTop(maxHeap) 
+        diff = Math.min(diff,ele-min)
+        if (ele%2===1) break
+        ele /= 2
+        min = Math.min(min,ele)
+        insert(maxHeap,ele)
+    }
+    return diff
+};
+
+let removeTop = (maxHeap) => {
+    let ele = maxHeap[0]
+    swap(maxHeap,0,maxHeap.length-1)
+    maxHeap.pop()
+
+    //bubble down
+    let current = 0
+    let val = maxHeap[0]
+    while (2*current+1<maxHeap.length) {
+        let index1 = 2*current+1
+        let index2 = 2*current+2
+        let child1 = maxHeap[index1]
+        let child2 = maxHeap[index2]
+
+        if (child2===undefined) {
+            if (child1>val) {
+                swap(maxHeap,index1,current)
+                current = index1
+            } else {
+                break
+            }
+        } else {
+            if (child1>child2 && child1>val) {
+                swap(maxHeap,index1,current)
+                current = index1
+            } else if (child2>val) {
+                swap(maxHeap,index2,current)
+                current = index2
+            } else {
+                break
+            }
+        }
+    }
+    return ele
+}
+
+let insert = (maxHeap,val) => {
+    maxHeap.push(val)
+    let current = maxHeap.length-1
+
+    //bubble up
+    while (current>0) {
+        let parent = current%2===1? (current-1)/2 : (current-2)/2
+        if (maxHeap[parent]<val) {
+            swap(maxHeap,parent,current)
+            current = parent
+        } else {
+            break
+        }
+    }
+    return 
+}
+
+let swap = (arr,a,b) => {
+    let temp = arr[a]
+    arr[a] = arr[b]
+    arr[b] = temp
+    return 
+}
+
+let nums = [1,2,3,4]
+console.log(minimumDeviation(nums))
