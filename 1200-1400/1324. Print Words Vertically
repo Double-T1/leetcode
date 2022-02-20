@@ -1,0 +1,16 @@
+var printVertically = function(s) {
+    let arr = []
+    let j = 0
+    for (let i=0; i<s.length; i++) {
+        if (s[i] === ' ') {
+            j=0
+        } else {
+            if (arr[j]===undefined) arr[j] = ''
+            let current = arr[j].length
+            while (j>0 && current<arr[j-1].length-1) arr[j] += ' ', current++
+            arr[j] += s[i]
+            j++
+        }
+    }
+    return arr
+};
