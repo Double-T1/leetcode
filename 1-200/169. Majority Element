@@ -1,0 +1,12 @@
+var majorityElement = function(nums) {
+    let maj = -1, count = 1
+    for (let num of nums) {
+        if (maj!==num) {
+            count--
+            if (count===0) maj=num, count=1
+        } else { 
+            count++
+        }
+    }
+    return maj
+};
