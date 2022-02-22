@@ -1,0 +1,12 @@
+var titleToNumber = function(columnTitle) {
+    let base = 'A'.charCodeAt(0)-1
+    let num = 0
+    let p = 1 
+    let mul = 1
+    for (let c of columnTitle) {
+        num += mul
+        p = (p-1)*26 + c.charCodeAt(0)-base
+        mul *= 26
+    }
+    return num+p-1
+};
