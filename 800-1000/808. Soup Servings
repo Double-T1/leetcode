@@ -1,0 +1,43 @@
+var soupServings = function(n) {
+    if (n>4800) return 1
+    return helper(n)
+};
+
+let helper = (a,b=a,memo={}) => {
+    if (a<=0 || b<=0) {
+        if (b>0) return 1
+        if (a>0) return 0
+        return 0.5
+    } 
+    if (a in memo && b in memo[a]) return memo[a][b]
+    if (memo[a] === undefined) memo[a] = {}
+    let p = helper(a-100,b,memo) //op1
+    p += helper(a-75,b-25,memo) //op2
+    p += helper(a-50,b-50,memo) //op3
+    p += helper(a-25,b-75,memo) //op4
+    memo[a][b] = p*0.25
+    return memo[a][b]
+}
+
+var soupServings = function(n) {
+    if (n>4800) return 1
+    n = Math.ceil(n/25)
+    let dp = []
+    let ops = [[4,0],[3,1],[2,2],[1,3]]
+    for (let a=0; a<=n; a++) {
+        dp[a] = []
+        for (let b=0; b<=n; b++) {
+            dp[a][b] = 0
+            for (let [x,y] of ops) {
+                if (x<a) {
+                    if (y<b) dp[a][b] += dp[a-x][b-y]
+                } else {
+                    if (y<b) dp[a][b] += 1
+                    else dp[a][b] += 0.5
+                }
+            }
+            dp[a][b] *= 0.25
+        }
+    }
+    return dp[n][n]
+};
