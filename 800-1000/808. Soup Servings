@@ -1,3 +1,5 @@
+//best analysis on the cutoff point: https://leetcode.com/problems/soup-servings/discuss/195582/A-Mathematical-Analysis-of-the-Soup-Servings-Problem
+
 var soupServings = function(n) {
     if (n>4800) return 1
     return helper(n)
