@@ -1,0 +1,29 @@
+var cloneGraph = function(node) {  
+    if (!node) return null
+    let stack = [node]
+    let newNode;
+    let map = new Map();
+    let oldNode;
+    let size;
+    
+    while (stack.length) {   
+        oldNode = stack.pop()
+        newNode = new Node(oldNode.val)
+        map.set(oldNode,newNode)
+        
+        for (let i=0; i<oldNode.neighbors.length; i++) {
+            if (!map.has(oldNode.neighbors[i])) {
+                stack.push(oldNode.neighbors[i])
+                map.set(oldNode.neighbors[i],null)
+            }
+        }
+    }
+    
+    for (const [oldNode,newNode] of map) {
+        oldNode.neighbors.forEach(neigh => {
+            newNode.neighbors.push(map.get(neigh))
+        })
+    }
+
+    return map.get(node)
+};
