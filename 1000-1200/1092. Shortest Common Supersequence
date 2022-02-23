@@ -1,0 +1,25 @@
+var shortestCommonSupersequence = function(str1, str2) {
+    return helper(str1,str2)
+};
+
+let helper = (str1,str2,i=0,j=0,memo=[]) => {
+    if (i in memo && j in memo[i]) return memo[i][j]
+    if (memo[i] === undefined) memo[i] = []
+
+    if (i===str1.length || j===str2.length) {
+        memo[i][j] = str1.slice(i) + str2.slice(j)
+    } else {
+        if (str1[i] === str2[j]) {
+            memo[i][j] = str1[i] + helper(str1,str2,i+1,j+1,memo)
+        } else {
+            let a = str1[i] + helper(str1,str2,i+1,j,memo)
+            let b = str2[j] + helper(str1,str2,i,j+1,memo)
+            if (b.length<a.length) a=b
+            memo[i][j] = a
+        }
+    }
+    return memo[i][j]
+}
+
+let str1 = "aaaaaaaa", str2 = "aaaaaaaa"
+console.log(shortestCommonSupersequence(str1,str2))
