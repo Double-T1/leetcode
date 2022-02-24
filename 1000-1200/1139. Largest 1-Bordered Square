@@ -1,0 +1,76 @@
+var largest1BorderedSquare = function(grid) {
+    let bottomRight = [], bottom = [], right = []
+    for (let i=grid.length-1; i>=0; i--) {
+        bottom[i] = [], right[i] = [], bottomRight[i] = [] 
+        for (let j=grid[i].length-1; j>=0; j--) {
+            if (grid[i][j] === 1) {
+                bottom[i][j] = i<grid.length-1? bottom[i+1][j]+1 : 1
+                right[i][j] = j<grid[i].length-1? right[i][j+1]+1 : 1 
+            } else {
+                bottom[i][j] = 0
+                right[i][j] = 0
+            }
+            bottomRight[i][j] = Math.min(bottom[i][j],right[i][j])
+        }
+    }
+
+    let top = [], left = []
+    let ans = 0
+    for (let i=0; i<grid.length; i++) {
+        top[i] = [], left[i] = []
+        for (let j=0; j<grid[i].length; j++) {
+            if (grid[i][j] === 1) {
+                top[i][j] = i>0 ? top[i-1][j]+1 : 1
+                left[i][j] = j>0 ? left[i][j-1]+1 : 1
+            } else {
+                top[i][j] = 0
+                left[i][j] = 0
+            }
+            let max = Math.min(top[i][j],left[i][j])
+            let k = max-1
+            while (k+1>ans) {
+                if (bottomRight[i-k][j-k]>=k+1) {
+                    ans = k+1
+                    break
+                }
+                k--
+            }
+        }
+    }
+    return ans*ans
+};
+
+var largest1BorderedSquare2 = function(grid) {
+    let top = [], left = []
+    for (let i=0; i<grid.length; i++) {
+        top[i] = [], left[i] = []
+        for (let j=0; j<grid[i].length; j++) {
+            if (grid[i][j] === 1) {
+                top[i][j] = i>0 ? top[i-1][j]+1 : 1
+                left[i][j] = j>0 ? left[i][j-1]+1 : 1
+            } else {
+                top[i][j] = 0
+                left[i][j] = 0
+            }
+        }
+    }
+
+    let ans = 0
+    for (let i=0; i<grid.length; i++) {
+        for (let j=0; j<grid[i].length; j++) {
+            let max = Math.min(top[i][j],left[i][j])
+            let k = max-1
+            while (k+1>ans) {
+                if (Math.min(top[i][j-k],left[i-k][j])>=k+1) {
+                    ans = k+1
+                    break
+                }
+                k--
+            }
+        }
+    }
+    return ans*ans
+};
+
+let grid = [[0,1,0,1,1],[1,1,1,1,1],[1,1,0,1,1],[1,1,1,1,0],[0,1,1,1,1],[1,1,1,0,1],[0,1,1,1,1],[1,1,1,0,1]]
+console.log(largest1BorderedSquare2(grid))
