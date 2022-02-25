@@ -1,0 +1,25 @@
+var maxSumSubmatrix = function(matrix, k) {
+    for (let i=0; i<matrix.length; i++) {
+        matrix[i].unshift(0)
+        for (let j=0; j<matrix[i].length; j++) {
+            if(i>0) matrix[i][j] += matrix[i-1][j]
+            if(j>0) matrix[i][j] += matrix[i][j-1]
+            if(i>0 && j>0) matrix[i][j] -= matrix[i-1][j-1]             
+        }
+    }
+    matrix.unshift(new Array(matrix[0].length).fill(0))
+    let ans = Number.MIN_SAFE_INTEGER
+    for (let i=1; i<matrix.length; i++) {
+        for (let j=1; j<matrix[i].length; j++) {
+            let val = matrix[i][j]
+            for (let m=0; m<i; m++) {
+                for (let n=0; n<j; n++) {
+                    let area = val-matrix[m][j]-matrix[i][n]+matrix[m][n]
+                    if (area < k) ans = Math.max(ans,area)
+                    else if (area === k) return k 
+                }
+            }
+        }
+    }
+    return ans
+};
