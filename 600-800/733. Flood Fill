@@ -1,0 +1,58 @@
+//bfs
+var floodFill = function(image, sr, sc, newColor) {
+    let rq = [sr]
+    let cq = [sc]
+    let actionSpace = [[1,0],[0,1],[-1,0],[0,-1]]
+    let oldColor = image[sr][sc]
+    let visited = new Array(image.length).fill().map(() => new Array(image[0].length))
+    visited[sr][sc] = true
+    while (rq.length) {
+        let r = rq.pop()
+        let c = cq.pop()
+        image[r][c] = newColor
+        for (let [i,j] of actionSpace) {
+            if (isValid(image,r+i,c+j,visited,oldColor)) {
+                rq.unshift(r+i)
+                cq.unshift(c+j)
+                visited[r+i][c+j] = true
+            }
+        }
+    }
+    return image
+};
+    
+let isValid = (image,i,j,visited,oldColor) => {
+    return i>=0
+        && i<image.length
+        && j>=0 
+        && j<image[i].length
+        && visited[i][j] === undefined
+        && image[i][j] === oldColor
+}
+
+//dfs
+var floodFill = function(image, sr, sc, newColor) {
+     if (image[sr][sc] !== newColor) dfs(image,image[sr][sc],newColor,sr,sc)
+    return image
+};
+
+let isSameColor = (oldColor, image, r, c) => {
+    return r>=0 &&
+        r<=image.length-1 &&
+        c>=0 &&
+        c<=image[r].length-1 &&
+        image[r][c] === oldColor
+}
+
+let dfs = (image,oldColor,newColor,r,c) => {
+    if (isSameColor(oldColor,image,r,c)) {
+        image[r][c] = newColor
+        dfs(image,oldColor,newColor,r-1,c)
+        dfs(image,oldColor,newColor,r+1,c)
+        dfs(image,oldColor,newColor,r,c-1)
+        dfs(image,oldColor,newColor,r,c+1)
+        return
+    } else {
+        return
+    }
+}
