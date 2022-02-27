@@ -1,0 +1,25 @@
+var widthOfBinaryTree = function(root) {
+    let nq = [root], iq = [0]
+    let ans = 1
+    while (nq.length) {
+        let size = nq.length, r = -1, l = -1, k = -1
+        while (size) {
+            let node = nq.pop()
+            let i = iq.pop()
+            l = l === -1? i : l 
+            r = i 
+            if (node.left) {
+                k = k === -1? 2*i : k
+                nq.unshift(node.left), iq.unshift(2*i-k)
+            }  
+            if (node.right) {
+                k = k === -1? 2*i+1 : k
+                nq.unshift(node.right), iq.unshift(2*i+1-k)
+            }
+            size--
+        }
+        ans = Math.max(ans,r-l+1)
+    }
+    
+    return ans
+};
