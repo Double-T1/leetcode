@@ -1,0 +1,14 @@
+var prefixCount = function(words, pref) {
+    let ans = 0
+    for (let word of words) {
+        ans += check(word,pref)
+    }
+    return ans
+};
+
+let check = (word,pref) => {
+    for (let i=0; i<pref.length; i++) {
+        if (word[i] !== pref[i]) return 0
+    }
+    return 1
+}
