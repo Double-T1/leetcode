@@ -1,0 +1,30 @@
+var minSteps = function(s, t) {
+    //presume s to become t
+    let map = new Map()
+    for (let i=0; i<t.length; i++) {
+        if (!map.has(t[i])) map.set(t[i],0)
+        let x = map.get(t[i])
+        map.set(t[i],x+1)
+    }
+
+    let count = 0
+    for (let i=0; i<s.length; i++) {
+        if (map.has(s[i])) {
+            let x = map.get(s[i])
+            map.set(s[i],x-1)
+        } else {
+            count++
+        }
+    }
+
+    for (let value of map.values()) {
+        count += Math.abs(value)
+    }
+
+    return count
+};
+/**
+1. all we can do is append chars to strings => make it solely appending and deleting on one string
+find out the difference, what to delete and what to add?
+delete whatever 
+*/
