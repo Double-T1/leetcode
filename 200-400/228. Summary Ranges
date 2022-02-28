@@ -1,0 +1,18 @@
+var summaryRanges = function(nums) {
+    let ans = [], ele = []
+    for (let i=0; i<nums.length; i++) {
+        if (i !== 0 && nums[i] === nums[i-1]+1) {
+            ele[1] = nums[i]
+        } else {
+            help(ele,ans)
+            ele = [nums[i]]
+        }
+    }
+    help(ele,ans)
+    return ans
+};
+
+let help = (ele,ans) => {
+    if(ele.length>1) ans.push(`${ele[0]}->${ele[1]}`)
+    else if (ele.length === 1) ans.push(`${ele[0]}`)
+}
