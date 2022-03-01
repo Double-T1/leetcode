@@ -1,0 +1,21 @@
+var minSteps = function(s, t) {
+    let map = new Map()
+    for (let c of t) {
+        if (!map.has(c)) map.set(c,0)
+        let x = map.get(c)
+        map.set(c,x+1)
+    }
+    
+    let count = 0
+    for (let c of s) {
+        if (map.has(c)) {
+            let x = map.get(c)
+            if (x === 1) map.delete(c)
+            else map.set(c,x-1)
+        } else {
+            count++
+        }
+    }
+    
+    return count
+};
