@@ -1,0 +1,9 @@
+//O(n)
+var countBits = function(n) {
+    let ans = [0], power = 1, accu = 1
+    for (let i=1; i<=n; i++) {
+        if (i>accu) power *= 2, accu += power
+        ans[i] = ans[i-power]+1
+    }
+    return ans
+};
