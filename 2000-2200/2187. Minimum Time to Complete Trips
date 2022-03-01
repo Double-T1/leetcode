@@ -1,0 +1,10 @@
+var minimumTime = function(time, totalTrips) {
+    let left = 0, right = 10**14 //find the minimum time that is equal to totalTrips
+    while (left<right) {
+        let mid = left + Math.floor((right-left)/2)
+        let y = time.reduce((accu,ele) => accu+Math.floor(mid/ele),0)
+        if (y>=totalTrips) right = mid
+        else left = mid+1
+    }
+    return right
+};
