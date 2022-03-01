@@ -1,3 +1,90 @@
+//heap
+//TLE: O(nlogn+klogn)
+var minimumTime = function(time, totalTrips) {
+    let minHeap = [] //[totalTime,oneTime], sort by totalTime
+    for (let t of time) {
+        insert(minHeap,[0,t])
+    }
+
+    let count = 0
+    for (let i=0; i<totalTrips; i++) {
+        let cur = removeTop(minHeap)
+        // console.log(minHeap)
+        count = Math.max(count,cur[0]+cur[1])
+        insert(minHeap,[cur[0]+cur[1],cur[1]])
+    }
+    return count
+};
+
+
+let insert = (minHeap,val) => {
+    minHeap.push(val)
+    let currentIndex = minHeap.length-1
+
+    //bubble up
+    while (currentIndex>0) {
+        let parentIndex = currentIndex%2 === 1? (currentIndex-1)/2 : (currentIndex-2)/2
+        if (isSmaller(val,minHeap[parentIndex])) {
+            swap(minHeap,parentIndex,currentIndex)
+            currentIndex = parentIndex
+        } else {
+            break
+        }  
+    } 
+    return
+}
+
+let removeTop = (minHeap) => {
+    let ans = minHeap[0]
+    swap(minHeap,0,minHeap.length-1)
+    minHeap.pop()
+    let currentIndex = 0
+    let val = minHeap[0]
+    
+    //bubble down
+    while (2*currentIndex+1<minHeap.length) {
+        let index1 = 2*currentIndex+1
+        let index2 = 2*currentIndex+2
+        let child1 = minHeap[index1]
+        let child2 = index2<minHeap.length? minHeap[index2] : undefined
+        
+        if (!child2) {
+            if (isSmaller(child1,val)) {
+                swap(minHeap,index1,currentIndex)
+                currentIndex = index1
+            } else {
+                break
+            }
+        } else {
+            if (isSmaller(child1,child2) && isSmaller(child1,val)) {
+                swap(minHeap,index1,currentIndex)
+                currentIndex = index1
+            } else if (isSmaller(child2,val)) {
+                swap(minHeap,index2,currentIndex)
+                currentIndex = index2
+            } else {
+                break
+            }
+        }
+    }
+    return ans
+}
+
+let swap = (arr,a,b) => {
+    let temp= arr[a]
+    arr[a] = arr[b]
+    arr[b] =temp
+    return
+}
+
+//whether a is smaller than b
+let isSmaller = (a,b) => {
+    if (a[0]+a[1]<b[0]+b[1]) return true
+    return false
+}
+
+//O(nlog(k^2)) => max k happens to be 10*7 here, thus the upper bound of 10^14
+//=> O(nlogk)
 var minimumTime = function(time, totalTrips) {
     let left = 0, right = 10**14 //find the minimum time that is equal to totalTrips
     while (left<right) {
