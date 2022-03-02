@@ -1,3 +1,5 @@
+//n = words.length, k=s.length, m=the length of the largest word in words
+//time: O((log(k)*n*m)
 var numMatchingSubseq = function(s, words) {
     let map = new Map()
     for (let i=0; i<s.length; i++) {
@@ -35,3 +37,58 @@ let binarySearch = (arr,target,left=0,right=arr.length) => {
     }
     return arr[right]
 }
+
+//time: O(k*n)
+//TLE
+var numMatchingSubseq = function(s, words) {
+    let len = s.length, count = 0
+    for (let word of words) {
+        if (word.length>len) continue
+        let j = 0
+        for (let i=0; i<len; i++) {
+            if(s[i] === word[j]) j++
+            if (j === word.length) {
+                count++
+                break
+            }
+        }
+    }
+    return count
+};
+
+class Word{
+    constructor(w='',i=0) {
+        this.w = w
+        this.i = i
+    }
+}
+
+//time: O(k*n) but not TLE like above
+//becuase solution is guaranteed to be O(k*n) no matter what
+//solution 3, however, rarely is O(k*n). It's best base would be O(k+n), but it depends on the structure
+var numMatchingSubseq = function(s, words) {
+    let map = new Map()
+    //O(k)
+    for (let char of s) {
+        if(!map.has(char)) map.set(char,[])
+    }
+    //O(n)
+    for (let w of words) {
+        if (map.has(w[0])) {
+            map.get(w[0]).push(new Word(w))
+        }
+    }
+    let count = 0
+    //O(k*n)
+    for (let c of s) {
+        let arr = map.get(c)
+        map.set(c,[])
+        for (let node of arr) {
+            if (++node.i === node.w.length) count++
+            else if (map.has(node.w[node.i])) {
+                map.get(node.w[node.i]).push(node)
+            }
+        }
+    }
+    return count
+};
