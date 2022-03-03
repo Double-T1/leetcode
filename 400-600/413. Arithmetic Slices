@@ -1,0 +1,24 @@
+var numberOfArithmeticSlices = function(nums) {
+    if (nums.length<3) return 0
+    let prevDiff = NaN, curLen = 1, curCount = 0, total = 0
+    for (let i=1; i<nums.length; i++) {
+        if (prevDiff === nums[i]-nums[i-1]) {
+            curLen++
+            if (curLen>=3) curCount++, total += curCount
+        } else {
+            curLen = 2, curCount = 0, prevDiff = nums[i]-nums[i-1]
+        }
+    }
+    return total
+};
+
+/**
+subarrays length >= 3
+curDiff, curLen, curCount
+totalCount
+if (curDiff === prevDiff)
+    curLen++
+    if(curLen>=3) curCount++, total += curCount
+else 
+    curLen = 1, curCount = 0, prevDiff = curDiff 
+*/
