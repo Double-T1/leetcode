@@ -1,0 +1,27 @@
+//O(n*19) + O(k^2) => O(n+k^2)
+var minimumFinishTime = function(tires, changeTime, numLaps) {
+    let optimal = []
+    //the laps is at most 19 because given by constraint that t[1]>=2 && t[0]>=1 && changeTime<10^5
+    //which we conclude that at lap 19 => 1*(2^18) > 10^5 + 2, hence no further probing is required 
+    for (let t of tires) {
+        for (let laps=0,time=t[0],tot=t[0]; laps<19; laps++) {
+            if (optimal[laps] === undefined) optimal[laps] = Number.MAX_SAFE_INTEGER
+            optimal[laps] = Math.min(optimal[laps],tot)
+            time *= t[1]
+            if (time>=t[0]+changeTime) break
+            tot += time
+        }
+    }
+    return helper(tires,changeTime,numLaps,optimal)
+};
+
+let helper = (tires,changeTime,laps,optimal,memo=[]) => {
+    if (laps === 0) return -changeTime
+    if (laps in memo) return memo[laps]
+    let ans = Number.MAX_SAFE_INTEGER
+    for (let i=1; i<=Math.min(laps,optimal.length); i++) {
+        ans= Math.min(ans,helper(tires,changeTime,laps-i,optimal,memo) + changeTime + optimal[i-1])
+    }
+    memo[laps] = ans
+    return ans
+}
