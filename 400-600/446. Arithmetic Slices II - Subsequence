@@ -1,0 +1,40 @@
+//time:O(n^2)
+//space:O(n^2)
+var numberOfArithmeticSlices = function(nums) {
+    let dp = [], total = 0
+    for (let i=0; i<nums.length; i++) {
+        dp[i] = []
+        for (let j=0; j<i; j++) {
+            let diff = nums[i]-nums[j],count = 0
+            if (dp[i][diff] === undefined) dp[i][diff] = [0,0]
+            dp[i][diff][0]++
+            if (dp[j][diff]) {
+                count = dp[j][diff][0] + dp[j][diff][1]
+                dp[i][diff][1] += count 
+            }
+            total += count
+        }
+    }
+    return total
+};
+
+//or with hashmap
+//faster in reality, same in complexity analysis
+var numberOfArithmeticSlices = function(nums) {
+    let dp = [], total = 0
+    for (let i=0; i<nums.length; i++) {
+        dp[i] = new Map()
+        for (let j=0; j<i; j++) {
+            let diff = nums[i]-nums[j],count = 0
+            if (!dp[i].has(diff)) dp[i].set(diff,[0,0])
+            dp[i].get(diff)[0]++
+            if (dp[j].has(diff)) {
+                let arr = dp[j].get(diff)
+                count = arr[0] + arr[1]
+                dp[i].get(diff)[1] += count
+                total += count
+            }
+        }
+    }
+    return total
+};
