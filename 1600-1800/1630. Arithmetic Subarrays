@@ -1,0 +1,28 @@
+var checkArithmeticSubarrays = function(nums, l, r) {
+    let ans = []
+    for (let i=0; i<l.length; i++) {
+        ans[i] = isAri(nums,l[i],r[i])
+    }
+    return ans
+};
+
+let isAri = (arr,left,right) => {
+    if (right-left<2) return true
+    let sub = arr.slice(left,right+1)
+    sub.sort((a,b) => a-b)
+    let diff = sub[1]-sub[0]
+    for (let i=2; i<sub.length; i++) {
+        if (sub[i]-sub[i-1] !== diff) return false
+    }
+    return true
+}
+
+/**
+brute force/exhuastion:
+sort every subarrays accordingly and check if they're arithmetic
+k = l.length = r.length, n = nums.length
+O(k*((n-k) + (n-k)log(n-k))
+
+
+
+*/
