@@ -1,0 +1,17 @@
+var champagneTower = function(poured, query_row, query_glass) {
+    let x = helper(query_row,query_glass,poured)
+    return x>1 ? 1 : x
+};
+
+let helper = (i,j,poured,memo=[]) => {
+    if (j<0 || j>i) return 0
+    if (i === 0 && j === 0) return poured
+    if (i in memo && j in memo[i]) return memo[i][j]
+    if (memo[i] === undefined) memo[i] = []
+    let a = helper(i-1,j-1,poured,memo)
+    let b = helper(i-1,j,poured,memo)
+    a = a>1 ? a-1 : 0
+    b = b>1 ? b-1 : 0
+    memo[i][j] = a*0.5 + b*0.5
+    return memo[i][j]
+}
