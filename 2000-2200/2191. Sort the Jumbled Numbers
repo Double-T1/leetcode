@@ -1,0 +1,25 @@
+var sortJumbled = function(mapping, nums) {
+    let convert = (num) => {
+        let str = num.toString(), i=0, converted = 0
+        //trim the prefix zeros
+        while (mapping[parseInt(str[i])] === 0) i++
+        while (i<str.length) {
+            converted = mapping[parseInt(str[i])] + converted*10
+            i++
+        }
+        return converted
+    }
+
+    let map = new Map()
+    for (let i=0; i<nums.length; i++) {
+        if (map.has(nums[i])) continue
+        map.set(nums[i],convert(nums[i]))
+    }
+    
+    nums.sort((a,b) => {
+        if (map.get(a) < map.get(b)) return -1
+        else return 1
+    })
+    
+    return nums
+};
