@@ -1,0 +1,30 @@
+var getAncestors = function(n, edges) {
+    let adj = new Array(n).fill().map(() => new Array())
+    let degree = new Array(n).fill(0)
+    for (let [u,v] of edges) {
+        adj[u].push(v)
+        degree[v]++
+    }
+    let queue = []
+    for (let i=0; i<degree.length; i++) {
+        if (degree[i]===0) queue.push(i)
+    } 
+    
+    let supArr = new Array(n).fill().map(() => new Set())
+    while (queue.length) {
+        let size = queue.length
+        while (size) {
+            size--
+            let v = queue.shift()
+            supArr[v] = [...supArr[v]].sort((a,b) => a-b)
+            if (adj[v] === undefined) continue
+            for (let end of adj[v]) {
+                degree[end]--
+                for (let ele of supArr[v]) supArr[end].add(ele)
+                supArr[end].add(v)
+                if (degree[end] === 0) queue.push(end)
+            }
+        }
+    }
+    return supArr
+};
