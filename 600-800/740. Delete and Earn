@@ -1,0 +1,31 @@
+var deleteAndEarn = function(nums) {
+    let map = new Map()
+    for (let num of nums) {
+        if (!map.has(num)) map.set(num,0)
+        map.set(num,map.get(num)+num)
+    }
+    let arr = [...map].sort((a,b) => a[0]-b[0])
+    let twoBeforeMax = 0, oneBeforeMax = arr[0][1]
+    let sum = oneBeforeMax
+    for (let i=1; i<arr.length; i++) {
+        let newTwo = Math.max(oneBeforeMax,twoBeforeMax)
+        let newOne = newTwo+arr[i][1]
+        if (arr[i][0]-1 === arr[i-1][0]) {
+            newOne = twoBeforeMax + arr[i][1]
+        } 
+        oneBeforeMax = newOne, twoBeforeMax = newTwo
+        sum = Math.max(oneBeforeMax,sum)
+    }
+    return sum
+};
+/**
+constraint: O(n) or O(nlogn)
+
+observation: 
+1. each choosen value = value*(value amount)
+2. at least two group, with group1 of value
+and group2 of value+1 and valu
+e-1
+
+what about non-contiguous values?
+*/
