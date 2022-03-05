@@ -1,0 +1,21 @@
+//time: O(n)
+//space: O(n)
+//there is a solution with O(1) space and O(n) time => sliding window/two pointer variant
+var numSubarraysWithSum = function(nums, goal) {
+    let map = new Map(), count = 0, sum = 0
+    map.set(0,1)
+    for (let i=0; i<nums.length; i++) {
+        sum += nums[i]
+        let comp = sum-goal
+        if (map.has(comp)) count += map.get(comp)
+        
+        if (!map.has(sum)) map.set(sum,0)
+        map.set(sum,map.get(sum)+1)
+    }
+    return count
+};
+
+/**
+constraint: O(n) or O(nlogn)
+pfs = s[j]-s[i-1]
+*/
