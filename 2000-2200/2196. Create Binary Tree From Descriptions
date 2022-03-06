@@ -1,0 +1,17 @@
+var createBinaryTree = function(descriptions) {
+    let map = new Map(), set = new Set()
+    for (let [p,c,left] of descriptions) {
+        if (!map.has(p)) map.set(p,new TreeNode(p))
+        if (!map.has(c)) map.set(c,new TreeNode(c))
+        let pNode = map.get(p), cNode = map.get(c)
+        if (left) pNode.left = cNode
+        else pNode.right = cNode
+        
+        set.add(p)
+    }
+    for (let [p,c,left] of descriptions) {
+        set.delete(c)
+    }
+    return map.get(...set)
+};
+    
