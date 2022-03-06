@@ -1,0 +1,38 @@
+//time: O(n*(2n-1)) = O(n^2)
+//the idea is that presented with a n-1 array, there are 2*(n-1)+1 slots to insert a P
+//and for each P, there are 2*(n-1)+1-i slots to insert the corresponding D
+var countOrders = function(n) {
+    let mod = 10**9+7   
+    let helper = (n,memo=[]) => {
+        if (n === 1) return 1
+        if (n in memo) return memo[n]
+        let slotForP = (n-1)*2+1, sum = 0
+        for (let i=0; i<slotForP; i++) {
+            sum += helper(n-1,memo)*(slotForP-i)
+            sum %= mod
+        }
+        memo[n] = sum
+        return sum
+    }
+    
+    return helper(n)
+};
+
+//O(n)
+var countOrders = function(n) {
+    let mod = 10**9+7   
+    let dp = [,1]
+    for (let i=2; i<=n; i++) {
+      let x = 2*i-1
+      dp[i] = (dp[i-1]+x+x-1)%mod
+    }
+    
+    let helper = (n,dp,memo=[]) => {
+        if (n === 1) return 1
+        if (n in memo) return memo[n]
+        memo[n] = (helper(n-1,dp,memo)*dp[n])%mod
+        return memo[n]
+    }
+    
+    return helper(n,dp)
+};
