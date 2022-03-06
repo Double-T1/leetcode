@@ -1,0 +1,19 @@
+var cellsInRange = function(s) {
+    let base = 'A'.charCodeAt(0)
+    let toNum = (char) => {
+        return char.charCodeAt(0)-base
+    }
+    let toCap = (num) => {
+        return String.fromCharCode(num+base)
+    }
+    
+    let ans = []
+    let end = toNum(s[3])
+    for (let i=toNum(s[0]); i<=end; i++) {
+        for (let j=parseInt(s[1]); j<=parseInt(s[4]); j++) {
+            ans.push(toCap(i)+j.toString())
+        }
+    }
+    return ans
+};
+
