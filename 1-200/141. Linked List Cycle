@@ -1,3 +1,13 @@
+//time: O(m+n) 
+//m being the length of non-cycle part of the list
+//n being the length of the cycle part
+//it is guaranteed to only required at most m+n steps to determine if there's a cycle
+//scenario 1: no cycle => then n=0, after m/2 steps, fast becomes null and we know there's no cycle
+//scenario 2: has cycle => at the m+1 step, slow will land on the start of the cycle (the node that links to the cycle and non-cycle)
+//and fast could be on any node of in the cycle, meaning it could have a distance(going forward) with slow ranging from n-1 to 0
+//if the dist is 0, then no further action is reqired
+//since after each iteration, slow and fast will get closer by one unit, then a n-k gap will require n-k iterations to abridge
+//hence, at most we will have n-1 iterations => a total of m+1+n-1 steps => total of m+n steps
 var hasCycle = function(head) {
     if (!head) return false
     let slow = head, fast = head
