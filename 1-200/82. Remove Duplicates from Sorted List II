@@ -1,0 +1,19 @@
+var deleteDuplicates = function(head) {
+    let pseudoHead = new ListNode(), node = pseudoHead
+    node.next = head
+    while(node.next && node.next.next) {
+        if (node.next.val === node.next.next.val) {
+            let val = node.next.val, startOfNew = node.next.next.next
+            while (startOfNew && startOfNew.val === val) {
+                startOfNew = startOfNew.next
+            }
+            node.next = startOfNew
+        } else {
+            node = node.next
+        }
+    }
+    return pseudoHead.next
+};
+/**
+if the next node val === cur node val, delete the next node
+*/
