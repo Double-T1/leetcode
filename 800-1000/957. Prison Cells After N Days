@@ -1,0 +1,22 @@
+var prisonAfterNDays = function(cells, n) {
+    let map = new Map(), arr = []
+    let state = convert(cells,0,arr)
+    cells = arr
+    map.set(state,1)
+    let day = 2, tab = [,state]
+    while (day<=n) {
+        let arr = []
+        state = convert(cells,0,arr)
+        cells = arr
+        if (map.has(state)) {
+            let remaining = n-day+1
+            let cycleLen = day - map.get(state)
+            let res = remaining%cycleLen === 0? cycleLen : remaining%cycleLen
+            return toArr(tab[res])
+        }
+        tab.push(state), map.set(state,day), day++
+    }
+    
+    return toArr(tab.pop())
+};
+
