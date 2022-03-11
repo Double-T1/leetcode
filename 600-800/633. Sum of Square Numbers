@@ -1,4 +1,4 @@
-//time: O(32)
+//time: O(trunc(sqrt(2**31-1))) => O(trunc(sqrt(c))) => O(c)
 let arch = new Set(), i=0, sq = i**2, upper = 2**31-1
 while (sq<=upper) {
     arch.add(sq)
@@ -25,7 +25,7 @@ from 0,1,4,9,16,25,
 */
 
 //the better way
-//time: O(logc) 
+//time: O(logc + sqrt(c)) => O(c) 
 //and given that c <=2**31-1, logc is most definitely smaller than or equal to 31
 var judgeSquareSum = function(c) {
     let left = -1, right = c
