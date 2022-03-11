@@ -1,0 +1,35 @@
+var rotateRight = function(head, k) {
+    if (!head) return head
+    let len = 1, node = head
+    while (node && node.next) {
+        node = node.next
+        len++
+    }
+    k %= len
+    if(k===0) return head
+    let count = len-k-1, last = node
+    node = head
+    while (count) {
+        node = node.next
+        count--
+    }
+    let ans = node.next
+    last.next = head
+    node.next = null
+    return ans
+};
+
+/**
+1-indexed
+1. count the length of the list
+2. rotate the list by k%len spot
+3. to rotate: count (len-k) nodes
+prepare: 
+1. the pointer of the last node
+2. the pointer of the first node
+3. the pointer of the len-k, and len-k+1 node
+
+
+
+filler
+*/
