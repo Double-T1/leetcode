@@ -1,0 +1,48 @@
+//time: O(32)
+let arch = new Set(), i=0, sq = i**2, upper = 2**31-1
+while (sq<=upper) {
+    arch.add(sq)
+    i++
+    sq = i**2
+}
+
+var judgeSquareSum = function(c) {
+    for (let k=0, ksq=0; ksq<=c; k++, ksq=k**2) {
+        let comp = c-ksq
+        if (arch.has(comp)) return true
+    }
+    return false
+};
+
+
+/**
+assuming a !== b
+brute force: check all the possibility => O(c) 
+how does Math.sqrt works??
+
+or maybe hardcode all the possible squares?
+from 0,1,4,9,16,25,
+*/
+
+//the better way
+//time: O(logc) 
+//and given that c <=2**31-1, logc is most definitely smaller than or equal to 31
+var judgeSquareSum = function(c) {
+    let left = -1, right = c
+    //find the biggest number whoose square is smaller than or equal to c
+    while (left<right) {
+        let mid = left + Math.ceil((right-left)/2)
+        if (mid**2<=c) left = mid
+        else right = mid-1
+    } 
+    left = 0, sum = left**2 + right**2
+    while (sum !== c && left<=right) {
+        if (sum>c) {
+            right--
+        } else {
+            left++
+        }
+        sum = left**2 + right**2
+    }
+    return sum === c
+};
