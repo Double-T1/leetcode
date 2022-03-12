@@ -1,0 +1,30 @@
+var minimalKSum = function(nums, k) {
+    let max = BigInt(k), sum = BigInt(((k+1)*k)/2), excluded = new Set()
+    for (let num of nums) {
+        num = BigInt(num)
+        if (num<=max) {
+            if (!excluded.has(num)) {
+                excluded.add(num)
+                max++
+                while(excluded.has(max)) {
+                    max++
+                }
+                sum = sum + max - num
+            } 
+        } else {
+            excluded.add(num)          
+        }
+    }
+    return sum
+};
+
+/**
+constraint: O(n) => cannot O(k) has to be O(logk)
+all numbers are positive
+append k unique nums such that the total sum is minimal => just append the non-existent k numbers (from 1....)
+=> find the smallest k numbers that doesn't appear in nums and sum them up
+
+1. prepare from 1 to k O(k)
+2. whenever encounter similar number in set, make it the largest number in set (record the max)
+3. sum it up
+*/
