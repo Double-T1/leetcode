@@ -1,0 +1,16 @@
+var copyRandomList = function(head) {
+    if(!head) return null
+    let map = new Map(), node=head
+    while(node){
+        map.set(node,new ListNode(node.val))
+        node = node.next
+    }
+    let dup = map.get(head)
+    node =head
+    while (node) {
+        if(node.next) dup.next = map.get(node.next)
+        if(node.random) dup.random =map.get(node.random)
+        dup =dup.next, node=node.next
+    }
+    return map.get(head)
+};
