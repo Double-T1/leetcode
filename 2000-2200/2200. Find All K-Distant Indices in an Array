@@ -1,0 +1,38 @@
+var findKDistantIndices = function(nums, key, k) {
+    let ans = [], last = -1
+    for (let i=0; i<nums.length; i++) {
+        if (nums[i] === key) {
+            //range: [i-k,i+k]
+            for (let m=Math.max(Math.max(i-k,0),last+1); m<=Math.min(i+k,nums.length-1); m++) {
+                ans.push(m)
+            }
+            last= ans[ans.length-1]
+            if (last === nums.length-1) break
+        }
+    }
+    return ans
+};
+
+
+/**
+1. find all the elements that are key
+2. find the range each key covers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+filler
+*/
