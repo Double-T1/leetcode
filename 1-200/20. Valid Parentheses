@@ -1,0 +1,16 @@
+var isValid = function(s) {
+    let guide = {
+        ")" : "(",
+        "]" : "[",
+        "}" : "{"
+    }    
+    let stack = []
+    for (let ele of s) {
+        if (guide[ele]) {
+            if (guide[ele] !== stack.pop()) return false 
+        } else {
+            stack.push(ele)
+        }
+    }
+    return stack.length === 0
+};
