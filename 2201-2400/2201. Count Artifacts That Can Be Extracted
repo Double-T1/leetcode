@@ -1,0 +1,20 @@
+var digArtifacts = function(n, artifacts, dig) {
+    let memo = []
+    for (let [r,c] of dig) {
+        if (memo[r] === undefined) memo[r] = []
+        memo[r][c] = true
+    }
+    let count = artifacts.length
+    for (let [r1,c1,r2,c2] of artifacts) {
+        for (let m=r1; m<=r2; m++) {
+            for (let j=c1; j<=c2; j++) {
+                if (!memo[m] || !memo[m][j]) {
+                    count--
+                    m = r2
+                    break
+                }
+            }
+        }
+    }
+    return count
+};
