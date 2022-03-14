@@ -1,0 +1,27 @@
+var simplifyPath = function(path) {
+    let stack = [], cur = ''
+    for (let i=0; i<path.length; i++) {
+        let ele = path[i]
+        //ele could be /, ., alphanumberic, _
+        if (ele === '/') {
+            if (cur.length>0) stack.push(cur), cur = ''
+        } else if (cur.length===0 && ele === '.') {
+            cur = '.'
+            while (path[i+1] === '.') i++, cur += '.'
+            if (path[i+1] !== '/' && path[i+1] !== undefined) continue 
+            switch (cur.length) {
+                case 1:
+                    cur = ''
+                    break
+                case 2:
+                    stack.pop(), cur = ''
+                    break
+                default:                  
+            }
+        } else {
+            cur += ele 
+        }
+    }   
+    if (cur.length !== 0) stack.push(cur)
+    return '/' + stack.join('/')
+};
