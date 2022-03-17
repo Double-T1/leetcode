@@ -1,0 +1,37 @@
+//time: O(n)
+//space: O(n)
+var scoreOfParentheses = function(s) {
+    let stack = []
+    for (let ele of s) {
+        if (ele === '(') {
+            stack.push(ele)
+        } else {
+            let sum = 0
+            while (stack[stack.length-1] !== '(') {
+                sum += stack.pop()
+            }
+            stack.pop()
+            if (sum>0) sum *= 2
+            else sum = 1
+            stack.push(sum)
+        }
+    }
+    return stack.reduce((accu,ele) => accu+ele,0)
+};
+
+//time: O(n)
+//space: O(1)
+var scoreOfParentheses = function(s) {
+    let ans = 0, bal = 0
+    for (let i=0; i<s.length; i++) {
+        if (s[i] === "(") {
+            bal++
+        } else {
+            bal--
+            if (s[i-1] === '(') {
+                ans += (1<<bal)
+            }
+        }
+    }
+    return ans
+};
