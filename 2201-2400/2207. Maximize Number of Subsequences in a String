@@ -1,0 +1,32 @@
+//edge case where pattern0 === pattern1
+var maximumSubsequenceCount = function(text, pattern) {
+    let ans = 0, count = [0,0]
+    for (let i=0; i<text.length; i++) {
+        if (text[i] === pattern[0]) {
+            count[0]++
+        } 
+        if (text[i] === pattern[1]) {
+            ans += count[0]
+            if (pattern[0] === pattern[1]) ans--
+            count[1]++
+        }
+    }
+    ans += Math.max(count[0],count[1])
+    return ans
+};
+
+/**
+constraint: O(n) or nlogn 
+subseq!!!
+goal: maximum times
+
+for p[0] max is any spot before any resemblance of p[1] appear in text
+=> the start of text guarantee that
+for p[1] => the end of the text 
+key: 
+1. count the already exisitng subseq
+2. find max of p[0] at front or p[1] at end 
+p[0] at front = amount of p[1] in text
+vice versas
+
+*/
