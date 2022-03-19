@@ -1,0 +1,37 @@
+var numberOfBoomerangs = function(points) {
+    let maps = new Array(points.length).fill().map(() => new Map())
+    for (let i=0; i<points.length-1; i++) {
+        for (let j=i+1; j<points.length; j++) {
+            let dist = getSqDist(points[i],points[j])
+            addToMap(maps[i],dist)
+            addToMap(maps[j],dist)
+        }
+    }
+    let ans = 0
+    for (let map of maps) {
+        for (let count of map.values()) {
+            ans += count*(count-1)
+        }
+    }
+    return ans
+};
+
+let addToMap = (map,dist) => {
+    if (!map.has(dist)) map.set(dist,0)
+    map.set(dist,map.get(dist)+1)
+    return
+}
+
+
+let getSqDist = (a,b) => {
+    return (a[0]-b[0])**2+(a[1]-b[1])**2
+}
+
+/**
+constraint: O(n^3)
+the order of the tuple matters => find i, then find its j and k
+find the distance for any i to random j,k => O(n^2) use map to store
+
+
+
+*/
