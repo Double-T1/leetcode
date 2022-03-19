@@ -1,0 +1,20 @@
+var findAndReplacePattern = function(words, pattern) {
+    if (pattern.length === 1) return words
+    let len = pattern.length, arr = []
+    for (let word of words) {
+        let mapped = [], biject = [], i=0
+        while (i<len) {
+            const w=convert(word[i]), p=convert(pattern[i])
+            if (mapped[w]) {
+                if (biject[p] !== w) break
+            } else {
+                if (biject[p] !== undefined) break
+                biject[p] = w
+                mapped[w] = true
+            }
+            i++
+        }
+        if (i === len) arr.push(word)
+    }
+    return arr
+};
