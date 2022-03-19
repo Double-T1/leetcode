@@ -1,0 +1,67 @@
+var halveArray = function(nums) {
+    let maxHeap = [], sum = 0
+    for (let num of nums) {
+        insert(maxHeap,num)
+        sum += num
+    }
+    let half = sum/2
+    let count = 0
+    console.log(sum,half)
+    while (half>0) {
+        let num = removeTop(maxHeap)
+        let num2 = num/2
+        half -= num2
+        insert(maxHeap,num2)
+        count++
+    }
+    return count
+};
+
+let removeTop = (maxHeap) => {
+    swap(maxHeap,0,maxHeap.length-1)
+    const ans = maxHeap.pop()
+    let current = 0, val = maxHeap[0]
+    while (2*current+1<maxHeap.length) {
+        let index1 = 2*current+1, index2 = 2*current+2
+        let child1 = maxHeap[index1], child2 = maxHeap[index2]
+        if (child2 === undefined) {
+            if (child1>val) swap(maxHeap,current,index1), current = index1
+            else break
+        } else {
+            if (child1>child2 && child1>val) swap(maxHeap,current,index1),current=index1
+            else if (child2>val) swap(maxHeap,current,index2),current=index2
+            else break
+        }
+    }
+    return ans
+}
+
+let insert = (maxHeap,val) => {
+    maxHeap.push(val)
+    let current = maxHeap.length-1
+    while (current>0) {
+        let parent = current%2 === 1 ? (current-1)/2 : (current-2)/2
+        if (maxHeap[parent]<val) {
+            swap(maxHeap,current,parent)
+            current = parent
+        } else {
+            break
+        }
+    }
+    return 
+}
+
+let swap = (arr,a,b) => {
+    let temp = arr[a]
+    arr[a] = arr[b]
+    arr[b] = temp
+    return
+}
+
+
+/**
+constraint: O(n) or nlogn
+goal: reduce till the sum is smaller than or equal to half
+
+greedy => always reduce/divide the biggest number => heap?? 
+*/
