@@ -1,0 +1,25 @@
+var minDominoRotations = function(tops, bottoms) {
+    let ans = Math.min(validate(tops[0],tops,bottoms),validate(bottoms[0],tops,bottoms),validate(tops[0],bottoms,tops),validate(bottoms[0],bottoms,tops))
+    return ans === tops.length+1? -1 : ans
+};
+
+let validate = (prev,tops,bottoms) => {
+    let count = 0, len = tops.length
+    for (let i=0; i<len; i++) {
+        if (tops[i] === prev) count++
+        else if (bottoms[i] !== prev) {
+            count = len+1
+            break
+        }
+    }
+    return count === len+1? count : Math.min(count,len-count) 
+}
+
+/**
+O(n)
+1. find the number to rotate for 
+=> the the number that exists at each index combining both top and bottom
+2. len - amount
+
+
+*/
