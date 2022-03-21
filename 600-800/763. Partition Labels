@@ -1,0 +1,23 @@
+var partitionLabels = function(s) {
+    let end = new Array(26).fill(-1)
+    for (let i=0; i<s.length; i++) {
+        end[convert(s[i])] = i
+    }
+
+    let ans = [], current = 0, start = 0
+    for (let i=0; i<s.length; i++) {
+        let index = convert(s[i])
+        if (end[index] === i && current===i) {
+            ans.push(current-start+1)
+            current++
+            start = current
+        } else {
+            current = Math.max(end[index],current)
+        }
+    }
+    return ans
+};
+
+let convert = c => {
+    return c.charCodeAt(0) - 'a'.charCodeAt(0)
+}
