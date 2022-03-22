@@ -1,0 +1,27 @@
+//maximize the minimum distance
+//time: O(nlogn + nlogm)
+//m is the biggest element is pos - smallest element in pos
+var maxDistance = function(position, m) {
+    position.sort((a,b) => a-b)
+    let left = -1, right = position[position.length-1]-position[0]
+    while (left<right) {
+        let mid = left + Math.ceil((right-left)/2)
+        if (helper(position,mid)>=m) {
+            left = mid
+        } else {
+            right = mid-1
+        }
+    }
+    return right
+};
+
+let helper = (position,mid) => {
+    let cur = position[0], count = 1
+    for (let i=1; i<position.length; i++) {
+        if (position[i]>=cur+mid) {
+            cur = position[i]
+            count++
+        }
+    }
+    return count
+}
