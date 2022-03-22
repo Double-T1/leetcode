@@ -1,0 +1,21 @@
+var getSmallestString = function(n, k) {
+    let ans = '', num = 1
+    while (n) {
+        let buffer = (n-1)*26
+        if (num===1 && buffer>=k-1) {
+            ans += 'a'
+            k--
+        } else if (num === 26) {
+            ans += 'z'
+        } else {
+            ans += numToChar(k-buffer)
+            num = 26
+        }
+        n--
+    }
+    return ans
+};
+
+let numToChar = num => {
+    return String.fromCharCode('a'.charCodeAt(0) + num - 1)
+}
