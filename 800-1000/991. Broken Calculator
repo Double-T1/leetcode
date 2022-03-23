@@ -1,0 +1,31 @@
+//DP
+//time: O(2*target) => O(target) => TLE
+var brokenCalc = function(startValue, target) {
+    return helper(startValue,target)
+};
+
+let helper = (sv,target,memo=new Map()) => {
+    if (sv >= target) return sv-target
+    if (sv === 0) return Number.MAX_SAFE_INTEGER
+    
+    if (memo.has(sv)) return memo.get(sv)
+    memo.set(sv,Number.MAX_SAFE_INTEGER)
+    memo.set(sv,Math.min(helper(2*sv,target,memo),helper(sv-1,target,memo))+1)
+    return memo.get(sv)
+}
+
+//time: O(log(t/sv))
+var brokenCalc = function(startValue, target) {
+    let sv = startValue, ans = 0
+    while(sv < target) {
+        sv *= 2
+        ans++
+    }
+    let diff = sv-target
+    while (diff && sv>startValue) {
+        if (diff%2 === 1) ans++, diff--
+        sv /= 2
+        diff /= 2
+    }
+    return ans+diff
+};
