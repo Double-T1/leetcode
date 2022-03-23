@@ -1,0 +1,32 @@
+//time: O((n-1)*)
+var minSteps = function(n) {
+    return helper(1,n)
+};
+
+let helper = (cur,n,memo={}) => {
+    if (cur === n) return 0
+    if (cur in memo) return memo[cur]
+    let accu = cur, ans = Number.MAX_SAFE_INTEGER, t = 0
+    while (accu+cur<=n) {
+        accu += cur, t++
+        ans = Math.min(ans,helper(accu,n,memo)+t)
+    }
+    memo[cur] = ans+1
+    return memo[cur]
+}
+
+//bottom-up
+var minSteps = function(n) {
+    let dp = []
+    dp[n] = 0 
+    for (let i=n-1; i>=1; i--) {
+        let accu = i, t=0
+        dp[i] = Number.MAX_SAFE_INTEGER
+        while (accu+i<=n) {
+            accu += i, t++
+            dp[i] = Math.min(dp[i],dp[accu]+t)
+        }
+        dp[i]++
+    }
+    return dp[1]
+};
