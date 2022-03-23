@@ -24,8 +24,23 @@ var brokenCalc = function(startValue, target) {
     let diff = sv-target
     while (diff && sv>startValue) {
         if (diff%2 === 1) ans++, diff--
-        sv /= 2
-        diff /= 2
+        sv >>= 1
+        diff >>= 1
     }
     return ans+diff
+};
+
+//time: O(log(t/sv))
+//similar idea as above but going forward
+var brokenCalc = function(startValue, target) {
+    let ans = 0
+    while (target>startValue) {
+        ans++
+        if (target%2 === 1) {
+            target++
+        } else {
+            target /= 2
+        }
+    }
+    return ans + startValue - target
 };
