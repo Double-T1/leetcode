@@ -37,3 +37,8 @@ var twoCitySchedCost = function(costs) {
     }
     return ans
 };
+
+//we can actually improve the actual average runtime of the greedy case
+//giving that we don't need the actual sorted sequence, but just the right first half and second half(where the first half are all for picking a)
+//hence, quickselect would be ideal, since on average, it won't need to go through all the elements
+//yet, the asymptotic analysis stay the same
