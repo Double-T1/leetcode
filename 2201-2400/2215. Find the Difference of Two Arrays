@@ -1,0 +1,16 @@
+var findDifference = function(nums1, nums2) {
+    let ans = [[],[]], map = new Map(), set = new Set()
+    for (let num of nums1) map.set(num,true)
+    for (let num of nums2) {
+        if (!map.has(num) && !set.has(num)) {
+            ans[1].push(num)
+            set.add(num)
+        } else {
+            map.set(num,false)
+        }
+    }
+    for (let [num,bool] of map.entries()) {
+        if (bool) ans[0].push(num)
+    }
+    return ans
+};
