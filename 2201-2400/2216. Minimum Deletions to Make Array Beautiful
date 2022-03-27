@@ -1,0 +1,31 @@
+var minDeletion = function(nums) {
+    let count = 0, i =0
+    //assuming the length is even for now
+    while (i<nums.length) {
+        if (i===nums.length-1) {
+            count++
+            break
+        }
+        if (nums[i] !== nums[i+1]) {
+            i += 2
+        } else {
+            i++
+            count++
+        }
+    }
+    return count
+};
+
+/**
+constraint: O(n) or O(nlogn)
+1. length is even
+2. i !== i+1 with i=2n
+
+
+brute force: check whether each ele should be deleted
+=> greedy: if the current i fulfill, don't bother, only delete if necessary
+the question: if not fulfilled, should we delete i or i+1?? => doesn't matter, since i===i+1 in this case
+
+minimum deletion
+
+*/
