@@ -1,0 +1,16 @@
+var kWeakestRows = function(mat, k) {
+    mat = mat.map((ele,i) => {
+        return [ele.reduce((accu,e) => accu+e ,0),i]
+    })
+    mat.sort((a,b) => {
+        if (a[0] === b[0]) {
+            return a[1]-b[1]
+        } 
+        return a[0]-b[0]
+    })
+    let ans = []
+    for (let i=0; i<k; i++) {
+        ans[i] = mat[i][1]
+    }
+    return ans
+};
