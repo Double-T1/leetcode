@@ -1,5 +1,5 @@
 var smallestDivisor = function(nums, threshold) {
-    let left=1, right=Number.MAX_SAFE_INTEGER
+    let left=1, right=nums.reduce((accu,ele) => Math.max(accu,ele), 0)
     while (left<right) {
         let mid = Math.floor((right-left)/2)+left
         if (divSum(nums,mid)<=threshold) {
