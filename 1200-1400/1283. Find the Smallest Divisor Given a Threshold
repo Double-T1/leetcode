@@ -1,0 +1,16 @@
+var smallestDivisor = function(nums, threshold) {
+    let left=1, right=Number.MAX_SAFE_INTEGER
+    while (left<right) {
+        let mid = Math.floor((right-left)/2)+left
+        if (divSum(nums,mid)<=threshold) {
+            right = mid
+        } else {
+            left = mid+1
+        }
+    }
+    return right
+};
+
+let divSum = (nums,val) => {
+    return nums.reduce((accu,ele)=> accu + Math.ceil(ele/val),0)
+}
