@@ -1,0 +1,30 @@
+//O(n)
+var search = function(nums, target) {
+    let num = nums.find(a => a===target)
+    return typeof num === 'number'
+};
+
+//O(logn) for most case, O(n) in worst case
+var search = function(nums, target) {
+    return helper(nums,target)
+};
+
+let helper = (nums,target,left=0,right=nums.length) => {
+    if (left<right) {
+        let mid = left + Math.floor((right-left)/2)
+        if (nums[mid] === target) return true
+        if (nums[mid]<target) {
+            if (nums[left]>=nums[mid] && nums[mid]<=nums[right-1]) {
+                if (helper(nums,target,left,mid)) return true
+            }
+            if (helper(nums,target,mid+1,right)) return true
+        } else {
+            if (nums[left]<=nums[mid] && nums[mid]>=nums[right-1]) {
+                if (helper(nums,target,mid+1,right)) return true
+            } 
+            if (helper(nums,target,left,mid)) return true
+        }
+    }
+    return false
+}
+
