@@ -1,0 +1,80 @@
+var findMedianSortedArrays = function(nums1, nums2) {
+    if (nums1.length === 0) {
+        return findMed(nums2)
+    } else if (nums2.length === 0) {
+        return findMed(nums1)
+    }
+    
+    let len = nums1.length+nums2.length, k = Math.floor(len/2), odd = len%2 === 1
+    if (odd) k++
+    //k is the length of left, not the index
+    let left = 0, right = nums1.length, med1 = null, med2 = null
+    //assuming there is at least one nums1 element on the left
+    while (left<right) {
+        let mid = left + Math.floor((right-left)/2), i = mid
+        let j = k-i-2
+        if ((nums1[i]<=nums2[j+1] && nums2[j]<=nums1[i+1])||(i===nums1.length-1 && nums1[i]<=nums2[j+1])||(j===nums2.length-1 && nums2[j]<=nums1[i+1])||(j===-1 && nums1[i]<=nums2[0])) {
+            if (j<0) {
+                med1 = nums1[i]
+                med2 = i<nums1.length-1? Math.min(nums2[0],nums1[i+1]) : nums2[0]
+            } else {
+                med1 = Math.max(nums1[i],nums2[j])
+                if (i+1<nums1.length) {
+                    if (j+1<nums2.length) {
+                        med2 = Math.min(nums1[i+1],nums2[j+1])
+                    } else {
+                        med2 = nums1[i+1]
+                    }
+                } else {
+                    med2 = nums2[j+1]
+                }
+            }
+            break
+        } else if ((nums1[i]>nums2[j+1])||j<0) {
+            right = mid
+        } else if ((nums2[j]>nums1[i+1])||j>=nums2.length) {
+            left = mid+1
+        }
+    }
+
+    if (med1 === null) {
+        med1 = nums2[k-1]
+        med2 = nums2.length === k?  nums1[0] : Math.min(nums1[0],nums2[k])
+    } 
+
+    let ans = odd? med1 : (med1+med2)/2
+    return ans
+};
+
+
+let findMed = (nums) => {
+    let mid = (nums.length-1)/2
+    return (nums[Math.floor(mid)] + nums[Math.ceil(mid)])/2
+}
+/**
+find the left part of the merged array first
+if len === 2n: left part = n => find index n-1
+if len = 2n+1: left part = n+1 => find index n
+
+nums1 first:
+index i=> find j which is k-(i+1)-1
+if (i<=j+1 && j<=i+1) => fullfilled => answer => Math.max(i,j)
+if (i>j+1) => go to the left of i => right = mid
+if (j>i+1) => go the the right of i => left = mid+1
+
+edge case: 
+- what if nums1 is empty?? of nums2 is empty??
+
+1. what if j+1 or i+1 doesn't exist??
+automatically fulfill i<=j+1 && j<=i+1
+2. what if there are no j?? i is too small, so that even if we include all nums2, it is still not enough
+to the right => right = mid
+
+if nums1 has no answer => find the (k-1)th of nums2 ???
+
+find the right part => set m as the left mid
+if(len === 2n) from Math.max(i,j) => get Math.min(i+1,j+1)
+/2
+
+
+*/
