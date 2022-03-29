@@ -1,0 +1,96 @@
+var findLadders = function(beginWord, endWord, wordList) {
+   let adj = [], beginIndex = -1, endIndex = -1
+   for (let i=0; i<wordList.length; i++) {
+       let word = wordList[i]
+       adj[i] = []
+       if (word === beginWord) beginIndex= i
+       else if (word === endWord) endIndex = i
+       for (let j=i-1; j>=0; j--) {
+           let word2 = wordList[j]
+           if (haveEdge(word,word2)) {
+               adj[i].push(j)
+               adj[j].push(i)
+           }
+       }
+    }
+
+    if (endIndex === -1) return []
+    if (beginIndex === -1) {
+        let word = beginWord, last = wordList.length
+        adj[last] = []
+        for (let j=0; j<wordList.length; j++) {
+           let word2 = wordList[j]
+           if (haveEdge(word,word2)) {
+               adj[last].push(j)
+               adj[j].push(last)
+           }
+        }
+        wordList.push(beginWord)
+        beginIndex = last
+    }
+    
+
+    let parent = [], level = [], steps = 0, stack1 = [beginIndex], stack2 = []
+    parent[beginIndex] = [beginIndex]
+    level[beginIndex] = 0
+    while (stack1.length) {
+        let size = stack1.length
+        steps++
+        while (size) {
+            let u = stack1.pop()
+            if (u === endIndex) {
+                stack2 = []
+                break
+            }
+            if (adj[u] === undefined) continue
+            for (let v of adj[u]) {
+                if (level[v] < steps) continue
+                if (parent[v] === undefined) parent[v] = [], stack2.push(v)
+                level[v] = steps
+                parent[v].push(u)   
+            }
+            size--
+        }
+        stack1 = stack2
+        stack2 = []
+    }
+    
+    let arr = []
+    backtrack(wordList,endIndex,beginIndex,parent,arr)
+    return arr
+};
+
+let haveEdge = (w1,w2) => {
+    let i1=0, i2=0, oneDiff = false
+    while (i1<w1.length) {
+        if (w1[i1] !== w2[i2]) {
+            if (oneDiff) return false
+            else oneDiff = true
+        }
+        i1++, i2++
+    }
+    return oneDiff
+}
+
+let backtrack = (wordList,u,beginIndex,parent,supArr,subArr=[wordList[u]]) => {
+    if (u === beginIndex) {
+        supArr.push(reverse(subArr))
+        return
+    } else {
+        if (parent[u] === undefined) return
+        for (let v of parent[u]) {
+            subArr.push(wordList[v])
+            backtrack(wordList,v,beginIndex,parent,supArr,subArr)
+            subArr.pop()
+        }
+        return
+    }
+}
+
+let reverse = (arr) => {
+    let ans = []
+    for (let i=arr.length-1; i>=0; i--) {
+        ans.push(arr[i])
+    }
+    return ans
+}
