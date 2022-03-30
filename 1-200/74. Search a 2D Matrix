@@ -1,0 +1,18 @@
+var searchMatrix = function(matrix, target) {
+    let left = 0, len = matrix[0].length*matrix.length, right = len
+    while (left<right) {
+        let mid = left + Math.floor((right-left)/2)
+        if (getRC(matrix,mid)>=target) {
+            right = mid
+        } else {
+            left = mid+1
+        }
+    } 
+    return right===len? false : getRC(matrix,right) === target
+};
+
+const getRC = (matrix,index) => {
+    let cols = matrix[0].length
+    let i = Math.floor(index/cols),j = index%cols
+    return matrix[i][j]
+}
