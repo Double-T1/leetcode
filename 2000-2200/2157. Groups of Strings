@@ -1,4 +1,4 @@
-//time: O(n*26*26)
+//time: O(n*26*26) => can be improved to O(n*26)
 var groupStrings = function(words) {
     //find all the enumeration of the each word/string
     //there will be at most (len*(26-len)) enumeration for each word/string
@@ -32,6 +32,82 @@ var groupStrings = function(words) {
                     if (map.has(b)) {
                         union(map.get(b),k,parent)
                     }
+                }
+            }
+        }
+    }
+
+    let maxSize = 0, num=0, count = new Map()
+    for (let p of parent) {
+        p = find(p,parent)
+        if (!count.has(p)) {
+            num++
+            count.set(p,0)
+        }
+        count.set(p,count.get(p)+1)
+        maxSize = Math.max(maxSize,count.get(p))
+    }
+    return [num,maxSize]
+};
+
+let find = (a,parent) => {
+    if (parent[a] === undefined) parent[a] = a 
+    if (a !== parent[a]) {
+        parent[a] = find(parent[a],parent)
+    }
+    return parent[a]
+}
+
+let union = (a,b,parent) => {
+    let pa = find(a,parent), pb = find(b,parent)
+    if (pa === pb) return true
+    parent[pb] = pa
+    return 
+}
+
+let getBitRep = str => {
+    let bitmask = 0
+    for (let c of str) {
+        bitmask |= (1<<(c.charCodeAt(0)-'a'.charCodeAt(0)))
+    }
+    return bitmask
+}
+
+
+//time: O(n*26)
+//for replacing, we record all ths childs sans one char for each element
+//the elements with same childs are linked
+//space complexity will increase in reality but not on asymptotically
+var groupStrings = function(words) {
+    //find all the enumeration of the each word/string
+    //there will be at most (len*(26-len)) enumeration for each word/string
+    //time: O(n*26*26)
+    let map = new Map(), child = new Map(), parent = new Array(words.length)
+    for (let k=0; k<words.length; k++) {
+        parent[k] = k
+        let bitmask = getBitRep(words[k])
+        if (map.has(bitmask)) union(map.get(bitmask),k,parent)
+        else map.set(bitmask,k)
+        
+        for (let i=0; i<26; i++) {
+            let bit = 1<<i
+            if ((bitmask&bit)===0) {
+                let tempBitmask = bitmask | bit
+                //add
+                if (map.has(tempBitmask)) {
+                    union(map.get(tempBitmask),k,parent)
+                }
+            } else {
+                let tempBitmask = bitmask^bit
+                //delete
+                if (map.has(tempBitmask)) {
+                    union(map.get(tempBitmask),k,parent)
+                }
+                //check child for replace
+                if (!child.has(tempBitmask)) {
+                    child.set(tempBitmask,k)
+                } else {
+                    union(child.get(tempBitmask),k,parent)
                 }
             }
         }
