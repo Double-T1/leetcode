@@ -1,0 +1,24 @@
+//time: O(n*m*n) 
+var splitArray = function(nums, m) {
+    for (let i=1; i<nums.length; i++) {
+        nums[i] += nums[i-1]
+    }
+    nums.unshift(0)
+    return helper(nums,m)
+};
+
+let helper = (nums,m,i=1,memo=[]) => {
+    if (m === 1) return nums[nums.length-1]-nums[i-1] 
+    if (i === nums.length) return -1
+    if (i in memo && m in memo[i]) return memo[i][m]
+    if (memo[i] === undefined) memo[i] = []
+    
+    let ans = Number.MAX_SAFE_INTEGER
+    for (let j=i; j<nums.length; j++) {
+        let x= helper(nums,m-1,j+1,memo)
+        if (x>=0) ans = Math.min(ans,Math.max(x,nums[j]-nums[i-1]))
+    }
+    memo[i][m] = ans === Number.MAX_SAFE_INTEGER? -1 : ans
+    return memo[i][m]
+}
+
