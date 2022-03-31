@@ -1,0 +1,37 @@
+var constructArray = function(n, k) {
+    let ans = [1], next = [2,n], i=0
+    k--
+    while(k) {
+        i ^= 1
+        ans.push(next[i])
+        update(next,i)
+        k--
+    }
+    
+    let j=next[i^1]
+    while (next[i]!==j) {
+        ans.push(next[i])
+        update(next,i)
+    }
+    ans.push(j)
+    return ans
+};
+
+let update = (next,i) => {
+    if (i===1) next[i]--
+    else next[i]++
+}
+
+/**
+all num in answer has to be unqiue => n nums from 1 to n
+there will be n-1 diff => yet there should only be k distinct diff
+=> essentially permu as well
+
+diff of 1 and n is unmatched
+=> 1 n-1, 2 n-2, 3 n-3...., n-1 1
+switching
+
+
+
+
+*/
