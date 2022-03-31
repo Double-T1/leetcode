@@ -1,0 +1,28 @@
+//time: O(n*(log(sum-max)))
+//worst case: log(2.5*10^7-500)
+var shipWithinDays = function(weights, days) {
+    let left = weights.reduce((accu,ele)=> Math.max(accu,ele),0)
+    let right = weights.reduce((accu,ele)=> accu+ele,0)+1
+    
+    while (left<right) {
+        let mid = Math.floor((right-left)/2) + left
+        if (daysNeeded(weights,mid)<=days) {
+            right = mid
+        } else {
+            left = mid+1
+        }
+    }
+    return right
+};
+
+let daysNeeded = (weights,cap) => {
+    let days = 1, dup = cap
+    for (let i=0; i<weights.length; i++) {
+        dup -= weights[i]
+        if (dup<0) {
+            days++
+            dup = cap - weights[i]
+        }
+    }
+    return days
+}
