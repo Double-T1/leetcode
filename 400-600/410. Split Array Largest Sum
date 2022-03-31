@@ -47,3 +47,31 @@ var splitArray = function(nums, m) {
     }
     return dp[1][m]
 };
+
+//O(n*log(sum-max))
+var splitArray = function(nums, m) {
+    let left = nums.reduce((accu,ele) => Math.max(accu,ele),0);   
+    let right = nums.reduce((accu,ele) => accu+ele,0)+1;
+    
+    while (left<right) {
+        let mid = left + Math.floor((right-left)/2);
+        if (numOfSub(nums,mid)<=m) {
+            right = mid
+        } else {
+            left = mid+1
+        }
+    }
+    return right;
+};
+
+let numOfSub = (nums,val) => {
+    let subs = 1, dup = val;
+    for (let num of nums) {
+        dup -= num
+        if (dup<0) {
+            subs++
+            dup = val - num
+        }
+    }
+    return subs
+}
