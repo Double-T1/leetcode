@@ -1,0 +1,104 @@
+//first solution is union find
+//second is dfs, both viable
+//which depends on the scenario
+
+//O(n^2*len) => 27*10^6
+var numSimilarGroups = function(strs) {
+    let parent = new Array(strs.length)
+    for (let i=0; i<strs.length; i++) {
+        parent[i] = i
+        for (let j=i-1; j>=0; j--) {
+            if (hasEdge(strs[i],strs[j])) {
+                union(i,j,parent)
+            }
+        }
+    }
+
+    let count = 0, set = new Set()
+    for (let p of parent) {
+        p = find(p,parent)
+        if (!set.has(p)) {
+            set.add(p)
+            count++
+        }
+    }
+    return count
+};
+
+
+let hasEdge = (str1,str2) => {
+    let diffIndex = -1, oneDiff = 0
+    for (let i=0; i<str1.length; i++) {
+        if (str1[i] !== str2[i]) {
+            if (oneDiff === 1) {
+                if (str1[diffIndex] === str2[i] && str2[diffIndex] === str1[i]) {
+                    oneDiff++
+                } else {
+                    return false
+                }
+            } else if (oneDiff === 0) {
+                diffIndex = i
+                oneDiff++
+            } else {
+                return false
+            }
+        }
+    }
+    return true
+}
+
+let union = (a,b,parent) => {
+    let pa = find(a,parent), pb = find(b,parent)
+    if (pa === pb) return true
+    parent[pb] = pa
+    return false
+}
+
+let find = (a,parent) => {
+    if (parent[a] === undefined) parent[a] = a
+    if (a !== parent[a]) {
+        parent[a] = find(parent[a],parent)
+    }
+    return parent[a]
+}
+
+
+//O(n^2)
+var numSimilarGroups = function(strs) {
+    let visited = new Array(strs.length).fill(false), count = 0
+    for (let i=0; i<strs.length; i++) {
+        if (!visited[i]) dfs(strs,i,visited), count++
+    }
+    return count
+};
+
+let hasEdge = (str1,str2) => {
+    let diffIndex = -1, oneDiff = 0
+    for (let i=0; i<str1.length; i++) {
+        if (str1[i] !== str2[i]) {
+            if (oneDiff === 1) {
+                if (str1[diffIndex] === str2[i] && str2[diffIndex] === str1[i]) {
+                    oneDiff++
+                } else {
+                    return false
+                }
+            } else if (oneDiff === 0) {
+                diffIndex = i
+                oneDiff++
+            } else {
+                return false
+            }
+        }
+    }
+    return true
+}
+
+let dfs = (strs,i,visited) => {
+    visited[i] = true
+    for (let j=0; j<strs.length; j++) {
+        if (!visited[j] && hasEdge(strs[i],strs[j])) {
+            dfs(strs,j,visited)
+        }
+    }
+    return 
+}
