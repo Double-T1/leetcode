@@ -1,0 +1,8 @@
+var minBitFlips = function(start, goal) {
+    let xor = start^goal, count = 0
+    while (xor) {
+        if ((xor&1)>0) count++
+        xor >>= 1
+    }
+    return count
+};
