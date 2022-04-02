@@ -1,0 +1,60 @@
+//O((n^2)*(2^n)
+var minimumIncompatibility = function(nums, k) {
+    nums.sort((a,b) => a-b)
+    let count = 0
+    for (let i=0; i<nums.length; i++) {
+        if (i>0 && nums[i] === nums[i-1]) {
+            count++
+            if(count>k) return -1 
+        } else {
+            count = 1
+        }
+    }
+    return helper(nums,k)
+};
+
+let helper = (nums,k,limit=nums.length/k,last=-1,cur=0,mask=0,memo=[]) => {
+    if (k === 0) return 0;
+    if (mask in memo && last in memo[mask]) return memo[mask][last]
+    if (memo[mask] === undefined) memo[mask] = []
+    
+    if (cur === limit) return memo[mask][last] = helper(nums,k-1,limit,-1,0,mask,memo);
+    
+    let ans = Number.MAX_SAFE_INTEGER;
+    for (let i=last+1; i<nums.length; i++) {
+        if (last>-1 && nums[i] === nums[last]) continue;
+        let bit = 1 << i;
+        if ((mask&bit)>0) continue;
+        let x = helper(nums,k,limit,i,cur+1,mask|bit,memo)
+        if (cur === 0) x-=nums[i]
+        if (cur === limit-1) x+=nums[i]
+        ans = Math.min(ans,x)
+    }
+    return memo[mask][last] = ans
+}
+
+
+
+/**
+goal:
+1. split into k equal size subset
+2. each ele within a subset is distinct
+3. for each subset, the incomp is the diff of max and min within the subset
+4. minimize the possible sum of incomp
+5. return -1 if impossible 
+=> can split into k equal, or can have all distinct ele
+!! subset not subarray
+
+constraint: 
+possibly O(n*k^n)??
+d
+observation:
+DP with bitmask
+sort?? since we want smallest max-min, 
+
+instruct:
+1. check if can split into k equal length => length%k === 0 =>guaranteed
+2. make sure that no ele appears more than k times 
+(so having all distinct subset possible)
+
+*/
