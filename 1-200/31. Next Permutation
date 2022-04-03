@@ -52,3 +52,33 @@ let swap = (arr,a,b) => {
 
 let nums = [1,1,5]
 console.log(nextPermutation(nums))
+
+
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        int last = nums.size()-1;
+        while (last>0 && nums[last]<=nums[last-1]) {
+            last--;
+        }
+
+        if (last>0 && nums[last]>nums[last-1]) {
+            int j = binarySearch(nums,nums[last-1],last-1,nums.size()-1);
+            swap(nums[last-1],nums[j]);
+        }
+        reverse(nums.begin()+last,nums.end());
+    }
+    
+    int binarySearch(vector<int>& arr, int target, int left, int right) {
+        while (left<right) {
+            int mid = ceil(left + (right-left)/2.0);
+            if (arr[mid]>target) {
+                left = mid;
+            } else {
+                right = mid-1;
+            } 
+        }
+        return right;
+    }
+    
+};
