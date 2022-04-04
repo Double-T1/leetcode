@@ -1,0 +1,51 @@
+//O(n^2)
+class Solution {
+public:
+    ListNode* removeZeroSumSublists(ListNode* head) {
+        vector<ListNode*> vector;
+        int i, sum;
+        for (auto ptr=head; ptr != nullptr; ptr = ptr->next) {
+            i = vector.size()-1, sum=(ptr->val);
+            for (; i>=0 && sum != 0; i--) {
+                sum += (vector[i])->val;
+            }
+            if (sum == 0) {
+                while ((vector.size()-i)>1) {
+                    vector.pop_back();
+                }
+            } else {
+                vector.push_back(ptr);
+            }
+        }
+        
+        if (vector.size() == 0) return NULL;
+        head = vector[0];
+        auto cur = head;
+        for (i=1; i<vector.size(); i++) {
+            cur->next = vector[i];
+            cur = cur->next;
+        }
+        cur->next = NULL;
+        return head;
+    }
+};
+
+//O(n)
+//prefix sum and hashmap
+class Solution {
+public:
+    ListNode* removeZeroSumSublists(ListNode* head) {
+        ListNode* dummy = new ListNode(0);
+        dummy->next = head;
+        unordered_map<int, ListNode*> pre;
+        int sum = 0;
+        for (auto i=dummy; i; i = i->next) {
+            pre[sum += i->val] = i;
+        }
+        sum = 0;
+        for (auto i=dummy; i; i = i->next) {
+            i->next = pre[sum += i->val]->next;
+        }
+        return dummy->next;
+    }
+};
