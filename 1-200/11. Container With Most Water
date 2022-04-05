@@ -1,0 +1,38 @@
+//O(nlogn)
+//with a monotonic stack
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        return max(traverse(height,0,height.size(),1),traverse(height,height.size()-1,-1,-1));
+    }
+    
+    int traverse (vector<int>& height,int start, int size, int incre) {
+        vector<vector<int>> stack;
+        int mx = 0;
+        for (int i=start; i!=size; i += incre) {
+            int cur = height[i];
+            int j = binarySearch(stack,0,stack.size(),cur);
+            if (j<stack.size()) mx = max(mx,abs(i-stack[j][1])*height[i]);
+            if (stack.empty() || (stack.back())[0]<cur) {
+                vector<int> vec{cur,i};
+                stack.push_back(vec);
+            }
+        } 
+        return mx;
+    }
+    
+    int binarySearch (vector<vector<int>>& stack, int left, int right, int target) {
+        while (left<right) {
+            int mid = left + (right-left)/2;
+            if (stack[mid][0]>=target) {
+                right = mid;    
+            } else {
+                left = mid+1;  
+            } 
+        }
+        return right;
+    }
+};
+
+//O(n)
+//with two pointers
