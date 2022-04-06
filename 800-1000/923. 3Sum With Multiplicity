@@ -1,0 +1,32 @@
+var threeSumMulti = function(arr, target) {
+    arr.sort((a,b) => a-b);
+    let ans = 0, mod=10**9+7;
+    for (let i=0; i<arr.length; i++) {
+        let left=i+1, right = arr.length-1, subt = target-arr[i];
+        while (left<right) {
+            let sum = arr[left] + arr[right];
+            if (sum>subt) {
+                right--;
+                while(left<=right && arr[right] === arr[right+1]) right--;
+            } else if (sum<subt) {
+                left++;
+                while(left<=right && arr[left] === arr[left-1]) left++;
+            } else {
+                if (arr[left] === arr[right]) {
+                    let len = right-left+1;
+                    ans += ((len*(len-1))/2)%mod;
+                    ans %= mod;
+                    break;
+                } else {
+                    let leftCount = 1, rightCount = 1;
+                    while (left<right-1 && arr[left+1] === arr[left]) left++, leftCount++;
+                    while (left<right-1 && arr[right-1] === arr[right]) right--, rightCount++;
+                    ans += (leftCount*rightCount)%mod;
+                    ans %= mod;
+                    left++, right--;
+                }
+            }
+        }
+    }
+    return ans;
+};
