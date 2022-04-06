@@ -1,0 +1,47 @@
+var topKFrequent = function(nums, k) {
+    let map = new Map();
+    for (let num of nums) {
+        if (!map.has(num)) map.set(num,0)
+        map.set(num,map.get(num)+1);
+    }
+    let arr = [];
+    for (let entry of map.entries()) {
+        arr.push(entry);
+    }
+    
+    quickSelect(arr,k)
+    
+    let ans = []
+    for (let i=0; i<k; i++) {
+        ans.push(arr[i][0]);
+    }
+    return ans;
+};
+
+//find the k most frequent elements
+//=> the k biggest [1] elements
+let quickSelect = (arr,k,left=0,right=arr.length-1) => {
+    if (left>=right) return 
+    let pivot = arr[right][1];
+    let startOfNotBigger = left;
+    for (let i=left; i<right; i++) {
+        if (arr[i][1]>pivot) {
+            swap(arr,i,startOfNotBigger)
+            startOfNotBigger++
+        }
+    }
+    swap(arr,right,startOfNotBigger);
+    if (startOfNotBigger<k-1) {
+        quickSelect(arr,k,startOfNotBigger+1,right)
+    } else {
+        quickSelect(arr,k,left,startOfNotBigger-1)
+    }
+    return
+} 
+
+let swap = (arr,a,b) => {
+    let temp = arr[a];
+    arr[a] = arr[b];
+    arr[b] = temp;
+    return 
+}
