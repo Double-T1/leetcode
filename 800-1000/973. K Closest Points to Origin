@@ -48,6 +48,55 @@ private:
     };
 };
 
+//solution 3
+//sort the whole vector
+//time: O(nlogn) + O(k)
+class Solution {
+private:
+    struct comp {
+        //an ascending seq, p comes first
+        bool operator() (vector<int>& p, vector<int>& q) {
+            return p[0] * p[0] + p[1] * p[1] < q[0] * q[0] + q[1] * q[1];
+        }
+    };
+public:
+    vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
+        sort(points.begin(),points.end(),comp());
+        
+        return vector<vector<int>>(points.begin(),points.begin()+k);
+    }
+};
+
+//solution 4
+//partial_sort
+//time: O(nlogk)
+bool comp (vector<int>& p, vector<int>& q) {
+    return p[0]*p[0] + p[1]*p[1] < q[0]*q[0] + q[1]*q[1];
+}
+
+class Solution {   
+public:
+    vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
+        partial_sort(points.begin(),points.begin()+k,points.end(),comp);
+
+        return vector<vector<int>>(points.begin(),points.begin()+k);
+    }
+};
+
+//solution 5
+//quick select with median of median 
+//time: O(n)
+bool comp(vector<int>& p, vector<int>& q) {
+    return p[0]*p[0] + p[1]*p[1] < q[0]*q[0] + q[1]*q[1];
+}
+
+class Solution {   
+public:
+    vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
+        nth_element(points.begin(), points.begin()+k-1, points.end(),comp);
+        return vector<vector<int>>(points.begin(),points.begin()+k);
+    }
+};)
 
 
 JS:
