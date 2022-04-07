@@ -1,0 +1,17 @@
+class Solution {   
+public:
+    struct myComp {  
+        bool operator() (const vector<int>& left, const vector<int>& right) const {
+            return left[0]*left[0] + left[1]*left[1] < right[0]*right[0] + right[1]*right[1];
+        }
+    };
+    vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
+        make_heap(points.begin(),points.end(),myComp);
+        
+        while (points.size()>k) {
+            pop_heap(points.begin(),points.end(),myComp);
+            points.pop_back();
+        }
+        return points;
+    }
+};
