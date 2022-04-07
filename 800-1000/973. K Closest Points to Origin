@@ -1,17 +1,103 @@
-class Solution {   
+C++:
+//solution 1 and 2 are heap
+//time: O(nlogn) + O((n-k)log(n-k)) + O(klogk) => O(nlogn)
+class Solution {
 public:
+    vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
+        priority_queue<vector<int>, vector<vector<int>>, myComp> pq;
+        for (auto vec : points) {
+            pq.push(vec);
+        }
+        
+        while (pq.size()>k) {
+            pq.pop();
+        }
+        vector<vector<int>> ans;
+        while (pq.size()) {
+            ans.push_back(pq.top());
+            pq.pop();
+        }
+        return ans;
+    }
+private:
     struct myComp {  
         bool operator() (const vector<int>& left, const vector<int>& right) const {
             return left[0]*left[0] + left[1]*left[1] < right[0]*right[0] + right[1]*right[1];
         }
     };
+};
+
+//solution 2
+//time: O(n) + O((n-k)log(n-k))
+class Solution {
+public:
     vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
-        make_heap(points.begin(),points.end(),myComp);
+        make_heap(points.begin(),points.end(),myComp());
         
         while (points.size()>k) {
-            pop_heap(points.begin(),points.end(),myComp);
+            pop_heap(points.begin(),points.end(),myComp());
             points.pop_back();
         }
         return points;
     }
+private:
+    struct myComp {  
+        bool operator() (const vector<int>& left, const vector<int>& right) const {
+            return left[0]*left[0] + left[1]*left[1] < right[0]*right[0] + right[1]*right[1];
+        }
+    };
 };
+
+
+
+JS:
+//quickselect
+//time: O(klogk) on average, O(nlogn) for worst case
+var kClosest = function(points, k) {
+    let memo = {}
+    let left = 0
+    let right = points.length-1
+
+    //find the frist k smallest points
+    k--
+    while (left<=right) {
+        let index = partition(memo,points,left,right)
+        if (index === k) return points.slice(0,index+1)
+        if (index > k) {
+            right = index-1
+        } else {
+            left = index+1
+        }
+    }  
+    return
+};
+
+let partition = (memo,points,left,right) => {
+    let pivot = distSq(memo,points[right])
+    let startOfBigger = left
+    while (left<right) {
+        if (distSq(memo,points[left])<pivot) {
+            swap(points,left,startOfBigger)
+            startOfBigger++
+        }
+        left++
+    }
+    swap(points,startOfBigger,right)
+    return startOfBigger
+}
+
+let swap = (arr,a,b) => {
+    let temp = arr[a]
+    arr[a] = arr[b]
+    arr[b] = temp
+    return
+}
+
+
+let distSq = (memo,arr) => {
+    let [x,y] = arr
+    if (x in memo && y in memo[x]) return memo[x][y]
+    if (!memo[x]) memo[x] = {}
+    memo[x][y] = x*x + y*y
+    return memo[x][y]
+}
