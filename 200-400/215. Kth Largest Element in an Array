@@ -1,3 +1,22 @@
+C++:
+//quickselect
+//O(n)
+bool comp(int a, int b) {
+    return a>b;
+}
+
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        nth_element(nums.begin(), nums.begin()+k-1, nums.end());
+        return nums[k-1];
+    }
+};
+
+//quickselect implemented myself
+
+
+JS:
 var findKthLargest = function(nums, k) {
     k = nums.length-k
     return findK(nums,k)
