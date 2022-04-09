@@ -1,3 +1,5 @@
+//union find
+//O(n) time, O(n) space
 int find(int x,vector<int>& parent) {
     if (parent[x] != x) {
         parent[x] = find(parent[x],parent);
@@ -38,8 +40,34 @@ public:
     }
 };
 
+//set only
+//time: O(n)
+//space also O(n), but use way less in actuallity
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        unordered_set<int> hashset;
+        for (int num : nums) {
+            if(!hashset.count(num)) hashset.insert(num);
+        }
+        
+        int mx = 0;
+        for (const int& num : hashset) {
+            if (hashset.count(num-1)) continue;
+            int next = num+1;
+            int cur = 1;
+            while (hashset.count(next)) {
+                cur++;
+                next++;
+            }
+            mx = max(mx,cur);
+        }
+        return mx;
+    }
+};
 
-
+//JS 
+//using pointers and dfs
 function Node (val,prev,next) {
     this.val = val
     this.next = next
