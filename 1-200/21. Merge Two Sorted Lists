@@ -12,3 +12,24 @@ var mergeTwoLists = function(list1, list2) {
     }
     return pseudoHead.next
 };
+
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        ListNode* pseudo = new ListNode();
+        auto cur = pseudo;
+        auto one=list1, two=list2;
+        for (; one && two; cur = cur->next) {
+            if (one->val>two->val) {
+                cur->next = two;
+                two = two->next;
+            } else {
+                cur->next = one;
+                one = one->next;
+            }
+        }
+        cur->next = one? one : two;
+        
+        return pseudo->next;
+    }
+};
