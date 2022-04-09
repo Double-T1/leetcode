@@ -22,3 +22,18 @@ public:
         return ans;
     }
 };
+
+//O(n) time with O(1) space
+class Solution {
+public:
+    vector<int> productExceptSelf(vector<int>& nums) {
+        vector<int> ans(nums.size(),1);
+        for (int i=0, pre=1, post=1, j=nums.size()-1; j>=0; i++,j--) {
+            ans[i] *= pre;
+            pre *= nums[i];
+            ans[j] *= post;
+            post *= nums[j];
+        }
+        return ans;
+    }
+};
