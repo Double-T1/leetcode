@@ -1,3 +1,21 @@
+//best soluiton
+//clear and simple
+//o(n) time and O(n) space
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        unordered_map<int, int> m;
+        int ans = 0;
+        for (int i : nums) {
+            if (m[i]) continue;
+            m[i] = m[i-m[i-1]] = m[i+m[i+1]] = m[i-1] + m[i+1] +1;
+            ans = max(ans,m[i]);
+        }
+        return ans;
+    }
+};
+
+
 //union find
 //O(n) time, O(n) space
 int find(int x,vector<int>& parent) {
