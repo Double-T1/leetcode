@@ -1,3 +1,45 @@
+int find(int x,vector<int>& parent) {
+    if (parent[x] != x) {
+        parent[x] = find(parent[x],parent);
+    } 
+    return parent[x];
+}
+
+void Union(int a, int b, vector<int>& parent) {
+    int pa = find(a,parent), pb = find(b,parent);
+    if (pa != pb) parent[pb] = pa;
+}
+
+
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        vector<int> parent(nums.size(),-1);
+        unordered_map<int, int> hashmap;
+        
+        for (int i=0; i<nums.size(); i++) {
+            int num = nums[i];
+            parent[i] = i;
+            if (hashmap.count(num)) continue;
+            hashmap[num] = i;
+            int prev = num-1, post = num+1;
+            if (hashmap.count(prev)) Union(hashmap[prev],i,parent);
+            if (hashmap.count(post)) Union(hashmap[post],i,parent);
+        }
+        
+        int mx = 0;
+        unordered_map<int, int> size; 
+        for (int p : parent) {
+            p = find(p,parent);
+            size[p]++;
+            mx = max(mx,size[p]);
+        }
+        return mx;
+    }
+};
+
+
+
 function Node (val,prev,next) {
     this.val = val
     this.next = next
