@@ -1,3 +1,66 @@
+C++:
+//time: O(n)
+//quickselect
+bool comp (vector<int>& p, vector<int>& q) {
+    return p[1]>q[1];
+}
+
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int, int> hash;
+        for (int i=0; i<nums.size(); i++) {
+            if (hash.count(nums[i])>0) {
+                hash[nums[i]]++;
+            } else {
+                hash[nums[i]] = 1;
+            }
+        }
+        
+        vector<vector<int>> vec;
+        for (auto& [key,val] : hash) {
+            vector<int> sub{key,val};
+            vec.push_back(sub);
+        }
+        
+        nth_element(vec.begin(),vec.begin()+k-1,vec.end(),comp);
+        
+        vector<int> ans;
+        for (int i=0; i<k; i++) {
+            ans.push_back(vec[i][0]);
+        }
+        return ans;
+    }
+};
+
+//O(n)
+//bucketsort
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int, int> hash;
+        for (int num : nums) 
+            hash[num]++;
+        
+        vector<vector<int>> bucket(nums.size()+1);
+        for (auto& [key,freq] : hash) {
+            bucket[freq].push_back(key);
+        }
+        
+        vector<int> ans;
+        for(int i=bucket.size()-1; i>=0; i--) {
+            for (int j=0; j<bucket[i].size() && ans.size()<k; j++) {
+                ans.push_back(bucket[i][j]);
+            }
+        }
+        return ans;
+    }
+};
+
+
+
+
+JS:
 var topKFrequent = function(nums, k) {
     let map = new Map();
     for (let num of nums) {
