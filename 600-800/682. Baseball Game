@@ -1,0 +1,35 @@
+var calPoints = function(ops) {
+    let stack = [];
+    for (let ele of ops) {
+        switch(ele) {
+            case '+' :
+                stack.push(stack[stack.length-1]+stack[stack.length-2]);
+                break;
+            case 'D' :
+                stack.push(stack[stack.length-1]*2);
+                break;
+            case 'C' :
+                stack.pop();
+                break;
+            default:
+                stack.push(Number(ele));
+        }
+    }
+    return stack.reduce((accu,ele) => accu+ele,0);
+};
+
+class Solution {
+public:
+    int calPoints(vector<string>& ops) {
+        vector<int> vector;
+        int lastEle = -1;
+        for (string e : ops) {
+            if (e == "+") vector.push_back(vector[lastEle] + vector[lastEle-1]);
+            else if (e == "D") vector.push_back(vector[lastEle]*2);
+            else if (e == "C") vector.pop_back();
+            else vector.push_back(stoi(e));
+            lastEle = vector.size()-1;
+        }
+        return accumulate(vector.begin(),vector.end(),0);
+    }
+};
