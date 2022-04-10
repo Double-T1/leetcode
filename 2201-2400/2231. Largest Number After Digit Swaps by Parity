@@ -1,0 +1,19 @@
+var largestInteger = function(num) {
+    let odd = [], even = [];
+    let str = num.toString();
+    for (let val of str) {
+        val = Number(val);
+        if (val%2) odd.push(val)
+        else even.push(val)
+    }
+    odd.sort((a,b) => b-a);
+    even.sort((a,b) => b-a);
+    
+    let ans = 0, i=0, j=0;
+    for (let val of str) {
+        val = Number(val);
+        if (val%2) ans = ans*10 + odd[i++];
+        else ans = ans*10 + even[j++];
+    }
+    return ans
+};
