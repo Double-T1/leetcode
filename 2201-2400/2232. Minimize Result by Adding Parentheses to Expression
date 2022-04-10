@@ -1,0 +1,64 @@
+var minimizeResult = function(expression) {
+    let collect = [];
+    let mid = 0
+    for (let i=0; i<expression.length; i++) {
+        if (expression[i] == '+') {
+            mid = i
+            break;
+        }
+    }
+    upper(collect,expression,mid);
+    let min = evaluate(collect[0]), cur = 0;
+    for (let i=1; i<collect.length; i++) {
+        let num = evaluate(collect[i])
+        if (num<min) cur = i, min = num;
+    }
+    return collect[cur];
+};
+
+let upper = (collect,expression,mid,i=0) => {
+    let str = '';
+    for (let s=i; expression[s]!=='+'; s++) {
+        lower(collect,expression,str+'('+expression.slice(s,mid),mid+1)
+        str += expression[s];
+    }
+    return
+}
+
+
+let lower = (collect,expression,str,i) => {
+    str += '+'
+    for (let j=i; j<expression.length; j++) {
+        str += expression[j];
+        collect.push(str+')'+ expression.slice(j+1,expression.length));
+    }
+    return
+}
+
+
+let evaluate = (string) => {
+    let i=0, m = '';
+    while (string[i] !== '(') {
+        m += string[i++];
+    }
+    if (m === '') m = '1';
+    i++;
+    let num1 = '';
+    while (string[i] !== '+') {
+        num1 += string[i++];
+    }
+    
+    i++;
+    let num2 = '';
+    while (string[i] !== ')') {
+        num2 += string[i++]; 
+    }
+    
+    i++;
+    let m2 = '';
+    while (i<string.length) {
+        m2 += string[i++];
+    }
+    if (m2 === '') m2 = '1';
+    return (Number(num1)+Number(num2))*Number(m)*Number(m2);
+}
