@@ -1,0 +1,14 @@
+//O(m*n)
+class Solution {
+public:
+    bool isSubtree(TreeNode* root, TreeNode* subRoot) {
+        if (!root) return false;
+        if (fromRoot(root,subRoot)) return true;
+        return isSubtree(root->left,subRoot) || isSubtree(root->right,subRoot);
+    }
+    
+    bool fromRoot(TreeNode* a, TreeNode* b) {
+        if (!a || !b) return a == b;
+        return a->val == b->val && fromRoot(a->left,b->left) && fromRoot(a->right,b->right);
+    }
+};
