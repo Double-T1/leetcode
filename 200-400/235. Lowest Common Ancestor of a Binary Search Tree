@@ -1,0 +1,44 @@
+//for bst specifically
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        int val = root->val, pval = p->val, qval = q->val;
+        if (val>pval && val>qval) return lowestCommonAncestor(root->left,p,q);
+        if (val<pval && val<qval) return lowestCommonAncestor(root->right,p,q);
+        return root;
+    }
+};
+
+//bst iteratively
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        int pval = p->val, qval = q->val, val;
+        while (true) {
+            val = root->val;
+            if(val>pval && val>qval) {
+                root = root->left;
+            } else if (val<pval && val<qval) {
+                root = root->right;
+            } else {
+                return root;
+            }
+        }
+    }
+};
+
+
+//for general case: not just bst
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if (!root) return nullptr;
+        auto left = lowestCommonAncestor(root->left,p,q);
+        auto right = lowestCommonAncestor(root->right,p,q);
+        auto cur = (root->val == p->val || root->val == q->val)? root : nullptr;
+        if ((cur && left) || (cur && right) || (right && left)) return root;
+        if (left) return left;
+        if (right) return right;
+        return cur;
+    }
+};
