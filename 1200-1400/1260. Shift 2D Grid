@@ -1,0 +1,14 @@
+class Solution {
+public:
+    vector<vector<int>> shiftGrid(vector<vector<int>>& grid, int k) {
+        int m = grid.size() , n = grid[0].size();
+        vector<vector<int>> newGrid(m, vector<int>(n,0));
+        for (int i=0; i<grid.size(); i++) {
+            for (int j=0; j<grid[0].size(); j++) {
+                int x = i*n + j + k;
+                newGrid[(x/n)%m][x%n] = grid[i][j];
+            }
+        }
+        return newGrid;
+    }
+};
