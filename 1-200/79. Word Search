@@ -1,0 +1,29 @@
+class Solution {
+public:
+    bool exist(vector<vector<char>>& board, string word) {
+        for (int i=0; i<board.size(); i++) {
+            for (int j=0; j<board[0].size(); j++) {
+                if (backtrack(board,word,0,i,j)) return true;
+            }
+        }
+        return false;
+    }
+    
+    bool backtrack(vector<vector<char>>& board, string& word, int k, int i, int j) {
+        if (k == word.size()) return true;
+        if (!isValid(board,i,j,word[k])) return false;
+        
+        board[i][j] = '*';
+        bool res = backtrack(board,word,k+1,i+1,j) || backtrack(board,word,k+1,i-1,j) || backtrack(board,word,k+1,i,j+1) || backtrack(board,word,k+1,i,j-1);
+        board[i][j] = word[k];
+        return res;
+    }
+    
+    bool isValid(vector<vector<char>>& board, int x, int y, char c) {
+        return x>=0 
+            && x<board.size()
+            && y>=0
+            && y<board[0].size()
+            && board[x][y] == c;
+    }
+};
