@@ -17,3 +17,26 @@ var combinationSum = function(candidates, target) {
     return arr
 };
 
+class Solution {
+public:
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        sort(candidates.begin(),candidates.end());
+        vector<vector<int>> ans;
+        vector<int> sub;
+        backtrack(ans,sub,candidates,target,0);
+        return ans;
+    }
+    
+    void backtrack(vector<vector<int>>& ans, vector<int>& sub, vector<int>&candidates, int target, int start) {
+        if (target == 0) { 
+            vector<int> dup = sub;
+            ans.push_back(dup);
+        } else {
+            for (int i=start; i<candidates.size() && target>=candidates[i]; i++) {
+                sub.push_back(candidates[i]);
+                backtrack(ans,sub,candidates,target-candidates[i]);
+                sub.pop_back();
+            }
+        }
+    }
+};
