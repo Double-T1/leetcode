@@ -50,3 +50,51 @@ WordDictionary.prototype.search = function(word) {
 
     return backtrack(node,word)
 };
+
+struct TrieNode {
+    vector<TrieNode*> children;
+    bool isEnd=false;
+    
+    TrieNode* get(char c) {return children[c-'a'];}
+    void add(char c) {children[c-'a'] = new TrieNode();}
+    
+    TrieNode(): children(26,nullptr) {}
+};
+
+
+class WordDictionary {
+private:
+    TrieNode* root;
+public:
+    WordDictionary() {
+        root = new TrieNode();
+    }
+    
+    void addWord(const string& word) {
+        auto node = root;
+        for (char c: word) {
+            if (!node->get(c)) {
+                node->add(c);
+            }
+            node = node->get(c);
+        }
+        node->isEnd = true;
+    }
+    
+    bool search(const string& word) {
+        return recur(word,0,root);
+    }
+    
+    bool recur(const string& word, int i, TrieNode* node) {
+        if (i == word.size()) return node->isEnd;
+            
+        if (word[i] == '.') {
+            for (int j=0; j<26; j++) {
+                if ((node->children)[j] && recur(word,i+1,(node->children)[j])) return true;
+            }
+        } else if (node->get(word[i])) {
+            return recur(word,i+1,node->get(word[i]));
+        } 
+        return false;
+    }
+};
