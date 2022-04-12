@@ -1,0 +1,76 @@
+class Solution {
+public:
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+        vector<vector<int>> visited(heights.size(), vector<int>(heights[0].size(),0));
+        int m = heights.size(), n = heights[0].size();
+        for (int i=0; i<m; i++) {
+            dfs(heights,i,0,visited,0);
+        }
+        for (int j=1; j<n; j++) {
+            dfs(heights,0,j,visited,0);
+        }
+        
+        vector<vector<int>> ans;
+        for (int i=0; i<m; i++) {
+            dfsA(heights,i,n-1,visited,0,ans);
+        }
+        for (int j=n-2; j>=0; j--) {
+            dfsA(heights,m-1,j,visited,0,ans);
+        }
+        
+        return ans;
+    }
+    
+private:
+    void dfs(vector<vector<int>>& heights,int i,int j,vector<vector<int>>& visited,int prev) {
+        if (isValid(heights,i,j) && visited[i][j] == 0 && prev<=heights[i][j]) {
+            int cur = heights[i][j];
+            visited[i][j] = 1;
+            dfs(heights,i+1,j,visited,cur);
+            dfs(heights,i-1,j,visited,cur);
+            dfs(heights,i,j+1,visited,cur);
+            dfs(heights,i,j-1,visited,cur);
+        } 
+    }
+    
+    void dfsA(vector<vector<int>>& heights,int i,int j,vector<vector<int>>& visited,int prev, vector<vector<int>>& ans) {
+        if (isValid(heights,i,j) && visited[i][j] < 2 && prev<=heights[i][j]) {
+            if (visited[i][j] == 1) ans.push_back(vector<int>{i,j});
+            int cur = heights[i][j];
+            visited[i][j] = 2;
+            dfsA(heights,i+1,j,visited,cur,ans);
+            dfsA(heights,i-1,j,visited,cur,ans);
+            dfsA(heights,i,j+1,visited,cur,ans);
+            dfsA(heights,i,j-1,visited,cur,ans);
+        } 
+    }
+    
+    bool isValid(vector<vector<int>>& heights, int i, int j) {
+        return i>=0
+            && i<heights.size()
+            && j>=0 
+            && j<heights[0].size();
+    }
+};
+
+
+
+
+/**
+find blocks where both pacific and atlantic touches
+1. mark all the blocks that pacific can reach => mark within the matrix.
+or anther matrix for 
+=> start from left, if touches already recorded block, retreat. 
+
+2. mark all atlantic, and if they match with pacific, retain.
+=> if touches p recorded, push into ans
+=> if touches a visited block, retreat
+
+=> need a record matrix that has three state: 2,1,0
+0: not yet visited
+1: p visited 
+2: a visited 
+
+can only link to higher of equals
+
+*/
