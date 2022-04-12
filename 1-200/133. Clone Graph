@@ -1,3 +1,42 @@
+//C++
+class Solution {
+public:
+    Node* cloneGraph(Node* node) {
+        if (!node) return nullptr;
+        unordered_map<int, Node*> hashmap;
+        queue<Node*> qu;
+        qu.push(node);
+        hashmap[node->val] = new Node(node->val);
+        while (qu.size()) {
+            auto cur = qu.front();
+            qu.pop();
+            for (auto ptr : cur->neighbors) {
+                if (hashmap.find(ptr->val) == hashmap.end()) {
+                    hashmap[ptr->val] = new Node(ptr->val);
+                    qu.push(ptr);
+                }
+            }
+        }
+        
+        qu.push(node);
+        unordered_set<int> visited;
+        visited.insert(node->val);
+        while (qu.size()) {
+            auto cur = qu.front();
+            qu.pop();
+            for (auto next : cur->neighbors) {
+                hashmap[cur->val]->neighbors.push_back(hashmap[next->val]);
+                if (visited.count(next->val)==0) {
+                    qu.push(next);
+                    visited.insert(next->val);
+                }
+            }
+        }
+        return hashmap[node->val];
+    }
+};
+
+//JS
 var cloneGraph = function(node) {  
     if (!node) return null
     let stack = [node]
