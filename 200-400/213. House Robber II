@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        if (nums.size() == 1) return nums[0];
+        vector<int> memo(nums.size(),-1);
+        int ans = helper(nums,memo,1);
+        nums.pop_back();
+        fill(memo.begin(),memo.end(),-1);
+        ans = max(ans,helper(nums,memo,0));
+        return ans;
+    }
+    
+private:
+    int helper(vector<int>& nums, vector<int>& memo, int i) {
+        if (i>=nums.size()) return 0;
+        if (memo[i]>-1) return memo[i];
+        memo[i] = max(helper(nums,memo,i+2)+nums[i],helper(nums,memo,i+1));
+        return memo[i];
+    }
+};
+
+
+/**
+DP: what happens at latter state never affects previous state
+
+
+
+*/
