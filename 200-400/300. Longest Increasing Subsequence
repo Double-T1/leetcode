@@ -1,3 +1,30 @@
+//C++
+//O(nlogn)
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        vector<int> ref;
+        for (int num: nums) {
+            int index = search(ref,0,ref.size(),num);
+            if (index == ref.size()) ref.push_back(num);
+            else ref[index] = num;
+        }
+        return ref.size();
+    }
+    
+private:
+    //[)
+    int search(vector<int>& nums, int left, int right, int target) {
+        while (left<right) {
+            int mid = left+(right-left)/2;
+            if (nums[mid]>=target) right = mid;
+            else left = mid+1;
+        }
+        return right;
+    }
+};
+
+
 //time: O(n^2)
 var lengthOfLIS = function(nums) {
     let dp = []
