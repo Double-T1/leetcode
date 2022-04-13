@@ -1,0 +1,11 @@
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int ans=-pow(10,4), current = -pow(10,4);
+        for (int num: nums) {
+            current = max(num,current+num);
+            ans = max(ans,current);
+        }
+        return ans;
+    }
+};
