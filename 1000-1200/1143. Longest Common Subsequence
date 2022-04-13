@@ -1,0 +1,14 @@
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        vector<vector<int>> memo(text1.size(),vector<int>(text2.size(),-1));
+        return helper(text1,text2,memo);
+    }
+private:
+    int helper(string& str1, string& str2, vector<vector<int>>& memo, int i=0, int j=0) {
+        if (i == str1.size() || j == str2.size()) return 0;
+        if (memo[i][j]>-1) return memo[i][j];
+        if (str1[i] == str2[j]) return memo[i][j] = helper(str1,str2,memo,i+1,j+1) + 1;
+        return memo[i][j] = max(helper(str1,str2,memo,i+1,j),helper(str1,str2,memo,i,j+1));
+    }
+};
