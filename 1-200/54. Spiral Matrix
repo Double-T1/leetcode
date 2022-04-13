@@ -1,0 +1,25 @@
+class Solution {
+private:
+    int row[4] = {0,1,0,-1};
+    int col[4] = {1,0,-1,0};
+    
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> ans;
+        int limit = matrix.size()*matrix[0].size();
+        int i=0, j=0, k=0;
+        for (;limit>0; limit--) {
+            if (i<0 || i>= matrix.size() || j<0 || j>=matrix[0].size() || matrix[i][j]>100) {
+                i -= row[k], j -= col[k];
+                k = (k+1)%4;
+                i += row[k], j += col[k];
+            }
+            
+            ans.push_back(matrix[i][j]);
+            matrix[i][j] = 101;
+            i += row[k];
+            j += col[k];
+        }
+        return ans;
+    }
+};
