@@ -1,0 +1,48 @@
+class Solution {
+public:
+    vector<vector<int>> generateMatrix(int n) {
+        vector<vector<int>> matrix(n, vector<int>(n,0));
+        int row[4] = {0,1,0,-1};
+        int col[4] = {1,0,-1,0};
+        int i=0, j=0, val=1, rc = 0;
+        for (int end = n*n; end>0; end--) {
+            if (i<0 || i>=n || j<0 || j>=n || matrix[i][j] > 0) {
+                i -= row[rc], j -= col[rc];
+                rc = (rc+1)%4;
+                i += row[rc], j += col[rc];
+            }    
+            matrix[i][j] = val;
+            val++;
+            i += row[rc], j += col[rc];
+        }
+        
+        return matrix;
+    }
+};
+
+
+/**
+0,0
+0,1
+0,2
+1,2
+2,2
+2,1
+2,0
+1,0
+1,1
+
+1. go straight forward
+2. when hit the end/filled, turn right
+how to turn right??
+
+(0,1) => (1,0) => (0,-1) => (-1,0)
+
+
+
+1. prep a matrix, a row and col change list
+2. while loop (loop n*n times)
+
+
+
+*/
