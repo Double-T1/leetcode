@@ -16,3 +16,19 @@ var rob = function(nums) {
 
     return temp
 }
+
+//time: O(n)
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        vector<int> memo(nums.size(),-1);
+        return helper(nums,memo);
+    }
+
+private:
+    int helper(vector<int>& nums, vector<int>& memo, int i=0) {
+        if (i>=nums.size()) return 0;
+        if (memo[i]>-1) return memo[i];
+        return memo[i] = max(helper(nums,memo,i+2) + nums[i],helper(nums,memo,i+1));
+    }
+};
