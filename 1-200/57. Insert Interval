@@ -1,3 +1,29 @@
+class Solution {
+public:
+    vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
+        int start, end;
+        int newS = newInterval[0], newE = newInterval[1];
+        vector<vector<int>> ans;
+        for (auto& sub : intervals) {
+            start = sub[0], end = sub[1];
+            if (end<newS) {
+                ans.push_back(sub);
+            } else if (start>newE) {
+                ans.push_back({newS,newE});
+                ans.push_back(sub);
+                newS = 100001;
+            } else {
+                newS = min(newS,start);
+                newE = max(newE,end);
+            }
+        }
+        if (newS != 100001) ans.push_back({newS,newE});
+        
+        return ans;
+    }
+};
+
+
 var insert = function(intervals, newInterval) {
     let left = 0
     let right = intervals.length
