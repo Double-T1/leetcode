@@ -1,0 +1,30 @@
+//O(n)
+var maxProduct = function(nums) {
+    if (nums.length === 0) return 0
+    let currnetMax = nums[0]
+    let currentMin = nums[0]
+    let max = nums[0]
+    for (let i=1; i<nums.length; i++) {
+        let temp = currnetMax
+        currnetMax = Math.max(currnetMax*nums[i],currentMin*nums[i],nums[i])
+        currentMin = Math.min(temp*nums[i],currentMin*nums[i],nums[i])
+        max = Math.max(currnetMax,max)
+    }
+    return max
+};
+
+//c++:
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int curMin = nums[0], curMax = nums[0], ans = nums[0];
+        for (int i=1; i<nums.size(); i++) {
+            int num = nums[i];
+            int minNow = curMin*num, maxNow = curMax*num;
+            curMin = min(num,min(minNow,maxNow));
+            curMax = max(num,max(minNow,maxNow));
+            ans = max(ans,max(curMin,curMax));
+        }
+        return ans;
+    }
+};
