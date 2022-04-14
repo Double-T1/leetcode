@@ -1,18 +1,16 @@
-//time: O((n-l)*l) => depends on l
-// 0<=l<=n => to max (n-l)*l => n*l-l^2 = -(l^2-n*l) = -(l^2-n*l+((n/2))^2)
-//=> -[(l-(n/2))^2] => l = n/2
-//=> O((n/2)^2) = O(n^2)
-var characterReplacement = function(s, k) {
-    let max = 1, f=s.length
-    for(let i=0; i<f; i++) {
-        if (s[i] === s[i-1]) continue
-        let quota = k, j=i+1
-        while(j<s.length && (quota>0 || s[j] === s[i])) {
-            if (s[j] !== s[i]) quota--
-            j++
+class Solution {
+public:
+    int characterReplacement(string s, int k) {
+        unordered_map<int, int> count;
+        int maxf = 0, ans= 0;
+        for (int i=0; i<s.size(); i++) {
+            maxf = max(maxf,++count[s[i]]);
+            if (ans-maxf<k) {
+                ans++;
+            } else {
+                count[s[i-ans]]--;
+            }
         }
-        max = Math.max(j-i,max)
-        f = s.length-max+1
+        return ans;
     }
-    return max
 };
