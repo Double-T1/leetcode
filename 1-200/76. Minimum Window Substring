@@ -1,3 +1,43 @@
+//O(m+n)
+//c++
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        unordered_map<char, int> hashmap;
+        int count = 0;
+        for (char& c: t) {
+            if (hashmap[c] == 0) count++;
+            hashmap[c]++;
+        }
+        
+        int left=-1, length=s.size()+1;
+        for (int i=0, j=0; j<s.size(); j++) {
+            char& c = s[j];
+            if (hashmap.count(c)) {
+                if ((--hashmap[c]) == 0) {
+                    count--;
+                } 
+            }
+            
+            while (count == 0 && i<=j) {
+                if (length>(j-i+1)) {
+                    left = i, length = j-i+1;
+                }
+                char& out = s[i++];
+                if (hashmap.count(out)) {
+                    if ((++hashmap[out]) == 1) {
+                        count++;
+                    }
+                }
+            }
+        }
+        return left == -1? "" : s.substr(left,length);
+    }
+    
+};
+
+
+
 //s and t consist of uppercase and lowercase English letters.
 //observation:
 //1. the window always start with a char of t and end with a char of t
