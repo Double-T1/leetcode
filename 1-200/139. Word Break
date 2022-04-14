@@ -1,4 +1,5 @@
-//O(s*w)
+//s = s.length, w = wordDict.length, n = each words length
+//O(s*w*n)
 class Solution {
 public:
     bool wordBreak(string s, vector<string>& wordDict) {
