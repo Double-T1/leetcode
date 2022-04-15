@@ -1,0 +1,84 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    //1. makes it an vector
+    //2. encode into string
+    string serialize(TreeNode* root) {
+        queue<TreeNode*> qu;
+        qu.push(root);
+        string str = "[";
+        while (qu.size()) {
+            auto node = qu.front(); qu.pop();
+            str += ",";
+            if (!node) {
+                str += "null";
+                continue;
+            } 
+            str += to_string(node->val);
+            qu.push(node->left);
+            qu.push(node->right);
+        }
+        return str+"]";
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        auto vec = toVector(data);
+        if (vec.empty() || vec[0] == -1001) return nullptr;
+        
+        TreeNode* root = new TreeNode(vec[0]);
+        queue<TreeNode*> qu;
+        qu.push(root);
+        for (int i=1; i<vec.size(); i++) {
+            auto cur = qu.front(); qu.pop();
+            cur->left = vec[i]==-1001? nullptr : new TreeNode(vec[i]);
+            i++;
+            cur->right = i==vec.size() || vec[i]==-1001? nullptr : new TreeNode(vec[i]);
+            if (cur->left != nullptr) qu.push(cur->left);
+            if (cur->right != nullptr) qu.push(cur->right);
+        }
+        return root;
+    }
+    
+private:
+    vector<int> toVector(string& data) {
+        string cur = "";
+        vector<int> vec;
+        for (auto& c: data) {
+           if (c != '[' && c !=']' && c!= ',') {
+               cur += c;
+           } else {
+               if (cur == "null") vec.push_back(-1001);
+               else if (cur.size()) vec.push_back(stoi(cur));
+               cur = "";
+           }
+        }
+        return vec;
+    } 
+};
+
+// Your Codec object will be instantiated and called as such:
+// Codec ser, deser;
+// TreeNode* ans = deser.deserialize(ser.serialize(root));
+
+
+/**
+[i,2*i,2*i+1]
+if its null, the node stops here
+for deserialization:
+1. a visited array
+2. dfs O(n)
+
+
+
+*/
