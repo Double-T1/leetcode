@@ -1,0 +1,50 @@
+class Solution {
+public:
+    /**
+     * @param n: An integer
+     * @param edges: a list of undirected edges
+     * @return: true if it's a valid tree, or false
+     */
+    bool validTree(int n, vector<vector<int>> &edges) {
+        vector<vector<int>> adj(n,vector<int>());
+        for (auto& edge: edges) {
+            auto u = edge[0], v = edge[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+
+        queue<vector<int>> qu;
+        qu.push({0,-1});
+        bool visited[n] = {false};
+        visited[0] = true;
+        int count = n-1;
+        while (qu.size()) {
+            int size = qu.size();
+            while (size) {
+                auto node = qu.front();
+                qu.pop();
+                for (auto v: adj[node[0]]) {
+                    if (v == node[1]) continue;
+                    if (visited[v]) return false;
+                    visited[v] = true;
+                    count--;
+                    qu.push({v,node[0]});
+                }
+                size--;
+            }
+        }
+        return count == 0;
+    }
+};
+
+/**
+what is a valid tree?? 
+1. is connected
+2. no cycle
+
+since undirected
+we can traverse all nodes from any node without revisiting
+bfs or dfs
+
+
+*/
