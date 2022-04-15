@@ -1,0 +1,83 @@
+class Solution {
+public:
+    /**
+     * @param words: a list of words
+     * @return: a string which is correct order
+     */
+    string alienOrder(vector<string> &words) {
+        vector<vector<char>> adj(26,vector<char>());
+        vector<bool> start(26,false);
+        for (int i=0; i<words.size(); i++) {
+            for (int j=i+1; j<words.size(); j++) {
+                if (!buildEdge(adj,start,words[i],words[j])) return "";
+            }
+        }
+
+        string topo = "";
+        vector<int> visited(26);
+        for (int i=25; i>=0; i--) {
+            if (start[i]) {
+                if (!dfs(adj,topo,visited,(char)(i+'a'))) return "";
+            }
+        }
+        return topo;
+    }
+
+private:
+    bool dfs(vector<vector<char>>& adj, string& topo, vector<int>& visited, char c) {
+        int i = c-'a';
+        if (visited[i] == 1) return false;
+        if (visited[i] == 2) return true;
+
+        visited[i] = 1;
+        for (auto& next : adj[i]) {
+            if(!dfs(adj,topo,visited,next)) return false;
+        }
+        visited[i] = 2;
+        topo = c+topo;
+        return true;
+    }
+
+
+    //a<b 
+    bool buildEdge(vector<vector<char>>& adj, vector<bool>& start, string& a, string& b) {
+        int i=0, j=0;
+        bool ans = true;
+        while (i<a.size() && j<b.size() && a[i] == b[j]) {
+            start[a[i]-'a'] = start[b[j]-'a'] = true;
+            i++, j++;
+        }
+        if (i<a.size()) {
+            start[a[i]-'a'] = true;
+            if (j==b.size()) {
+                ans = false;
+            } else {
+                start[b[j]-'a'] = true;
+                adj[a[i++]-'a'].push_back(b[j++]);
+            }
+        }
+        while (i<a.size()) {
+            start[a[i++]-'a'] =true;
+        }
+        while (j<b.size()) {
+            start[b[j++]-'a'] = true;
+        }
+
+        return ans;
+    }
+};
+
+
+/**
+!!! possible that the order is invalid
+!!! maybe multiple valid order
+find the topological order
+
+a<b means a->b undirected graph
+
+1. build a adjList from the alien dict => O(n^2 * w)
+2. find the topological order => dfs(visited,0,1,2)
+=> push inside than reverse (or just plaing adding them up) s= a+s;
+3. if a cycle exist => return ""
+
+*/
