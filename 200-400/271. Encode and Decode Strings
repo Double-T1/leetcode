@@ -1,0 +1,33 @@
+class Solution {
+public:
+    /*
+     * @param strs: a list of strings
+     * @return: encodes a list of strings to a single string.
+     */
+    string encode(vector<string> &strs) {
+        string ans = "";
+        for (string& str: strs) {
+            ans += str;
+            ans += ","; 
+        }
+        return ans;
+    }
+
+    /*
+     * @param str: A string
+     * @return: dcodes a single string to a list of strings
+     */
+    vector<string> decode(string &str) {
+        string cur = "";
+        vector<string> ans;
+        for (char& c: str) {
+            if (c == ',') {
+                ans.push_back(cur);
+                cur = "";
+            } else {
+                cur += c;
+            }
+        }
+        return ans;
+    }
+};
