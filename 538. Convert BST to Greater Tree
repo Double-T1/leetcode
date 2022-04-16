@@ -53,7 +53,28 @@ var convertBST2 = function(root) {
     return root
 };
 
-
 let root = [4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]
 root = arrayToTree(root)
 console.log(convertBST2(root).left.right)
+
+
+//c++
+class Solution {
+public:
+    TreeNode* convertBST(TreeNode* root) {
+        vector<TreeNode*> vec;
+        inorder(root,vec);
+        for (int i=vec.size()-2; i>=0; i--) {
+            vec[i]->val += vec[i+1]->val;
+        }
+        return root;
+    }
+    
+private:
+    void inorder(TreeNode* node, vector<TreeNode*>& vec) {
+        if (!node) return;
+        inorder(node->left,vec);
+        vec.push_back(node);
+        inorder(node->right,vec);
+    }
+};
