@@ -1,0 +1,70 @@
+bool comp(vector<int>& a, vector<int>& b) {
+    return a[1]>b[1];
+}
+
+class Solution {
+public:
+    int maximumScore(vector<int>& scores, vector<vector<int>>& edges) {
+        vector<vector<vector<int>>> adj(scores.size(),vector<vector<int>>());
+        for (auto& edge : edges) {
+            int u = edge[0], v = edge[1];
+            adj[u].push_back({v,scores[v]});
+            adj[v].push_back({u,scores[u]});
+        }
+        
+        for (int i=0; i<scores.size(); i++) {
+            sort(adj[i].begin(),adj[i].end(),comp);
+        }
+        
+        int ans = -1;
+        for (auto& edge : edges) {
+            int u = edge[0], v = edge[1];
+            int cur = scores[u] + scores[v];
+            if (adj[u].size()<2 || adj[v].size()<2) continue;
+            int x = max(findTwo(adj,v,u),findTwo(adj,u,v));
+            if (x == 0) continue;
+            ans = max(ans,cur+x);
+            // cout << u << " " << v << " " << cur << " " << ans << endl;
+        }
+        return ans;
+    }
+private:
+    int findTwo(vector<vector<vector<int>>>& adj, int u, int v) {
+        int cur = 0;
+        int third = adj[u][0][0];
+        if (adj[u][0][0] == v) {
+            cur += adj[u][1][1];
+            third = adj[u][1][0];
+        } else {
+            cur += adj[u][0][1];
+        }
+
+        if (adj[v][0][0] == u || adj[v][0][0] == third) {
+            if (adj[v][1][0] == u || adj[v][1][0] == third) {
+                if (adj[v].size()<3) return 0;
+                cur += adj[v][2][1];
+            } else {
+                cur += adj[v][1][1];
+            }
+        } else {
+            cur += adj[v][0][1];
+        }  
+        
+        return cur;
+    }
+};
+
+/**
+1. There is an edge connecting every pair of adjacent nodes in the sequence. => has to be connected
+2. No node appears more than once in the sequence. => every node has a max of two other nodes plus itself
+3. a seq of 4
+
+easy to get the answer if it was a seq of 3
+can't brute froce => TLE
+
+O(E)
+1. adjList
+for every adjacent pairs, find their corresponding biggest two outer nodes
+
+
+*/
