@@ -1,0 +1,13 @@
+class Solution {
+public:
+    long long waysToBuyPensPencils(int total, int cost1, int cost2) {
+        long long ans = 0;
+        int bigger = max(cost1, cost2), smaller = min(cost1,cost2);
+        int target = total;
+        while (target>=0) {
+            ans += (long long)(target/cost2)+1;
+            target -= cost1;
+        }
+        return ans;
+    }
+};
