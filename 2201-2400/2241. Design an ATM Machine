@@ -1,0 +1,47 @@
+class ATM {
+private:
+    vector<long long> notes;
+    vector<int> values;
+    
+public:
+    ATM() {
+        notes = {0,0,0,0,0};
+        values = {20,50,100,200,500};
+    }
+    
+    void deposit(vector<int> banknotesCount) {
+        for (int i=0; i<banknotesCount.size(); i++) {
+            notes[i] += (long long)banknotesCount[i];
+        }
+    }
+    
+    vector<int> withdraw(int amount) {
+        vector<int> ans(5,0);
+        for (int i=notes.size()-1; i>=0; i--) {
+            if (notes[i] == 0) continue;
+            ans[i] = (int)min((long long)(amount/values[i]),notes[i]);
+            amount -= ans[i]*values[i];
+            notes[i] -= (long long)ans[i];
+        }
+        if (amount == 0) return ans;
+        deposit(ans);
+        return {-1};
+    }
+};
+
+//edge case: large numbers?? long long??
+/**
+ * Your ATM object will be instantiated and called as such:
+ * ATM* obj = new ATM();
+ * obj->deposit(banknotesCount);
+ * vector<int> param_2 = obj->withdraw(amount);
+ */
+
+/**
+if the larger notes can make up of the request => request rejected
+[20,50,100,200,500]
+
+
+
+
+*/
