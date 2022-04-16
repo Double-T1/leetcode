@@ -1,0 +1,81 @@
+struct TrieNode {
+    vector<TrieNode*> children;
+    int isEnd;
+    
+    TrieNode() : isEnd(0), children(26,nullptr) {}
+};
+
+class Trie {
+private:
+    TrieNode* root;
+    
+public:
+    Trie() : root(new TrieNode()) {};
+    
+    void insert(string& word) {
+        auto node = root;
+        for (auto& c : word) {
+            if (!(node->children)[c-'a']) node->children[c-'a'] = new TrieNode();
+            node = node->children[c-'a'];
+        }
+        (node->isEnd)++;
+    }
+    
+    //1. search from the end of the word
+    //2. if matched with isEnd==true => flip it
+    bool search_reverse(string &word) {
+        auto node = root;
+        for (int i=word.size()-1; i>=0; i--) {
+            if (!(node->children)[word[i]-'a']) return false;
+            node = node->children[word[i]-'a'];
+        }
+        if (node->isEnd) {
+            (node->isEnd)--;
+            return true;
+        }
+        return false;
+    }
+};
+
+class Solution {
+public:
+    int longestPalindrome(vector<string>& words) {
+        int same = 0, diff = 0;
+        Trie* trie = new Trie();
+        for (auto& word : words) {
+            if (trie->search_reverse(word)) {
+                diff++;
+                if (word[0] == word[1]) same--;
+            } else {
+                trie->insert(word);
+                if (word[0] == word[1]) same++;
+            }
+        }
+        delete trie;
+        return same? 4*diff+2 : 4*diff;
+    }
+};
+
+
+/**
+two types:
+ab,ba => 2d
+aa =>2s
+
+constraint: O(n) 
+count the numbers of 2d and 2s
+
+
+build trie
+1. for each 2d, check if it has the opposite in the trie
+if yes => flip isEnd to false, pair add one.
+if no => insert the suffix into trie
+2. for each 2c, similar as above
+however, create a sperate 2d that records the amount of 2s
+=> if found a match, decrement 2s, increment 2d.
+
+
+
+
+
+*/
