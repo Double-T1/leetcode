@@ -1,0 +1,35 @@
+class Solution {
+public:
+    int minimumRounds(vector<int>& tasks) {
+        unordered_map<int, int> map;
+        for (int x : tasks) {
+            map[x]++;
+        }
+        
+        int count = 0;
+        for (auto [key,value]: map) {
+            int re = value%3;
+            if (re == 0) count += value/3;
+            else if (re == 2) count += value/3 + 1;
+            else {
+                if ((value/3)<1) return -1;
+                else count += value/3 + 1;
+            }
+        }
+        return count;
+    }
+};
+
+
+/**
+can't 
+count the number of tasks
+2n + 3m for each tasks
+
+can x be build of 2n + 3m ??
+x = 2n + 3m??
+most def => x/3 mod either 0,1,2 => if 0 no further investigation
+if 1 => give out one 3 for 2 2s
+if 2 => one 2 required
+
+*/
