@@ -1,0 +1,27 @@
+class Solution {
+public:
+    int repeatedStringMatch(string a, string b) {
+        string as = a;
+        for (int rep=1; rep<=(b.size()/a.size())+2; rep++, as += a) {
+            if (as.find(b) != -1) return rep;
+        } 
+        return -1;
+    }
+};
+
+
+//slightly improved solution 1
+//same complexity tho
+class Solution {
+public:
+    int repeatedStringMatch(string a, string b) {
+        string as = a;
+        int count = 1;
+        while (as.size()<b.size()) as += a, count++;
+        if (as.find(b) != -1) return count;
+        count++;
+        as += a;
+        if (as.find(b) != -1) return count;
+        return -1;
+    }
+};
