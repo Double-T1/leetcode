@@ -1,0 +1,24 @@
+class Solution {
+public:
+    TreeNode* increasingBST(TreeNode* root) {
+        vector<TreeNode*> vec;
+        inorder(root,vec);
+        TreeNode temp;
+        TreeNode* cur = &temp;
+        for (auto node : vec) {
+            node->left = nullptr;
+            node->right = nullptr;
+            cur->right = node;
+            cur = node;
+        }
+        return temp.right;
+    }
+private:
+    void inorder (TreeNode* node, vector<TreeNode*>& arr) {
+        if (!node) return;
+        inorder(node->left,arr);
+        arr.push_back(node);
+        inorder(node->right,arr);
+    }
+};
+
