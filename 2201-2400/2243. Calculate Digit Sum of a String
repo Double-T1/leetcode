@@ -1,0 +1,24 @@
+class Solution {
+public:
+    string digitSum(string s, int k) {
+        while (s.size()>k) {
+            string s_new = "";
+            int n = s.size();
+            for (int i=0; i<n; i += k) {
+                string sub = s.substr(i,min(k,n-i));
+                s_new += to_string(sum(sub));
+            }
+            s = s_new;
+        }
+        return s;
+    }
+    
+private:
+    int sum(string& word) {
+        int ans = 0;
+        for (auto& c: word) {
+            ans += c - '0';
+        }
+        return ans;
+    }
+};
