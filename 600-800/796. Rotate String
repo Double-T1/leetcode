@@ -1,0 +1,24 @@
+class Solution {
+public:
+    bool rotateString(string s, string goal) {
+        if (s.size()!=goal.size()) return false;
+        vector<int> table(goal.size(),0);
+        for(int i=0, j=1; j<goal.size();) {
+            if (goal[i] == goal[j]) table[j++] = ++i;
+            else if (i>0) i = table[i-1];
+            else j++;
+        }
+        
+        int i=0, j=0;
+        while (i<s.size()) {
+            if (goal[j] == s[i]) i++,j++;
+            else if (j>1) j=table[j-1]; 
+            else i++;
+        }
+        
+        for (int k=0, p=j; k<i-j; k++,p++) {
+            if (s[k] != goal[p]) return false;
+        }
+        return true;
+    }
+};
