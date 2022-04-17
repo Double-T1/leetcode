@@ -1,0 +1,58 @@
+class Solution {
+public:
+    string shortestPalindrome(string s) {
+        int mid = s.size()/2;
+        vector<int> table(mid,0);
+        for (int i=0, j=1; j<mid;) {
+            if (s[i] == s[j]) table[j++] = ++i;
+            else if (i>0) i = table[i-1];
+            else j++;
+        }
+        
+        int i=0, j=s.size()-1;
+        while (i<j) {
+            if (s[i] == s[j]) i++,j--;
+            else if (i>0) i = table[i-1];
+            else j--;
+        }
+        //(0,i-1) + (0,j)
+        string front = s.substr(i+j+1, s.size()-(i+j+1));
+        reverse(front.begin(),front.end());
+        return front + s;
+    }
+};
+
+
+/**
+constraint: O(n)
+edge case of length =0;
+
+brute force: 
+1. find a lettter as the center and try to expand
+=> O(n^2)
+O((n^2 + 2*n)/8) => still O(n^2)
+
+
+observations:
+its def going to be from the rightmost char
+
+=> the key is to find out how many rightmost char is left out
+e.g.
+abcd
+int i=0, j=s.size()-1;
+if s[i] != s[j] j-- 
+unitl s[i] == s[j] => reverse(substr(j+1,n-j-1)) + s;
+
+aacecaaa
+
+a = aace
+b = aaace
+
+find the index of a in b
+
+1. build a kmp table before the mid of s
+
+
+=> until i == j
+
+*/
