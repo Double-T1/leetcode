@@ -1,3 +1,6 @@
+//there are two complexity
+
+//O(m*n)
 class Solution {
 public:
     int repeatedStringMatch(string a, string b) {
@@ -23,5 +26,39 @@ public:
         as += a;
         if (as.find(b) != -1) return count;
         return -1;
+    }
+};
+
+//O(m+n)
+//kmp search
+class Solution {
+public:
+    int repeatedStringMatch(string a, string b) {
+        vector<int> table(b.size(),0);
+        for (int i=0, j=1; j<b.size();) {
+            if (b[i] == b[j]) table[j++] = ++i;
+            else if (i>0) i= table[i-1];
+            else j++;
+        }
+        
+        string as = a;
+        int count = 1;
+        while (as.size()<b.size()) as += a, count++;
+        if (kmpSearch(table,as,b)) return count;
+        count++;
+        as += a;
+        if (kmpSearch(table,as,b)) return count;
+        return -1;
+    }
+    
+private:
+    bool kmpSearch(vector<int>& table, string& a, string& b) {
+        int i=0, j=0;
+        while (j<b.size() && i<a.size()) {
+            if (a[i] == b[j]) i++,j++;
+            else if (j>0) j = table[j-1];
+            else i++;
+        }
+        return j == b.size();
     }
 };
