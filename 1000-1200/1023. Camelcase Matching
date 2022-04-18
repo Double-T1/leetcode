@@ -1,0 +1,39 @@
+//q is the length of queries
+//p is the length of pattern
+//qi is the length of each word in queries
+//time: O(q*qi)
+class Solution {
+public:
+    vector<bool> camelMatch(vector<string>& queries, string pattern) {
+        vector<bool> ans(queries.size(),false);
+        for (int i=0; i<queries.size(); i++) {
+            ans[i] = patCheck(queries[i],pattern);
+        }
+        return ans;
+    }
+    
+private:
+    bool patCheck(string& word, string& p) {
+        int i=0, j=0; 
+        while (j<p.size() && i<word.size()) {
+            while(i<word.size() && word[i] != p[j] && word[i]>'Z') i++;
+            if (i == word.size() || word[i] != p[j]) return false;
+            j++,i++;
+        }
+        
+        while (i<word.size()) {
+            if (word[i]<='Z') return false;
+            i++;
+        }
+        
+        return j == p.size();
+    }
+};
+
+
+/**
+uppercase check: c<='Z'
+
+O(q*p*qi)
+
+*/
