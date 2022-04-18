@@ -1,0 +1,70 @@
+class Solution {
+public:
+    int maxTrailingZeros(vector<vector<int>>& grid) {
+        int m = grid.size(), n= grid[0].size();
+        vector<vector<vector<int>>> base(m,vector<vector<int>>(n,vector<int>()));
+        for (int i=0; i<m; i++) {
+            for (int j=0; j<n; j++) {
+                base[i][j] = count2and5(grid[i][j]);
+            }
+        }
+        
+        vector<vector<vector<int>>> verti(m,vector<vector<int>>(n));
+        for (int i=0; i<m; i++) {
+            for (int j=0; j<n; j++) {
+                verti[i][j] = base[i][j];
+                if (i != 0) {
+                    verti[i][j][0] += verti[i-1][j][0];
+                    verti[i][j][1] += verti[i-1][j][1];
+                }
+            }
+        }
+        
+        vector<vector<vector<int>>> hori(m,vector<vector<int>>(n,vector<int>()));
+        for (int i=0; i<m; i++) {
+            for (int j=0; j<n; j++) {
+                hori[i][j] = base[i][j];
+                if (j != 0) {
+                    hori[i][j][0] += hori[i][j-1][0];
+                    hori[i][j][1] += hori[i][j-1][1];
+                }
+            }
+        }
+                                                              
+        int ans = 0;
+        for (int i=0; i<m; i++) {
+            for (int j=0; j<n; j++) {
+                int top2 = verti[i][j][0];
+                int top5 = verti[i][j][1];
+                int down2 = i>0 ? verti[m-1][j][0]-verti[i-1][j][0] : verti[m-1][j][0];
+                int down5 = i>0 ? verti[m-1][j][1]-verti[i-1][j][1] : verti[m-1][j][1];
+                int left2 = hori[i][j][0];
+                int left5 = hori[i][j][1];
+                int right2 = j>0? hori[i][n-1][0]-hori[i][j-1][0] : hori[i][n-1][0];
+                int right5 = j>0? hori[i][n-1][1]-hori[i][j-1][1] : hori[i][n-1][1];
+                
+                int topLeft = min(top2+left2-base[i][j][0],top5+left5-base[i][j][1]);
+                int topRight = min(top2+right2-base[i][j][0],top5+right5-base[i][j][1]);
+                int bottomLeft = min(down2+left2-base[i][j][0],down5+left5-base[i][j][1]);
+                int bottomRight = min(down2+right2-base[i][j][0],down5+right5-base[i][j][1]);
+                
+                ans = max(ans,max(max(topLeft,topRight),max(bottomLeft,bottomRight)));
+            }
+        }
+        return ans;
+    }
+    
+private:
+    vector<int> count2and5(int num) {
+        int count2 = 0, count5 = 0;
+        while (num && num%2 == 0) {
+            num /= 2;
+            count2++;
+        }
+        while (num && num%5 == 0) {
+            num /= 5;
+            count5++;
+        }
+        return {count2,count5};
+    }
+};
