@@ -1,0 +1,106 @@
+
+/**
+You can swim infinite distances in zero time. 
+you must stay within the boundaries of the grid during your swim.
+goal: least time to reach (n-1,n-1) from (0,0)
+
+find a route to (n-1,n-1) with the smallest maximum value on the path;
+
+0-(n^2-1)
+brute force:
+try all paths and compare their max: possibly TLE
+
+can't go greedy
+can't do DP cause latter info affects prev states 
+backtracking??
+*/
+
+//solution 1
+//backtracking: obviously TLE since n is up to 50
+class Solution {
+private:
+    int row[4] = {1,0,-1,0};
+    int col[4] = {0,1,0,-1};
+    
+public:
+    int swimInWater(vector<vector<int>>& grid) {
+        int ans = INT_MAX;
+        vector<int> vec;
+        vec.push_back(grid[0][0]);
+        backtrack(grid,ans,vec);
+        return ans;
+    }
+    
+private:
+    void backtrack(vector<vector<int>>& grid, int& ans, vector<int>& vec, int i=0, int j=0) {
+        if (i == grid.size()-1 && j == grid.size()-1) {
+            int cur = 0;
+            for (auto num : vec) cur = max(num,cur);
+            ans = min(ans,cur); 
+        } else {
+            for (int k=0; k<4; k++) {
+                int m = i+row[k], n = j+col[k];
+                if (isValid(grid,m,n)) {
+                    vec.push_back(grid[m][n]);
+                    grid[m][n] = -1;
+                    backtrack(grid,ans,vec,m,n);
+                    grid[m][n] = vec.back();
+                    vec.pop_back();
+                }
+            }
+        }
+    }
+    
+    bool isValid(vector<vector<int>>& grid, int i, int j) {
+        return i>=0 && i<grid.size() && j>=0 && j<grid.size() && grid[i][j]>-1;
+    }
+};
+
+//solution 2 
+//dijkstra using normal heap
+//time: O((V+E)logE)
+class Solution {
+private:
+    int row[4] = {1,0,-1,0};
+    int col[4] = {0,1,0,-1};
+    
+public:
+    int swimInWater(vector<vector<int>>& grid) {
+        int s = grid.size();
+        vector<vector<int>> dist(s,vector<int>(s,INT_MAX));
+        vector<vector<int>> minHeap = {{0,0}};
+        dist[0][0] = grid[0][0];
+        
+        while (minHeap.size()) {
+            auto cur = minHeap[0];
+            int i = cur[0], j = cur[1];
+            pop_heap(minHeap.begin(),minHeap.end(),[&dist](vector<int>& a, vector<int>& b){
+                return dist[a[0]][a[1]]>dist[b[0]][b[1]];
+            });
+            minHeap.pop_back();
+ 
+            for (int k=0; k<4; k++) {
+                int m = i + row[k], n = j + col[k];
+                if (m == s-1 && n == s-1) 
+                    return max(dist[i][j],grid[m][n]);
+                if (m>=0 && m<s && n>=0 && n<s 
+                    && max(dist[i][j],grid[m][n])<dist[m][n]) {
+                    dist[m][n] = max(dist[i][j],grid[m][n]);
+                    minHeap.push_back({m,n});
+                    push_heap(minHeap.begin(),minHeap.end(),[&dist](vector<int>& a, vector<int>& b){
+                        return dist[a[0]][a[1]]>dist[b[0]][b[1]];
+                    });
+                }
+            }
+        }
+        return 0;
+    }
+};
+
+
+/**
+dijkstra
+1. at each node, update the dist from the source to its adjacent nodes
+2. travel to the next smallest dist node. (need pq)
+3. need a quick check for the shortest dist to the node => vec or nested vec both works
+*/
