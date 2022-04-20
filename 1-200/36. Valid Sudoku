@@ -1,0 +1,27 @@
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        vector<int> row(9,0);
+        vector<int> col(9,0);
+        vector<int> square(9,0);
+        
+        for (int i=0; i<9; i++) {
+            for (int j=0; j<9; j++) {
+                if (board[i][j] == '.') continue;
+                char& c = board[i][j];
+                for (int col=0; col<9; col++) {
+                    if (col != j && board[i][col] == c) return false;
+                }
+                for (int row=0; row<9; row++) {
+                    if (row != i && board[row][j] == c) return false;
+                }
+                for (int row=3*(i/3), k=0; k<3; k++,row++) {
+                    for (int col=3*(j/3), p=0; p<3; p++,col++) {
+                        if (row != i && col != j && board[row][col] == c) return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+};
