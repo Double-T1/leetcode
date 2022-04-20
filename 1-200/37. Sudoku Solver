@@ -1,0 +1,49 @@
+class Solution {
+public:
+    void solveSudoku(vector<vector<char>>& board) {
+        vector<int> row(9,0);
+        vector<int> col(9,0);
+        vector<int> square(9,0);
+        
+        int n= board.size();
+        for (int i=0; i<n; i++) {
+            for (int j=0; j<n; j++) {
+                if (board[i][j] == '.') continue;
+                int num = board[i][j] - '0';
+                int bit = 1<<(num-1);
+                row[i] |= bit;
+                col[j] |= bit;
+                square[getSq(i,j)] |= bit;
+            }
+        }
+        
+        backtrack(board,row,col,square,0,0);        
+    }
+    
+private:
+    int getSq(int i, int j) {
+        return 3*(i/3) + (j/3);
+    }
+    
+    bool backtrack(vector<vector<char>>& board, vector<int>& row, vector<int>& col, vector<int>& square, int i, int j) {
+        if (j == board.size()) i++, j=0;
+        
+        if (i == board.size()) {
+            return true;
+        } else if (board[i][j] != '.') {
+            return backtrack(board,row,col,square,i,j+1);
+        } else {
+            for (int x=1; x<=9; x++) {
+                int bit = 1<<(x-1);
+                if ((row[i]&bit)==0 && (col[j]&bit)==0 && (square[getSq(i,j)]&bit)==0) {
+                    row[i] |= bit; col[j] |= bit; square[getSq(i,j)] |= bit;
+                    board[i][j] = (char)(x+'0');
+                    if (backtrack(board,row,col,square,i,j+1)) return true;
+                    board[i][j] = '.';
+                    row[i] ^= bit; col[j] ^= bit; square[getSq(i,j)] ^= bit;
+                }
+            }
+            return false;
+        }
+    }
+};
