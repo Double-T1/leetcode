@@ -1,0 +1,29 @@
+class BSTIterator {
+private:
+    stack<TreeNode*> st; 
+    
+public:
+    BSTIterator(TreeNode* root) {
+        while (root) {
+            st.push(root);
+            root = root->left;
+        }
+    }
+    
+    //next has a average O(1) time cuz if there is n nodes
+    //1. there will be at most n next() calls
+    //2. at most n nodes will be pushed into the stack
+    int next() {
+        auto node = st.top(); st.pop();
+        auto next = node->right;
+        while (next) {
+            st.push(next);
+            next = next->left;
+        }        
+        return node->val;
+    }
+    
+    bool hasNext() {
+        return !st.empty();
+    }
+};
