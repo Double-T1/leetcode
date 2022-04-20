@@ -1,3 +1,5 @@
+//z algo
+//time: O(n)
 class Solution {
 public:
     long long sumScores(string s) {
@@ -30,4 +32,22 @@ public:
         for (auto num: z) sum += (long long)num;
         return sum;
     }    
+};
+
+//kmp with a twist at the end
+//same comp
+class Solution {
+public:
+    long long sumScores(string s) {
+        vector<int> lps(s.size(),0);
+        for (int i=0, j=1; j<s.size();) {
+            if (s[i] == s[j]) lps[j++] = ++i;
+            else if (i>0) i = lps[i-1];
+            else j++;
+        }
+        
+        vector<int> cnt(s.size(),0);
+        for (int k=0; k<s.size(); k++) cnt[k] = lps[k] ? cnt[lps[k]-1]+1: 0;
+        return accumulate(begin(cnt), end(cnt), 0LL) + s.size();
+    }
 };
