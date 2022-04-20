@@ -1,0 +1,33 @@
+class Solution {
+public:
+    long long sumScores(string s) {
+        int n = s.size();
+        vector<int> z(n,0);
+        z[0] = n;
+        int left=0, right=0, k;
+        
+        for (int i=1; i<s.size(); i++) {
+            if (right<i) {
+                left = right = i;
+                
+                while (right<n && s[right] == s[right-left]) right++;
+                z[i] = right-left;
+                right--;
+            } else {
+                k = i-left;
+                if (z[k]<right-i+1) z[i] = z[k];
+                else {
+                    left = i;
+                    
+                    while(right<n && s[right] == s[right-left]) right++;
+                    z[i] = right-left;
+                    right--;
+                }
+            }
+        }
+        
+        long long sum = 0;
+        for (auto num: z) sum += (long long)num;
+        return sum;
+    }    
+};
