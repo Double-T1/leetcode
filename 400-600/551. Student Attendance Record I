@@ -1,0 +1,20 @@
+class Solution {
+public:
+    bool checkRecord(string s) {
+        int a = 0;
+        int l = 0;
+        char prev = 't';
+        for (const auto& c : s) {
+            if (c == 'L') {
+                if (prev == c) l++;
+                else l = 1;
+                if (l == 3) return false;
+            } else if (c == 'A') {
+                a++;
+                if (a >= 2) return false;
+            }
+            prev = c;
+        }
+        return true;
+    }
+};
