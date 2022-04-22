@@ -1,0 +1,21 @@
+class Solution {
+public:
+    string reverseVowels(string s) {
+        vector<char> vow; 
+        for (auto& c: s) {
+            if (isVowel(c)) vow.push_back(c);
+        }
+        
+        int j=vow.size()-1;
+        for (int i=0; i<s.size(); i++) {
+            if (isVowel(s[i])) s[i] = vow[j--];
+        }
+        return s;
+    }
+    
+private:
+    bool isVowel (const char& c) {
+        char x = (char)tolower(c);
+        return x == 'a' || x == 'u' || x == 'o' || x == 'i' || x == 'e';
+    }
+};
