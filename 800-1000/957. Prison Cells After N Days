@@ -20,3 +20,52 @@ var prisonAfterNDays = function(cells, n) {
     return toArr(tab.pop())
 };
 
+//c++
+class Solution {
+public:
+    vector<int> prisonAfterNDays(vector<int>& cells, int n) {
+        vector<vector<int>> pattern;
+        unordered_map<int, int> hashmap;
+        int index = 0;
+        hashmap[toBit(cells)] = index++;
+        pattern.push_back(cells);
+        auto prev = cells;
+        
+        while(n) {
+            vector<int> cur(cells.size(),0);
+            transit(prev,cur);
+            int num = toBit(cur);
+            if (hashmap.count(num)) {
+                int j = hashmap[num];
+                int range = index - j;
+                int pos = n%range;
+                if (pos) pos += j-1;
+                else pos = index-1;
+                return pattern[pos];
+            }
+            
+            hashmap[num] = index++;
+            pattern.push_back(cur);
+            prev = cur;
+            n--;
+        }
+        return pattern.back();
+    }
+    
+private:
+    int toBit(vector<int>& cur) {
+        int i=0;
+        for (auto& num: cur) {
+            i <<= 1;
+            i |= num;
+        }
+        return i;
+    }
+    
+    void transit(vector<int>& prev, vector<int>& cur) {
+        for (int i=1; i<cur.size()-1; i++) {
+            cur[i] = prev[i-1] == prev[i+1];
+        }
+    }
+};
+
