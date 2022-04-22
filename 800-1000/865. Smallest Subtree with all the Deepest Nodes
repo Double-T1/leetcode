@@ -1,0 +1,56 @@
+//solution 1
+class Solution {
+public:
+    TreeNode* subtreeWithAllDeepest(TreeNode* root) {
+        queue<TreeNode*> qu;
+        qu.push(root);
+        
+        pair<int,int> pr;
+        while (qu.size()) {
+            pr = make_pair(qu.front()->val,qu.back()->val);
+            int size = qu.size();
+            while (size) {
+                auto node = qu.front(); qu.pop();
+                if (node->left) qu.push(node->left);
+                if (node->right) qu.push(node->right);
+                
+                size--;
+            }
+        }
+        return helper(root,pr);
+    }
+    
+private:
+    TreeNode* helper(TreeNode* node, pair<int,int>& pr) {
+        if (!node) return nullptr;
+        
+        auto left = helper(node->left,pr);
+        auto right = helper(node->right,pr);
+        auto cur = node->val == pr.first || node->val == pr.second ? node : nullptr;
+
+        if (!left && !right && !cur) return nullptr;
+        else if (left&&right || right&&cur || cur&&left) return node;
+        return left ? left : right? right : cur; 
+    }
+};
+
+//solution 2
+class Solution {
+public:
+    TreeNode* subtreeWithAllDeepest(TreeNode* root) {
+        return helper(root).first;
+    }
+    
+private:
+    pair<TreeNode*, int> helper(TreeNode* node) {
+        if (!node) return {nullptr, -1}; //??
+        
+        auto left = helper(node->left);
+        auto right = helper(node->right);
+        if (left.second == right.second) {
+            return make_pair(node, left.second+1);
+        } else {
+            return left.second>right.second ? make_pair(left.first,left.second+1) : make_pair(right.first, right.second+1);
+        }
+    }
+};
