@@ -12,11 +12,11 @@ public:
         dist[k] = 0;
         
         priority_queue<pair<int, int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
-        pq.push({k,0});
+        pq.push({0,k});
         
         while(!pq.empty()) {
-            int u = pq.top().first;
-            int toS = pq.top().second;
+            int u = pq.top().second;
+            int toS = pq.top().first;
             pq.pop();
             
             if (toS>dist[u]) continue;
@@ -25,7 +25,7 @@ public:
                 int v = edge.first, w = edge.second;
                 if (w+toS>=dist[v]) continue;
                 dist[v] = w+toS;
-                pq.push({v,dist[v]});
+                pq.push({dist[v],v});
             }
         }
         
