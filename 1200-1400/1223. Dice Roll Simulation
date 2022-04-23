@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int dieSimulator(int n, vector<int>& rollMax) {
+        int mod = pow(10,9)+7;
+        vector<vector<int>> sim(n+1,vector<int>(7,0));
+        for(int i=0; i<6; i++) sim[1][i] = 1;
+        sim[1][6] = 6;
+        for (int k=2; k<=n; k++) {
+            for (int i=0; i<6; i++) {
+                if (rollMax[i]>=k) sim[k][i] += 1;
+                for (int j=1; j<=rollMax[i] && j<=k; j++) {
+                    sim[k][i] += (sim[k-j][6] - sim[k-j][i] + mod)%mod;
+                    sim[k][i] %= mod;
+                }
+                sim[k][6] += sim[k][i];
+                sim[k][6] %= mod;
+            }
+        }
+        return sim[n][6];
+    }
+};
