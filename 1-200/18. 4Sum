@@ -1,0 +1,31 @@
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        sort(nums.begin(),nums.end());
+        vector<vector<int>> ans;
+        int n = nums.size();
+        for (int i=0; i<n-3; i++) {
+            if (i>0 && nums[i] == nums[i-1]) continue;
+            for (int j=i+1; j<n-2; j++) {
+                if (j>i+1 && nums[j] == nums[j-1]) continue;
+                helper(target-nums[i]-nums[j],ans,nums,j+1,n-1,i,j);
+            }
+        }
+        return ans;
+    }
+    
+private:
+    void helper(int t, vector<vector<int>>& ans, vector<int>& nums, int left, int right, int i, int j) {
+        if(left>=right) return;
+        int n = nums.size();
+        int sum = nums[left] + nums[right];
+        if (sum == t) {
+            if(!(left>j+1 && nums[left] == nums[left-1] && right<n-1 && nums[right] == nums[right+1])) ans.push_back({nums[i],nums[j],nums[left],nums[right]});
+            helper(t,ans,nums,left+1,right-1,i,j);
+        } else if (sum > t) {
+            helper(t,ans,nums,left,right-1,i,j);
+        } else {
+            helper(t,ans,nums,left+1,right,i,j);
+        }
+    }
+};
