@@ -1,0 +1,26 @@
+class Solution {
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> ans;
+        vector<int> sub;
+        helper(nums,0,ans,sub);
+        return ans;
+    }
+    
+private:
+    void helper(vector<int>& nums, int state, vector<vector<int>>& ans, vector<int>& sub) {
+        if (sub.size() == nums.size()) {
+            ans.push_back(sub);
+        } else {
+            for (int i=0; i<nums.size(); i++) {
+                int bit = 1 << i;
+                if ((state&bit)>0) continue;
+                sub.push_back(nums[i]);
+                helper(nums,state|bit,ans,sub);
+                sub.pop_back();
+            }
+        }
+    }
+    
+    
+};
