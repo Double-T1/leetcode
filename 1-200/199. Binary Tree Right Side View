@@ -1,0 +1,21 @@
+class Solution {
+public:
+    vector<int> rightSideView(TreeNode* root) {
+        if (!root) return {};
+        queue<TreeNode*> qu;
+        qu.push(root);
+        vector<int> ans;
+        while(!qu.empty()) {
+            ans.push_back(qu.back()->val);
+            int size = qu.size();
+            while (size) {
+                auto node = qu.front(); qu.pop();
+                
+                if (node->left) qu.push(node->left);
+                if (node->right) qu.push(node->right);
+                size--;
+            }
+        }
+        return ans;
+    }
+};
