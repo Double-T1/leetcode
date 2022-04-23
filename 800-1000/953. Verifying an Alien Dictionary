@@ -1,0 +1,29 @@
+class Solution {
+public:
+    bool isAlienSorted(vector<string>& words, string order) {
+        vector<int> dict(26);
+        int i = 0;
+        for (const auto& c: order) {
+            dict[c-'a'] = i++;
+        }
+        
+        for (int i=1; i<words.size(); i++) {
+            for (int j=i-1; j>=0; j--) {
+                if (!compare(words[j],words[i],dict)) return false;
+            }
+        }
+        return true;
+    }
+    
+private:
+    //a<=b return true
+    bool compare(string& a, string& b,vector<int>& dict) {
+        int i=0, j=0;
+        while(i<a.size() && j<b.size()) {
+            if (dict[a[i]-'a']<dict[b[j]-'a']) return true;
+            else if (dict[a[i]-'a']>dict[b[j]-'a']) return false;
+            i++, j++;
+        }
+        return i==a.size();
+    }
+};
