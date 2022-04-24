@@ -1,7 +1,6 @@
 class Solution {
 private:
     double e = std::numeric_limits<double>::epsilon();
-    double inf = std::numeric_limits<double>::infinity();
     
 public:
     bool judgePoint24(vector<int>& cards) {
@@ -45,7 +44,7 @@ private:
         
         for (int k=0; k<4; k++) {
             double x = choose(k,a,b);
-            if (fabs(x-24)<=0.001) {
+            if (fabs(x-24.0)<=0.001) {
                 return true;
             }
         }
@@ -65,27 +64,3 @@ private:
         }
     }
 };
-
-
-/**
-at the very last step, there will be two numbers left with one operator
-
-in order to get to 24:
-*: 1,2,3,4,6,8,12,24 or fractions 48*(1/2) ....
-/: 
-
-
--
-
-+
-
-
-there are 4 numbers 
-1. choose two and two => 6 comb
-2. for each comb 4 operators => 6*(4^2) comb
-3. for each, => 4*3*16
-
-
-
-
-*/
