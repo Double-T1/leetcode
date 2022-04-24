@@ -1,0 +1,91 @@
+class Solution {
+private:
+    double e = std::numeric_limits<double>::epsilon();
+    double inf = std::numeric_limits<double>::infinity();
+    
+public:
+    bool judgePoint24(vector<int>& cards) {
+        vector<double> perm;    
+        return helper(cards,perm,0);
+    }
+    
+private:
+    bool helper(vector<int>& cards, vector<double>& perm, int bit) {
+        if (perm.size() == 4) return cal4(perm);
+        
+        for (int i=0; i<4; i++) {
+            int mask = 1<<i;
+            if (bit&mask) continue;
+            perm.push_back((double)cards[i]);
+            if(helper(cards,perm,bit|mask)) return true;;
+            perm.pop_back();
+        }
+        return false;
+    }
+    
+    bool cal4(vector<double>& perm) {
+        for (int k =0; k<4; k++) {
+            if(cal3(choose(k,perm[0],perm[1]),perm[2],perm[3])) return true;
+            if(cal3(perm[0],choose(k,perm[1],perm[2]),perm[3])) return true;
+            if(cal3(perm[0],perm[1],choose(k,perm[2],perm[3]))) return true;
+        }
+        return false;
+    }
+    
+    bool cal3(double a, double b, double c) {
+        for (int k=0; k<4; k++) {
+            if (cal2(choose(k,a,b),c)) return true;
+            if (cal2(a,choose(k,b,c))) return true;
+        }
+        return false;
+    }
+    
+    bool cal2(double a, double b) {
+        double p = (double)3-(double)8/(double)3;
+        
+        for (int k=0; k<4; k++) {
+            double x = choose(k,a,b);
+            if (fabs(x-24)<=0.001) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    double choose(int k, double a, double b) {
+        switch(k) {
+            case 0:
+                return a+b;
+            case 1:
+                return a-b;
+            case 2:
+                return a*b;
+            default:
+                return a/b;
+        }
+    }
+};
+
+
+/**
+at the very last step, there will be two numbers left with one operator
+
+in order to get to 24:
+*: 1,2,3,4,6,8,12,24 or fractions 48*(1/2) ....
+/: 
+
+
+-
+
++
+
+
+there are 4 numbers 
+1. choose two and two => 6 comb
+2. for each comb 4 operators => 6*(4^2) comb
+3. for each, => 4*3*16
+
+
+
+
+*/
