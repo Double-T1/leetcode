@@ -1,0 +1,57 @@
+class Solution {
+public:
+    int maxRepOpt1(string text) {
+        vector<int> freq(26,0);
+        for (const char& c: text) {
+            freq[c-'a']++;
+        }
+        
+        int ans = 0;
+        vector<int> cur(26,0);
+        int i=0, j=0, maxF = 0, maxIndex = -1;
+        for (int i=0, j=0; j<text.size();j++) {
+            cur[text[j]-'a']++;
+            if (maxF<cur[text[j]-'a']) {
+                maxIndex = text[j]-'a';
+                maxF = cur[text[j]-'a'];
+            }
+            
+            if (maxF == j-i+1) {
+                ans = max(ans,j-i+1);
+            } else if (maxF == j-i && maxF<freq[maxIndex]) {
+                ans = max(ans,j-i+1);
+            } else {
+                while(maxF<j-i && i<j) {
+                    cur[text[i]-'a']--;
+                    if (text[i]-'a' == maxIndex) maxF--;
+                    
+                    i++;
+                    if (cur[text[j]-'a']>cur[maxIndex]) {
+                        maxF = cur[text[j]-'a'];
+                        maxIndex = text[j]-'a';
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+/**
+constraint: O(n)
+goal: find the max length of consecutive char
+prep 
+
+sliding window + dict for the occur nums of each value
+
+i,j
+max sliding while the max freq within the window fulfills
+1. within one diff with the j-i+1
+2. has at least one dup outside the window
+
+
+
+
+
+
+*/
