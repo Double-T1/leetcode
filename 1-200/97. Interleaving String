@@ -19,22 +19,21 @@ private:
     }
 };
 
+//bottom-up
 class Solution {
 public:
     bool isInterleave(string s1, string s2, string s3) {
         if (s3.size() != s1.size() + s2.size()) return false;
         vector<int> cur(s2.size()+1,0);
-        vector<int> prev(s2.size()+1,0);
         for (int i=s1.size(); i>=0; i--) {
             for (int j=s2.size(); j>=0; j--) {
                 int k = i+j;
-                cur[j] = 0;
                 if (k == s3.size()) cur[j] = 1;
-                else if (i<s1.size() && s1[i] == s3[k] && prev[j]) cur[j] = 1;
+                else if (i<s1.size() && s1[i] == s3[k] && cur[j]) cur[j] = 1;
                 else if (j<s2.size() && s2[j] == s3[k] && cur[j+1]) cur[j] = 1; 
+                else cur[j] = 0;
             }
-            swap(prev,cur);
         }
-        return prev[0];
+        return cur[0];
     }
 };
