@@ -1,0 +1,23 @@
+class Solution {
+public:
+    vector<int> nextLargerNodes(ListNode* head) {
+        int n = 0;
+        for (auto node=head; node; node=node->next) n++;
+        
+        stack<int> st;
+        vector<int> ans(n,0);
+        vector<int> ref(n,0);
+        int i = 0;
+        for (auto node=head; node; node=node->next) {
+            int val = node->val;
+            ref[i] = val;
+            while (!st.empty() && ref[st.top()]<val) {
+                ans[st.top()] = val;
+                st.pop();
+            }
+            st.push(i);
+            i++;
+        }
+        return ans;
+    }
+};
