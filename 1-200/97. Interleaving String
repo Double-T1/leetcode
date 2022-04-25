@@ -1,0 +1,20 @@
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        if (s3.size() != s1.size() + s2.size()) return false;
+        vector<vector<int>> memo(s1.size()+1,vector<int>(s2.size()+1,-1));
+        return helper(s1,s2,s3,memo);
+    }
+    
+private:
+    bool helper(string& s1, string& s2, string& s3,vector<vector<int>>& memo, int i=0, int j=0, int k=0) {
+        if (k == s3.size()) return true;
+        if (memo[i][j]>-1) return memo[i][j];
+        
+        if (i<s1.size() && s1[i] == s3[k] && helper(s1,s2,s3,memo,i+1,j,k+1)) 
+            return memo[i][j] = 1;
+        if (j<s2.size() && s2[j] == s3[k] && helper(s1,s2,s3,memo,i,j+1,k+1)) 
+            return memo[i][j] = 1;
+        return memo[i][j] = 0;
+    }
+};
