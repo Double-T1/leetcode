@@ -1,0 +1,32 @@
+class RandomizedSet {
+private:
+    unordered_map<int, int> hashmap; //val to index
+    vector<int> forRan;
+    
+public:
+    RandomizedSet() {
+    }
+    
+    bool insert(int val) {
+        if (hashmap.count(val)) return false;
+        hashmap[val] = forRan.size();
+        forRan.push_back(val);
+        return true;
+    }
+    
+    bool remove(int val) {
+        if (!hashmap.count(val)) return false;
+        
+        hashmap[forRan.back()] = hashmap[val];
+        swap(forRan[hashmap[val]],forRan.back());
+        
+        hashmap.erase(val);
+        forRan.pop_back();
+        return true;
+    }
+    
+    int getRandom() {
+        int t = rand()%forRan.size();
+        return forRan[t];
+    }
+};
