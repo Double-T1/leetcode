@@ -1,3 +1,100 @@
+//this is a MSP problem
+//solution 1 is prims, 2 is kruskal
+//kruskal c++
+struct Edge {
+    int u;
+    int v;
+    int w;
+    
+    Edge(int a, int b, int c): u(a),v(b),w(c) {};
+    bool operator< (Edge& other) const {
+        return w<other.w;
+    }
+};
+
+
+class Solution {
+public:
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        vector<Edge> edges;
+        vector<int> parent(points.size());
+        for (int i=0; i<points.size(); i++) {
+            parent[i] = i;
+            for (int j=i-1; j>=0; j--) {
+                edges.push_back({i,j,getDist(points[i],points[j])});
+            }
+        }
+        std::sort(edges.begin(),edges.end());
+        
+        int ans = 0, k = 0;
+        for (auto[u,v,w] : edges) {
+            if (unite(u,v,parent)) continue;
+            ans += w;
+            k++;
+            if (k == points.size()-1) break;
+        }
+        return ans;
+    }
+    
+private:
+    int find(int a, vector<int>& parent) {
+        if (parent[a] != a) parent[a] = find(parent[a],parent);
+        return parent[a];
+    }
+    
+    bool unite(int u, int v, vector<int>& parent) {
+        int pu = find(u,parent), pv = find(v,parent);
+        if (pu == pv) return true;
+        parent[pu] = pv;
+        return false;
+    }
+    
+    int getDist(vector<int>& a, vector<int>& b) {
+        return abs(a[0]-b[0]) + abs(a[1]-b[1]);
+    }
+};
+
+//prim's
+class Solution {
+public:
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        vector<pair<int,int>> adj[points.size()];
+        for (int i=1; i<points.size(); i++) {
+            for (int j=i-1; j>=0; j--) {
+                int w = getDist(points[i],points[j]);
+                adj[i].push_back(make_pair(w,j));
+                adj[j].push_back(make_pair(w,i));
+            }
+        }
+        
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+        pq.push(make_pair(0,0));
+        vector<int> visited(points.size(),0);
+        int k = points.size(), ans = 0;
+        while (k) {
+            auto[w,v] = pq.top(); pq.pop();
+            if (visited[v]) continue;
+            visited[v] = 1;
+            ans += w;
+            k--;
+            for (auto[nw,nv] : adj[v]) {
+                if (visited[nv]) continue;
+                pq.push(make_pair(nw,nv));
+            }
+        }
+        return ans;
+    }
+private:
+    int getDist(vector<int>& a, vector<int>& b) {
+        return abs(a[0]-b[0]) + abs(a[1]-b[1]);
+    }
+};
+
+
+
+
+
+//JS downwards
 //prim
 var minCostConnectPoints = function(points) {
     let inWeight = []
