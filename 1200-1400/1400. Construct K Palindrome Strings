@@ -1,0 +1,30 @@
+class Solution {
+public:
+    bool canConstruct(string s, int k) {
+        if (s.size()<k) return false;
+        vector<int> freq(26,0);
+        for (const char& c : s) 
+            freq[c-'a']++;
+        
+        for (int f: freq) {
+            if (f%2) k--;
+        }
+        
+        return k>=0;
+    }
+};
+
+
+/**
+in 1 palin: 
+even numbers freq for each char and/or one odd numbers char
+
+in 2 palin:
+at most two odd freq char
+
+in 3 palin:
+at most three odd freq char
+
+
+
+*/
