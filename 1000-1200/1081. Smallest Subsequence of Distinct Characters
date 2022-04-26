@@ -1,3 +1,37 @@
+//c++
+//slow tho
+class Solution {
+public:
+    string smallestSubsequence(string s) {
+        vector<int> last(26,-1);
+        for (int i=0; i<s.size(); i++) {
+            last[s[i]-'a'] = i;
+        }
+        
+        stack<char> st;
+        vector<int> recorded(26,0);
+        for (int i=0; i<s.size(); i++) {
+            char c = s[i];
+            if (recorded[c-'a']) continue;
+            while (st.size() && st.top()>c && last[st.top()-'a']>i) {
+                recorded[st.top()-'a'] = 0;
+                st.pop();
+            }
+            recorded[c-'a'] = 1;
+            st.push(c);
+        }
+        
+        string ans = "";
+        while (st.size()) {
+            ans = st.top() + ans;
+            st.pop();
+        }
+        return ans;
+    }
+};
+
+
+//JS
 var smallestSubsequence = function(s) {
     let lastOf = new Array(26).fill(-1)
     for (let i=0; i<s.length; i++) {
