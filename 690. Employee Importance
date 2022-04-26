@@ -19,3 +19,25 @@ var GetImportance = function(employees, id) {
     }
     return ans
 };
+
+//c++
+class Solution {
+public:
+    int getImportance(vector<Employee*> employees, int id) {
+        unordered_map<int,int> hashmap;
+        for (int i=0; i<employees.size(); i++) {
+            hashmap[employees[i]->id] = i;
+        }
+        
+        return helper(employees,id,hashmap);
+    }
+    
+private:
+    int helper(vector<Employee*>& e, int id, unordered_map<int,int>& hashmap) {
+        int i = hashmap[id], ans = 0;
+        for (auto sub: e[i]->subordinates) {
+            ans += helper(e,sub,hashmap);
+        }
+        return ans + e[i]->importance;
+    }
+};
