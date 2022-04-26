@@ -1,0 +1,26 @@
+class TimeMap {
+private:
+    unordered_map<string, vector<pair<int,string>>> hashmap;
+    
+public:
+    TimeMap() {
+    }
+    
+    void set(string key, string value, int timestamp) {
+        // if (hashmap.find(key) == hashmap.end()) hashmap[key] = vector<pair<int,int>>();
+        hashmap[key].push_back(make_pair(timestamp,value));
+    }
+    
+    string get(string key, int timestamp) {
+        if (hashmap.find(key) == hashmap.end()) return "";
+        auto& vec = hashmap[key];
+        int left = -1, right = vec.size()-1;
+        while(left<right) {
+            int mid = left + (right-left)/2;
+            if ((right-left)%2) mid++;
+            if (vec[mid].first<=timestamp) left = mid;
+            else right = mid-1;
+        }
+        return right == -1? "" : vec[right].second;
+    }
+};
