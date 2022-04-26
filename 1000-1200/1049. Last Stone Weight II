@@ -1,4 +1,25 @@
 //memoization
+//super slow tho
+class Solution {
+public:
+    int lastStoneWeightII(vector<int>& stones) {
+        vector<unordered_map<int,int>> memo(stones.size()); 
+        
+        return helper(stones,0,0,memo);
+    }
+    
+private:
+    int helper(vector<int>& stones, int i, int cur, vector<unordered_map<int,int>>& memo) {
+        if (i == stones.size()) return cur>=0? cur : INT_MAX;
+        if (memo[i].count(cur)) return memo[i][cur];
+        
+        return memo[i][cur] = min(helper(stones,i+1,cur+stones[i],memo),helper(stones,i+1,cur-stones[i],memo));
+    }
+};
+
+
+
+
 var lastStoneWeightII = function(stones) {
     return helper2(stones)
 };
