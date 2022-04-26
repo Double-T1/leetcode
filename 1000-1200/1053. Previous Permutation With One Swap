@@ -1,0 +1,21 @@
+class Solution {
+public:
+    vector<int> prevPermOpt1(vector<int>& arr) {
+        for (int i=arr.size()-2; i>=0; i--) {
+            if (arr[i]>arr[i+1]) {
+                int left = i, right = arr.size()-1, target = arr[i];
+                while (left<right) {
+                    int mid = left +(right-left)/2;
+                    if ((right-left)%2) mid++;
+                    if (arr[mid]<target) left = mid;
+                    else right = mid-1;
+                }
+                while(right-1>i && arr[right] == arr[right-1]) right--;
+                swap(arr[i],arr[right]);
+                break;
+            }
+        }
+        
+        return arr;
+    }
+};
