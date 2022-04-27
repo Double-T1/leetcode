@@ -1,0 +1,44 @@
+class MyCircularQueue {
+private:
+    vector<int> storage;
+    int back;
+    int front;
+    int count;
+    
+public:
+    MyCircularQueue(int k): storage(k),back(0),front(0),count(0) {
+    }
+    
+    bool enQueue(int value) {
+        if (isFull()) return false;
+        storage[back] = value;
+        back = (back+1)%storage.size();
+        count++;
+        return true;
+    }
+    
+    bool deQueue() {
+        if (isEmpty()) return false;
+        count--;
+        front = (front+1)%storage.size();
+        return true;
+    }
+    
+    int Front() {
+        if (isEmpty()) return -1;
+        return storage[front];
+    }
+    
+    int Rear() {
+        if (isEmpty()) return -1;
+        return storage[(back-1+storage.size())%storage.size()];
+    }
+    
+    bool isEmpty() {
+        return count == 0;
+    }
+    
+    bool isFull() {
+        return count == storage.size();
+    }
+};
