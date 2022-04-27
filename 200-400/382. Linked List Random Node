@@ -1,3 +1,4 @@
+//reservoir
 class Solution {
 private:
     ListNode* head;
@@ -16,5 +17,24 @@ public:
             cur = cur->next;
         }
         return res;
+    }
+};
+
+//normal 
+class Solution {
+private:
+    vector<int> vec;
+    
+public:
+    Solution(ListNode* head) {
+        while (head) {
+            vec.push_back(head->val);
+            head = head->next;
+        }
+    }
+    
+    int getRandom() {
+        int t = rand()%vec.size();
+        return vec[t];
     }
 };
