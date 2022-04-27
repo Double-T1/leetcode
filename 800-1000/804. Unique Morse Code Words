@@ -1,0 +1,32 @@
+struct T {
+    bool isEnd;
+    T* children[2];
+    
+    T(): isEnd(false), children{nullptr} {};
+};
+
+
+class Solution {
+private:
+    string table[26] = {".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."};
+    
+public:
+    int uniqueMorseRepresentations(vector<string>& words) {
+        T* root = new T();
+        int ans = 0;
+        for (auto& word: words) {
+            auto cur = root;
+            for (auto& c: word) {
+                for (auto& m: table[c-'a']) {
+                    int x = m == '.'? 0 : 1;
+                    if (!(cur->children[x])) cur->children[x] = new T();
+                    cur = cur->children[x];
+                }
+            }
+            if (cur->isEnd) continue;
+            cur->isEnd = true;
+            ans++;
+        }
+        return ans;
+    }
+};
