@@ -1,0 +1,20 @@
+class Solution {
+private:
+    ListNode* head;
+    
+public:
+    Solution(ListNode* head) {
+        this->head = head;
+    }
+    
+    int getRandom() {
+        auto cur = head;
+        int res = 0, n = 1;
+        while (cur) {
+            if(rand()%n == 0) res = cur->val;
+            n++;
+            cur = cur->next;
+        }
+        return res;
+    }
+};
