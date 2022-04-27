@@ -1,0 +1,59 @@
+struct T {
+    int cur;
+    vector<char> chars;
+    
+    T(): cur(0) {};
+    
+    void prep() {
+        sort(chars.begin(),chars.end());
+    };
+    
+    char getNext() {
+        if (cur<chars.size()) return chars[cur++];
+        return '!';
+    }
+};
+
+class Solution {
+public:
+    string smallestStringWithSwaps(string s, vector<vector<int>>& pairs) {
+        vector<int> parent(s.size(),-1);
+        //O(E)
+        for (auto& pr: pairs) {
+            unite(pr[0],pr[1],parent);
+        }
+        
+        //O(V)
+        unordered_map<int,unique_ptr<T>> hashmap;
+        for (int i=0; i<parent.size(); i++) {
+            int p = find(i,parent);
+            if (!hashmap.count(p)) hashmap[p] = make_unique<T>();
+            (hashmap[p]->chars).push_back(s[i]);
+        }
+        
+        //O(vlogv)
+        for (auto& [key,ptr] : hashmap) {
+            ptr->prep();
+        }
+        
+        //O(V)
+        string ans = "";
+        for (int i=0; i<s.size(); i++) {
+            ans += hashmap[parent[i]]->getNext();
+        }
+        
+        return ans;
+    }
+    
+private:
+    int find(int a, vector<int>& parent) {
+        if (parent[a] == -1) parent[a] = a;
+        else if (a != parent[a]) parent[a] = find(parent[a],parent);
+        return parent[a];
+    }
+    
+    void unite(int x, int y, vector<int>& parent) {
+        int px = find(x,parent), py = find(y,parent);
+        parent[py] = px;
+    }
+};
