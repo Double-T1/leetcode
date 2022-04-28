@@ -1,0 +1,29 @@
+class Solution {
+private:
+    int row[4] = {1,0,-1,0};
+    int col[4] = {0,1,0,-1};
+    
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+        vector<int> dist(heights.size()*heights[0].size(),INT_MAX);
+        int n = heights[0].size();
+        dist[0] = 0;
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq; //distFromSource, index
+        pq.emplace(0,0);
+        while (pq.size()) {
+            auto[distFromSource, location] = pq.top(); pq.pop();
+            int i = location/n, j = location%n;
+            if (i == heights.size() && j == n) return distFromSource;
+            for (int k=0; k<4; k++) {
+                int p = i+row[k], g = j+col[k];
+                if (p<0 || p>=heights.size() || g<0 || g>=n) continue;
+                int diff = abs(heights[i][j]-heights[p][g]);
+                if (max(diff,distFromSource)<dist[p*n+g]) {
+                    dist[p*n+g] = max(diff,distFromSource);
+                    pq.emplace(dist[p*n+g],p*n+g);
+                }
+            }
+        }
+        return dist.back();
+    }
+};
