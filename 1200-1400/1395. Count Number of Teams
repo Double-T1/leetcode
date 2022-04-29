@@ -68,6 +68,46 @@ public:
 
 //solution 2.2
 // a optimized version that only uses one fenwick tree instead of 2
+class Solution {
+private:
+    void update(vector<int>& v, int i, int d) {
+        for(; i<v.size(); v[i] += d, i += i&(-i));
+    }
+    
+    int query(vector<int>& v, int i) {
+        int sum = 0;
+        for (; i; sum += v[i], i-= i&(-i));
+        return sum;
+    }
+    
+    
+public:
+    int numTeams(vector<int>& rating) {
+        map<int,int> order;
+        for (auto val: rating) {
+            order[val];
+        }
+        
+        int n = 0;
+        vector<int> rightSmall(rating.size()+1,0);
+        for (auto& pr: order) {
+            update(rightSmall,pr.second = ++n, 1);
+        }
+        
+        int ans = 0;
+        for (int i=0; i<rating.size(); i++) {
+            // k means there are k-1 smaller element than it 
+            // hence leftSmall == k-1 - rightSmall
+            int k = order[rating[i]];
+            int rs = query(rightSmall,k-1);
+            int ls = k-1 - rs;
+            ans += ls*(n-(i+1)-rs) + (i-ls)*rs;
+            
+            update(rightSmall,k,-1);
+        }
+        return ans;
+    }
+};
 
 
 
