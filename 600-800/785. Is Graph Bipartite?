@@ -38,3 +38,31 @@ let dfs = (i,graph,color,col) => {
     }
     return true
 }
+
+
+//BFS with c++
+class Solution {
+public:
+    bool isBipartite(vector<vector<int>>& graph) {   
+        vector<int> inGroup(graph.size(),-1);
+        queue<int> qu;        
+        for (int i=0; i<graph.size(); i++) {
+            if (inGroup[i]>-1) continue;
+            qu.push(i);
+            inGroup[i] = 0;
+            while (!qu.empty()) {
+                auto u = qu.front(); qu.pop();
+                int curGroup = inGroup[u];
+                for(auto v: graph[u]) {
+                    if (inGroup[v]>-1) {
+                        if (inGroup[v] == curGroup) return false;
+                    } else {
+                        inGroup[v] = curGroup^1;
+                        qu.push(v);
+                    }
+                }
+            }       
+        }
+        return true;
+    }
+};
