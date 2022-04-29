@@ -20,3 +20,24 @@ var isCompleteTree = function(root) {
     }
     return true
 };
+
+//C++
+class Solution {
+public:
+    bool isCompleteTree(TreeNode* root) {
+        queue<TreeNode*> qu;
+        qu.push(root);
+        bool shouldBeNull = false;
+        while(!qu.empty()) {
+            auto node = qu.front(); qu.pop();
+            if (shouldBeNull && node) return false; 
+            if (!node) {
+                shouldBeNull = true;
+                continue;
+            }
+            qu.push(node->left);
+            qu.push(node->right);
+        }
+        return true;
+    }
+};
