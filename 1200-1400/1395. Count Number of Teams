@@ -1,0 +1,82 @@
+//two solutions
+// the first uses DP, the second uses fenwick tree
+//the frist O(n^2) time, the second O(nlogn) time
+
+//solution 1
+ class Solution {
+public:
+    int numTeams(vector<int>& rating) {
+        int n = rating.size();
+        vector<int> biggerAhead(n,0);
+        for (int i=0; i<n; i++) {
+            for (int j=i+1; j<n; j++) {
+                if (rating[i]<rating[j]) biggerAhead[i]++;
+            }
+        }
+        
+        int ans = 0;
+        for (int i=0; i<n; i++) {
+            for (int j=i+1; j<n; j++) {
+                if (rating[j]>rating[i]) ans += biggerAhead[j];
+                else ans += ((n-j-1)-biggerAhead[j]);
+            }
+        }
+        return ans;
+    }
+};
+
+
+//solution 2
+class Solution {
+private:
+    void update(vector<int>& v, int i, int d) {
+        for(; i<v.size(); v[i] += d, i += i&(-i));
+    }
+    
+    int query(vector<int>& v, int i) {
+        int sum = 0;
+        for (; i; sum += v[i], i-= i&(-i));
+        return sum;
+    }
+    
+    
+public:
+    int numTeams(vector<int>& rating) {
+        map<int,int> order;
+        for (auto val: rating) {
+            order[val];
+        }
+        
+        int n = 0;
+        vector<int> rightSmall(rating.size()+1,0);
+        for (auto& pr: order) {
+            update(rightSmall,pr.second = ++n, 1);
+        }
+        
+        vector<int> leftSmall(rating.size()+1,0);
+        int ans = 0;
+        for (int i=0; i<rating.size(); i++) {
+            int k = order[rating[i]], ls = query(leftSmall,k-1), rs = query(rightSmall,k-1);
+            ans += ls*(n-(i+1)-rs) + (i-ls)*rs;
+            
+            update(rightSmall,k,-1);
+            update(leftSmall,k,1);
+        }
+        return ans;
+    }
+};
+
+//solution 2.2
+// a optimized version that only uses one fenwick tree instead of 2
+
+
+
+/**
+1. find the order of the whole sequence, i.e. what is the order of any given element in the array
+also, we need to look it up later
+=> use a map to achieve these
+
+2. update the after fenwick tree as we are to traverse from the left, and the whole array is its right
+in the tree, the query(j) returns the amount of elements that are smaller or equal to element j in the tree
+
+*/
