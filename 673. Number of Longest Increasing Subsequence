@@ -1,3 +1,9 @@
+//two solutions
+//solution1 Dp O(n^2)
+//solution2 patience sort + prefix sum O(nlogn)
+
+//solution 1
+//JS
 var findNumberOfLIS = function(nums) {
     let times = []
     let dist = []
@@ -30,7 +36,6 @@ var findNumberOfLIS = function(nums) {
 let nums = [2,2,2,2,2]
 console.log(findNumberOfLIS(nums))
 
-
 //c++
 class Solution {
 public:
@@ -58,3 +63,60 @@ public:
         return ans;
     }
 };
+
+//solution 2
+//c++
+class Solution {
+public:
+    int findNumberOfLIS(vector<int>& nums) {        
+        vector<vector<pair<int,int>>> decks(nums.size());
+        decks[0].emplace_back(nums[0],1);
+        int l = 1;
+        for(int i=1; i<nums.size(); i++) {
+            int x = bsearch1(decks,l,nums[i]);
+            if (x == l) l++;
+            int curLIS = x == 0? 1 : bsearch2(decks[x-1],nums[i]);
+            curLIS = decks[x].empty() ? curLIS : curLIS + decks[x].back().second; 
+            decks[x].emplace_back(nums[i],curLIS);
+        }
+        
+        return decks[l-1].back().second;
+    }
+    
+private:
+    //find smallest number that is bigger or equal to target
+    int bsearch1(vector<vector<pair<int,int>>>& decks, int right, int target) {
+        int left = 0, mid;
+        while (left<right) {
+            mid = left + (right-left)/2;
+            if (decks[mid].back().first>=target) {
+                right = mid;
+            } else {
+                left = mid+1;
+            }
+        }
+        return right;
+    }
+    //find the biggest element that is smaller than target
+    int bsearch2(vector<pair<int,int>>& deck, int target) {
+        int left = 0, right = deck.size(), mid;
+        while (left<right) {
+            mid = left + (right-left)/2;
+            if (deck[mid].first<target) {
+                right = mid;
+            } else {
+                left = mid+1;
+            }
+        }
+        //there is at least one elemtn smaller than target given by the formation of decks
+        //hence we ignore the case where right == deck.size();
+        return right == 0? deck.back().second : deck.back().second - deck[right-1].second;
+    }
+};
+
+/**
+patience sort with prefix sum
+normally a constantly updated prefix sum is preferred to use BIT/ segment tree
+but for this particular case, since the updating only happens at the end of the array
+we could use a normal array
+*/
