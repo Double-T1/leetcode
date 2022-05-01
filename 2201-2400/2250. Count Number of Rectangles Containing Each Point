@@ -1,0 +1,122 @@
+//two solutions
+//solution 1 is acceptable given that height is at most 100 in this case
+//solution 2 is the more general soluition for all heights and width
+//m: rec.len n: points.length
+//time: O(m + mlogm + n*100*logm)
+class Solution {
+public:
+    vector<int> countRectangles(vector<vector<int>>& rectangles, vector<vector<int>>& points) {        
+        unordered_map<int, vector<int>> hashmap;
+        for (auto& rec: rectangles) {
+            hashmap[rec[1]].push_back(rec[0]);
+        }
+        
+        for (auto&[key,vec]: hashmap) {
+            sort(vec.begin(),vec.end());
+        }
+        
+        vector<int> ans(points.size(),0);
+        for (int k=0; k<points.size(); k++) {
+            auto& p = points[k];
+            for (int i=p[1]; i<101; i++) {
+                if (hashmap.find(i) == hashmap.end()) continue;
+                ans[k] += bsearch(hashmap[i],p[0]);
+            }
+        }
+        return ans;
+    }
+private:
+    //find the amount of 
+    int bsearch(vector<int>& vec, int target) {
+        int left = 0, right = vec.size(), mid;
+        while(left<right) {
+            mid = left + (right-left)/2;
+            if (vec[mid]>=target) right = mid;
+            else left = mid+1;
+        }
+        return vec.size() - right;
+    }
+};
+
+
+/**
+goal: for each point, how many rectangles contain it??
+=> idealy don't modify points
+
+for a rec to contain it=> l,h >= x,y
+
+given that h<=100
+1. sort rec by y  
+2. for every y, consolidate the diff xs
+3. make the points bsearch each y than all the xs of smaller ys
+
+m: length of rec
+n: length of pointes
+
+O(m + 100log100 + n*(logm))
+
+//find the amount of number larger than or equal to target
+//=> find the smallest number that is large than or equal to target
+*/
+
+//solution 2
+//using BIT to find the prefixsum
+//the biggest constraint would be the maximnum height
+//can't go over INT_MAX
+//time: O(nlogn + mlogm + (m+n)*(log(maxHeight)+log(maxHeight))) 
+class FenwickTree {
+private:
+    vector<int> tree;
+    
+public:
+    FenwickTree(int n): tree(n,0) {
+    }
+    
+    void update(int i, int d) {
+        while (i<tree.size()) {
+            tree[i] += d;
+            i += i&(-i);
+        }
+    }
+    
+    int query(int i) {
+        int sum = 0;
+        while (i>0) {
+            sum += tree[i];
+            i -= i&(-i);
+        }
+        return sum;
+    }
+};
+
+
+class Solution {
+public:
+    vector<int> countRectangles(vector<vector<int>>& rectangles, vector<vector<int>>& points) {
+        auto& rec = rectangles;
+        vector<int> p(points.size());
+        //n
+        iota(p.begin(), p.end(),0);
+        //mlogm
+        sort(rec.begin(),rec.end(),[](auto& r1, auto& r2){
+            return r1[0]>r2[0];
+        });
+        //nlogn
+        sort(p.begin(),p.end(),[&](int a, int b){
+            return points[a][0]>points[b][0];
+        });
+        
+        unique_ptr<FenwickTree> BIT = make_unique<FenwickTree>(102);    
+        vector<int> ans(points.size());
+        //(m+n)*(log(maxHeight)+log(maxHeight))
+        for (int i=0,j=0; i<p.size(); i++) {
+            int x = points[p[i]][0];
+            while(j<rec.size() && rec[j][0]>=x) {
+                BIT->update(rec[j++][1]+1,1);
+            }  
+            ans[p[i]] = j-(BIT->query(points[p[i]][1])); 
+        }    
+        
+        return ans;
+    }
+};
