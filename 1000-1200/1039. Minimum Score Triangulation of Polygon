@@ -38,5 +38,25 @@ var minScoreTriangulation2 = function(values) {
 
     return dp[0][values.length-1]
 };
-let values = [1,3,1,4,1,5]
-console.log(minScoreTriangulation2(values))
+
+class Solution {
+public:
+    int minScoreTriangulation(vector<int>& values) {
+        vector<vector<int>> dp(values.size(),vector<int>(values.size(),-1));
+        return helper(values,dp,0,values.size()-1);
+    }
+    
+private:
+    int helper(vector<int>& values, vector<vector<int>>& dp, int i, int j) {
+        if (i+1 == j) return 0;
+        if (dp[i][j] != -1) return dp[i][j];
+        
+        int x = INT_MAX, cur = values[i]*values[j];
+        for (int k=i+1; k<j; k++) {
+            x = min(x,helper(values,dp,i,k)+helper(values,dp,k,j)+values[k]*cur);
+        }
+        return dp[i][j] = x;
+    }
+    
+};
+
