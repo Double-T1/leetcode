@@ -1,3 +1,7 @@
+//solution 1 : top down/ recursion => TLE in C++, works in JS though
+//solution 2 : bottom up/ iteration 
+
+//solution 1
 var shortestCommonSupersequence = function(str1, str2) {
     return helper(str1,str2)
 };
@@ -23,3 +27,93 @@ let helper = (str1,str2,i=0,j=0,memo=[]) => {
 
 let str1 = "aaaaaaaa", str2 = "aaaaaaaa"
 console.log(shortestCommonSupersequence(str1,str2))
+
+//solution 1 for C++
+//directly build the scs 
+//top down
+//TLE 
+class Solution {
+public:
+    string shortestCommonSupersequence(string str1, string str2) {
+        vector<vector<string>> dp(str1.size()+1,vector<string>(str2.size()+1,"$"));
+        return helper(str1,str2,0,0,dp);
+    }
+private:
+    string& helper(string& str1, string& str2, int i, int j, vector<vector<string>>& dp) {
+        if (dp[i][j] != "$") return dp[i][j];
+        if (i == str1.size() || j == str2.size()) {
+            dp[i][j] = str1.substr(i,str1.size()-i) + str2.substr(j,str2.size()-j);
+            return dp[i][j];
+        }
+            
+        if (str1[i] == str2[j]) return dp[i][j] = str1[i] + helper(str1,str2,i+1,j+1,dp);
+        else {
+            string a = helper(str1,str2,i+1,j,dp);
+            string b = helper(str1,str2,i,j+1,dp);
+            dp[i][j] = a.size()<b.size()? str1[i] + a : str2[j] + b;
+            return dp[i][j];
+        }
+    }
+};
+
+//bottom up 
+//TLE as well
+class Solution {
+public:
+    string shortestCommonSupersequence(string str1, string str2) {
+        vector<vector<string>> dp(str1.size()+1,vector<string>(str2.size()+1,"$"));
+        for (int i=str1.size(); i>=0; i--) {
+            for (int j= str2.size(); j>=0; j--) {
+                if (i == str1.size() || j == str2.size()) {
+                    dp[i][j] = str1.substr(i,str1.size()-i) + str2.substr(j,str2.size()-j);
+                } else {
+                    if (str1[i] == str2[j]) dp[i][j] = str1[i] + dp[i+1][j+1];
+                    else {
+                        string& a = dp[i+1][j];
+                        string& b = dp[i][j+1];
+                        dp[i][j] = a.size()<b.size()? str1[i] + a : str2[j] + b;
+                    }
+                }
+            }
+        }
+        return dp[0][0];
+    }
+};
+
+//bottom up
+//but build lcs first
+//it works
+class Solution {
+public:
+    string shortestCommonSupersequence(string str1, string str2) {
+        vector<vector<string>> dp(str1.size()+1,vector<string>(str2.size()+1,""));
+        //build lcs first
+        for (int i= str1.size()-1; i>=0; i--) {
+            for (int j=str2.size()-1; j>=0; j--) {
+                if (str1[i] == str2[j]) {
+                    dp[i][j] = str1[i] + dp[i+1][j+1];
+                } else {
+                    dp[i][j] = dp[i+1][j].size()>dp[i][j+1].size() ? dp[i+1][j] : dp[i][j+1]; 
+                }
+            }
+        }
+        
+        auto& lcs = dp[0][0];
+        
+        int i=0, j=0, k=0;
+        string scs = "";
+        while (i<str1.size() || j<str2.size()) {
+            while (i<str1.size() && (k == lcs.size() || str1[i] != lcs[k])) {
+                scs += str1[i++];
+            }   
+            
+            while (j<str2.size() && (k == lcs.size() || str2[j] != lcs[k])) {
+                scs += str2[j++];
+            }
+            
+            if (k<lcs.size()) scs += lcs[k++];
+            i++, j++;
+        }
+        return scs;
+    }
+};
