@@ -1,0 +1,48 @@
+class Solution {
+private:
+    multiset<int> ms;
+    
+public:
+    vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
+        typedef pair<int,int> Events;
+        
+        vector<Events> vec;
+        ms.clear();
+        
+        for (auto& b: buildings) {
+            vec.emplace_back(b[0],b[2]);
+            vec.emplace_back(b[1],-b[2]);
+        }
+        
+        sort(vec.begin(),vec.end(),[](auto& a, auto& b){
+            if (a.first == b.first) 
+                return a.second>b.second;
+            return a.first<b.first;
+        });
+        
+        vector<vector<int>> ans;
+        for (auto&[x,y]: vec) {
+            bool entering = y>0;
+            
+            if(entering) {
+                if (y>this->getMaxHeight()) {
+                    ans.push_back({x,y});
+                } 
+                ms.insert(y);
+            } else {
+                y = abs(y);
+                ms.erase(ms.find(y));
+                if (y>this->getMaxHeight()) {
+                    ans.push_back({x,this->getMaxHeight()});
+                }
+            }
+        }
+        return ans;
+    }
+    
+private:
+    int getMaxHeight() const {
+        if (ms.empty()) return 0;
+        return *(ms.rbegin());
+    }
+};
