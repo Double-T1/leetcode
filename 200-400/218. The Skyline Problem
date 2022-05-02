@@ -1,3 +1,20 @@
+//there are mainly three solutions
+// 1 is through bruten force, which requires O(n^2) time
+// 2 is through sweep line, sequentially updating the maximum height O(nlogn)
+// 3 is through dvide and conquer =, gradually eliminate overlapping heights O(nlogn)
+
+//will not demonstrate solution 1, since it is TLE
+
+//solution 2 sweep line
+//conventioanlly sweep line preserve an array with the length that covers the width of the input elements, then we sweep through them
+//it would work in this case if the width are < 10^8, since we need O(n) traversing it.
+//unfortunately, the maximum width is 2^31-1, which is approximately 2.14*10^9.
+
+//Thus, we could only traverse the elements themselves
+//we need a DS to dynaimcally update height, get maximum height and delete height in acceptable time
+//plausible dataset: indexed prriority queue, multiset, multimap (we need a multi- since there might be recurring widths)
+//we use multiset in this case since it is provided by c++ as a standard container
+//time: O(nlogn)
 class Solution {
 private:
     multiset<int> ms;
@@ -46,3 +63,6 @@ private:
         return *(ms.rbegin());
     }
 };
+
+//solution 3
+//divide and conquer, exactly like merge sort
