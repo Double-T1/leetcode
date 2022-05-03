@@ -1,0 +1,63 @@
+//solution 1
+//a prime example of tradeoffs between set and unordered_set in C++
+//using hashset causes TLE
+//while using treeset does not
+//such is the payoff for an unknown hash function
+class Solution {
+public:
+    int countLatticePoints(vector<vector<int>>& c) {
+        set<pair<int,int>> treeset;
+        for (int k=0; k<c.size(); k++) {
+            int i = c[k][0], j = c[k][1], r = c[k][2];
+            for (int x=-r; x<=r; x++) {
+                for (int y=-r; y<=r; y++) {
+                    if (x*x + y*y <= r*r) {
+                        treeset.insert({x+i,y+j});
+                    }
+                }
+            }
+        }
+        return treeset.size();
+    }
+};
+
+//if we were to use hashset, preferably make it an integer only
+class Solution {
+public:
+    int countLatticePoints(vector<vector<int>>& c) {
+        unordered_set<int> hashset;
+        for (int k=0; k<c.size(); k++) {
+            int i = c[k][0], j = c[k][1], r = c[k][2];
+            for (int x=-r; x<=r; x++) {
+                for (int y=-r; y<=r; y++) {
+                    if (x*x + y*y <= r*r) {
+                        hashset.insert((x+i)*1000+(y+j));
+                    }
+                }
+            }
+        }
+        return hashset.size();
+    }
+};
+
+//solution 2
+//space: O(1)
+//better cause no hash function triviality
+//which is actually faster as well
+class Solution {
+public:
+    int countLatticePoints(vector<vector<int>>& circles) {
+        int ans = 0;
+        for (int i=0; i<=200; i++) {
+            for (int j=0; j<=200; j++) {
+                for (auto& c: circles) {
+                    if((i-c[0])*(i-c[0]) + (j-c[1])*(j-c[1]) <= c[2]*c[2]) {
+                        ans++;
+                        break;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
