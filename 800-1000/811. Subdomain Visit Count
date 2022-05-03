@@ -1,0 +1,26 @@
+class Solution {
+public:
+    vector<string> subdomainVisits(vector<string>& cpdomains) {
+        unordered_map<string,int> hashmap;
+        for (auto& s: cpdomains) {
+            string times = "";
+            int i= 0;
+            while (i<s.size() && s[i] != ' ') {
+                times += s[i++];
+            }
+            int t = stoi(times);
+            
+            for (int j=s.size()-1; j>=i; j--) {
+                if (s[j] == '.' || s[j] == ' ') {
+                    hashmap[s.substr(j+1,s.size()-j+1)] += t;
+                }
+            }
+        }
+        
+        vector<string> ans;
+        for (auto&[domain,times] : hashmap) {
+            ans.push_back(to_string(times) + " " + domain);
+        }
+        return ans;
+    }
+};
