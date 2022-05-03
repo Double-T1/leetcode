@@ -1,0 +1,31 @@
+//pigeon hole principle
+//time:O(n)
+//space: O(1)
+class Solution {
+public:
+    int repeatedNTimes(vector<int>& nums) {
+        for (int k=1; k<=3; k++) {
+            for (int i=0; i<nums.size()-k; i++) {
+                if (nums[i] == nums[i+k]) return nums[i];
+            }
+        }
+        return -1;
+    }
+};
+
+
+//hashmap
+//time:O(n)
+//space: O(n)
+class Solution {
+public:
+    int repeatedNTimes(vector<int>& nums) {
+        unordered_map<int,int> hashmap;
+        for (int i=0; i<nums.size(); i++) {
+            hashmap[nums[i]]++;
+            if (hashmap[nums[i]] == nums.size()/2) return nums[i];
+        }
+        return -1;
+    }
+};
+
