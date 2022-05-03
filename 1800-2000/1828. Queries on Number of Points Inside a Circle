@@ -1,0 +1,13 @@
+class Solution {
+public:
+    vector<int> countPoints(vector<vector<int>>& points, vector<vector<int>>& queries) {
+        vector<int> ans(queries.size(),0);
+        for (int i=0; i<queries.size(); i++) {
+            int x = queries[i][0], y = queries[i][1], R = queries[i][2]*queries[i][2];
+            for (auto& p: points) {
+                if ((p[0]-x)*(p[0]-x) + (p[1]-y)*(p[1]-y) <= R) ans[i]++;
+            }
+        }
+        return ans;
+    }
+};
