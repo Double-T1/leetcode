@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int numOfMinutes(int n, int headID, vector<int>& manager, vector<int>& informTime) {
+        vector<int> adj[n];
+        for (int i=0; i<manager.size(); i++) {
+            int sub = i, man = manager[i];
+            if (man == -1) continue;
+            adj[man].push_back(i);
+        }
+        
+        int ans = 0;
+        queue<pair<int,int>> qu;
+        qu.emplace(headID,0);
+        while (!qu.empty()) {
+            auto[id,time] = qu.front(); qu.pop();
+            ans = max(ans,time);
+            for (auto sub: adj[id]) {
+                qu.emplace(sub,time+informTime[id]);
+            }
+        }
+        return ans;
+    }
+};
