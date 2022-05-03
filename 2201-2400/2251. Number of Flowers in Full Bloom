@@ -1,0 +1,62 @@
+//solution 1
+//vanilla sweep line
+//works for limited length, however in this case the max of length is 10^9
+//which exceeds the capacity of vector
+class Solution {
+public:
+    vector<int> fullBloomFlowers(vector<vector<int>>& flowers, vector<int>& persons) {
+        vector<int> sch(pow(10,8)+1,0);
+        for (auto& x: flowers) {
+            sch[x[0]]++;
+            sch[x[1]+1]--;
+        }
+        
+        int cur = 0;
+        for (auto& val: sch) {
+            cur += val;
+            val = cur;
+        }
+        
+        vector<int> ans(persons.size());
+        for (int i=0; i<persons.size(); i++) {
+            ans[i] = sch[persons[i]];
+        }
+        return ans;
+    }
+};
+
+//solution 2
+//sorting, slow but works
+class Solution {
+public:
+    vector<int> fullBloomFlowers(vector<vector<int>>& flowers, vector<int>& persons) {
+        using Events = pair<int,int>;
+        vector<Events> sch;
+        for (auto f : flowers) {
+            sch.emplace_back(f[0],1);
+            sch.emplace_back(f[1],-1);
+        }
+        
+        for (int i=0; i<persons.size(); i++) {
+            sch.emplace_back(i,0);
+        }
+        
+        sort(sch.begin(),sch.end(),[&](Events& a, Events& b){
+            auto [time1,type1] = a;
+            auto [time2,type2] = b;
+            if (type1 == 0) time1 = persons[time1];
+            if (type2 == 0) time2 = persons[time2];
+            if (time1 == time2)
+                return type1>type2;
+            return time1<time2;
+        });
+        
+        vector<int> ans(persons.size());
+        int count = 0;
+        for (auto&[time,type] : sch) {
+            count += type;
+            if (type == 0) ans[time] = count;
+        }
+        return ans;
+    }
+};
