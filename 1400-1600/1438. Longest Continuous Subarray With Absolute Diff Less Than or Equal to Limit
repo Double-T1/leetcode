@@ -1,0 +1,24 @@
+class Solution {
+private:
+    multiset<int> ms;
+    
+public:
+    int longestSubarray(vector<int>& nums, int limit) {
+        int len = 1;
+        for (int i=0,j=0; j<nums.size(); j++) {
+            ms.insert(nums[j]);
+            
+            if (this->getDiff()>limit) {
+                ms.erase(ms.find(nums[i++]));
+            }
+            
+            len = max(len,j-i+1);
+        }
+        return len;
+    }
+private:
+    int getDiff() {
+        if (ms.empty()) return 0;
+        return *(ms.rbegin())-*(ms.begin());
+    }
+};
