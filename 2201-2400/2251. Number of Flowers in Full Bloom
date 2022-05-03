@@ -60,3 +60,61 @@ public:
         return ans;
     }
 };
+
+//solution 3
+//treemap => cutting sweep line time down to logn
+//need to do prefix sum manually
+//time: O(nlogn + mlogn)
+class Solution {
+public:
+    vector<int> fullBloomFlowers(vector<vector<int>>& flowers, vector<int>& persons) {        
+        map<int,int> treemap;
+        
+        for (auto f : flowers) {
+            treemap[f[0]]++;
+            treemap[f[1]+1]--;
+        }
+        
+        int sum = 0;
+        for (auto& it: treemap) {
+            it.second += sum;
+            sum = it.second;
+        }
+        
+        vector<int> ans(persons.size(),0);
+        for (int i=0; i<persons.size(); i++) {
+            auto it = treemap.upper_bound(persons[i]);
+            if (it != treemap.begin()) {
+                it--;
+                ans[i] = it->second; 
+            }
+            
+        }
+        return ans;
+    }
+};
+
+//solution 4
+//binary search
+//time: O(nlogn + mlogn)
+class Solution {
+public:
+    vector<int> fullBloomFlowers(vector<vector<int>>& flowers, vector<int>& persons) {
+        vector<int> start, end;
+        for (auto& f: flowers) {
+            start.push_back(f[0]);
+            end.push_back(f[1]);
+        }
+        
+        sort(start.begin(),start.end());
+        sort(end.begin(),end.end());
+        
+        vector<int> ans;
+        for (auto p: persons) {
+            int blossoms = upper_bound(start.begin(),start.end(),p)-start.begin();
+            int withers = lower_bound(end.begin(),end.end(),p)-end.begin();
+            ans.push_back(blossoms-withers);
+        }
+        return ans;
+    }
+};
