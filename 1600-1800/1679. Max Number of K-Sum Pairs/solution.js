@@ -21,25 +21,7 @@ var maxOperations = function(nums, k) {
     return count
 };
 
-class Solution {
-public:
-    int maxOperations(vector<int>& nums, int k) {
-        sort(nums.begin(),nums.end());
-        int left = 0, right = nums.size()-1, count =0;
-        while (left<right) {
-            int sum = nums[left] + nums[right];
-            if (sum == k) {
-                left++,right--;
-                count++;
-            } else if (sum > k) {
-                right--;
-            } else {
-                left++;
-            }
-        }
-        return count;
-    }
-};
+
 
 //time space trade-off
 //tme: O(n)
@@ -62,21 +44,6 @@ var maxOperations2 = function(nums, k) {
     return count
 };
 
-
-class Solution {
-public:
-    int maxOperations(vector<int>& nums, int k) {
-        unordered_map<int,int> hashmap;
-        int count = 0;
-        for (int val: nums) {
-            if (hashmap[k-val]) {
-                hashmap[k-val]--;
-                count++;
-            } else hashmap[val]++;
-        }
-        return count;
-    }
-};
 
 let  nums = [3,1,3,4,3], k = 6
 console.log(maxOperations2(nums,k))
