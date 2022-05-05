@@ -106,3 +106,30 @@ public:
         return false;
     }
 };
+
+//solution 3-2
+//same as solution 3, only that we use native array as the dp table instead of vector
+//much much faster in practice, even though the time complexity is the same
+class Solution {
+public:
+    bool splitArraySameAverage(vector<int>& nums) {
+        int n = nums.size();
+        if (n<= 1) return false;
+        int total = accumulate(nums.begin(),nums.end(),0);
+        
+        int dp[total+1];
+        memset(dp,0,sizeof dp);
+        dp[0] = 1;
+        
+        for (auto val: nums) {
+            for (int s=total-val; s>=0; s--) {
+                if(dp[s]) dp[s+val] |= dp[s]<<1;
+            }
+        }
+        
+        for (int k=1; k<=(n/2); k++) {
+            if ((total*k)%n == 0 && (dp[(total*k)/n]&(1<<k))) return true;
+        }
+        return false;
+    }
+};
