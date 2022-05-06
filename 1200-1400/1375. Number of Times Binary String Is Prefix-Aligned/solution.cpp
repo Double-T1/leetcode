@@ -42,8 +42,9 @@ public:
         int count = 0, x = 0;
         for (int i=0; i<flips.size(); i++) {
             x = max(flips[i],x);
-            if (x == i+1) count++;
+            count += x == i+1;
         }
         return count;
     }
 };
+
