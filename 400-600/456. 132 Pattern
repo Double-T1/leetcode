@@ -1,0 +1,42 @@
+class Solution {
+public:
+    bool find132pattern(vector<int>& nums) {
+        int smallest = nums[0];
+        stack<pair<int,int>>check2;
+        for (int i=1; i<nums.size(); i++) {
+            int val = nums[i];
+            if (smallest < val) {
+                while (!check2.empty() && check2.top().second <= val) check2.pop();
+                if (!check2.empty() && check2.top().first < val) return true;
+                check2.emplace(smallest,val);
+            } else {
+                smallest = val;
+            }
+        }
+        return false;
+    }
+};
+
+/*
+i,j,k
+numsi < numsk < numsj
+record the smallest numsi and the largest numsj
+
+
+
+
+for every element, it could be the 3 or 2
+1. check 3
+=> find if there are elements smaller than it before
+
+2. check 2
+=> find if there are elements bigger than it before that's a 3
+
+observations:
+1. for check3, use a monotonic stack
+the stack records the smaller numbers => increasing 
+2. for check2, if check3 suffices, use a decreasing
+
+
+
+*/
