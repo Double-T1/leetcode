@@ -1,3 +1,7 @@
+//solution 1
+//using a hashset in this case for duplicay
+//time: O(n^2) 
+//however, given that hash function may collide, the actual time may be longer 
 class Solution {
 public:
     int countDistinct(vector<int>& nums, int k, int p) {
@@ -17,3 +21,6 @@ public:
         return ans;
     }
 };
+
+//solution 1-2
+//implementing the rolling hash our self (rabin karp algo)
