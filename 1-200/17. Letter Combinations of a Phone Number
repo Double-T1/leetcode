@@ -1,0 +1,32 @@
+class Solution {
+public:
+    vector<string> letterCombinations(string digits) {
+        if (digits.size() == 0) return {};
+        vector<string> ans;
+        string sub = "";
+        helper(ans,digits,0,sub);
+        return ans;
+    }
+    
+private:
+    void helper(vector<string>& ans, string& digits, int i, string& sub) {
+        if (i == digits.size()) {
+            ans.emplace_back(sub);
+        } else {
+            int j = numToUpperLimit(digits[i]-1);
+            int x = numToUpperLimit(digits[i]);
+            for (; j<x; j++) {
+                sub += (char)(j+'a');
+                helper(ans,digits,i+1,sub);
+                sub.pop_back();
+            }
+        }
+    }
+    
+    
+    char numToUpperLimit(char num) {
+        if (num == '9') return 26;
+        int x = (num-'1')*3;
+        return num > '6' ? x+1 : x;
+    }
+};
