@@ -1,3 +1,6 @@
+//solution 1
+//time: O(n!)
+//space: O(n+m)
 class Solution {
 private:
     int n;
@@ -34,7 +37,8 @@ private:
 };
 
 //solution 2
-//another way with same complexity
+//time: O(n^n)
+//space: O(n)
 class Solution {
 public:
     vector<vector<int>> permuteUnique(vector<int>& nums) {
@@ -57,6 +61,49 @@ private:
                 nums[i] = -11;
                 helper(nums,ans,sub);
                 nums[i] = sub.back();
+                sub.pop_back();
+            }
+        }
+    }
+};
+
+//solution 3
+//a minor optimization based on solution 1
+//the complexity is still the same, yet it runs faster in reality since we don't need to sort in this case
+class Solution {
+private:
+    int n;
+public:
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        n = nums.size();
+        vector<vector<int>> ans;
+        vector<int> sub;
+        unordered_map<int,int> hashmap; //num to index
+        vector<pair<int,int>> freq;
+        for (auto val : nums) {
+            if (hashmap.count(val)) {
+                freq[hashmap[val]].second++;
+            } else {
+                hashmap[val] = freq.size();
+                freq.emplace_back(val,1);
+            }
+        }
+        
+        helper(freq,ans,sub);
+        return ans;
+    }
+    
+private:
+    void helper(vector<pair<int,int>>& freq, vector<vector<int>>& ans, vector<int>& sub) {
+        if (sub.size() == n) {
+            ans.push_back(sub);
+        } else {
+            for (auto& pr : freq) {
+                if (pr.second == 0) continue;
+                sub.push_back(pr.first);
+                pr.second--;
+                helper(freq,ans,sub);
+                pr.second++;
                 sub.pop_back();
             }
         }
