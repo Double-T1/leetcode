@@ -109,3 +109,34 @@ private:
         }
     }
 };
+
+//solution 4
+//swapping
+//same complexity but much faster in runtime
+//the key is to make sure used num is not reused
+class Solution {
+public:
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        vector<vector<int>> ans;
+        sort(nums.begin(),nums.end());
+        helper(nums,ans,0);
+        return ans;
+    }
+    
+private:
+    void helper(vector<int>& nums, vector<vector<int>>& ans, int i) {
+        if (i == nums.size()-1) {
+            ans.push_back(nums);
+        } else {
+            for (int k=i; k<nums.size(); k++) {
+                if (k>i && nums[i] == nums[k]) continue;
+                swap(nums[i],nums[k]);
+                helper(nums,ans,i+1);
+            }
+            
+            for (int j = nums.size()-1; j>i; j--) {
+                swap(nums[i],nums[j]);
+            }
+        }
+    }
+};
