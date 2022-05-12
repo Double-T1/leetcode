@@ -32,3 +32,33 @@ private:
         }
     }
 };
+
+//solution 2
+//another way with same complexity
+class Solution {
+public:
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        vector<vector<int>> ans;
+        vector<int> sub;
+        sort(nums.begin(),nums.end());
+        helper(nums,ans,sub);
+        return ans;
+    }
+    
+private:
+    void helper(vector<int>& nums, vector<vector<int>>& ans, vector<int>& sub) {
+        
+        if (sub.size() == nums.size()) {
+            ans.push_back(sub);
+        } else {
+            for (int i=0; i<nums.size(); i++) {
+                if (nums[i] == -11 || (i>0 && nums[i] == nums[i-1])) continue;
+                sub.push_back(nums[i]);
+                nums[i] = -11;
+                helper(nums,ans,sub);
+                nums[i] = sub.back();
+                sub.pop_back();
+            }
+        }
+    }
+};
