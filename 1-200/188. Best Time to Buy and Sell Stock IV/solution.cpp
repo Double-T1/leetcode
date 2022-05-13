@@ -48,3 +48,32 @@ public:
         return dp[0][k];
     }
 };
+
+//solution 3
+//a better bottom_up
+//time: O(n*k)
+//space: O(k*2)
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& prices) {
+        int dp[k+1][2];
+        //1 means toBuy, 0 means don't buy
+        for (int i=prices.size(); i>=0; i--) {
+            for (int k_=k; k_>=0; k_--) {
+                if (k_ == 0 || i == prices.size()) {
+                    dp[k_][1] = 0;
+                    dp[k_][0] = 0;
+                } else {
+                    dp[k_][1] = max(dp[k_][1],dp[k_][0]-prices[i]);
+                    dp[k_][0] = max(dp[k_][0],dp[k_-1][1]+prices[i]);
+                }
+            }
+        }
+        
+        return dp[k][1];
+    }
+};
+
+//solution 4
+//top-down based on solution 3
+//too lazy to write, but should be easy
