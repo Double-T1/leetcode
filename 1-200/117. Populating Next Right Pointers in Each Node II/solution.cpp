@@ -25,22 +25,12 @@ public:
 class Solution {
 public:
     Node* connect(Node* root) {
-        goDown(root);
+        if (!root) return nullptr;
+        connect(goNext(root));
         return root;
     }
     
-private:
-    void goDown(Node*root) {
-        if (!root) return;
-        goNext(root);
-        
-        while (!root->left && !root->right && root->next) root =  root->next;
-        
-        if (root->left) goDown(root->left);
-        else if (root->right) goDown(root->right);
-    }
-    
-    
+private:   
     Node* goNext(Node* parent) {
         if (!parent) return nullptr;
         
@@ -68,7 +58,6 @@ traverse next, once at the end, back to the leftest that can go down (either lef
 //iteration
 //space: O(1)
 //same time: O(n)
-class Solution {
 public:
     Node* connect(Node* root) {
         auto leftMostParent = root;
@@ -76,9 +65,12 @@ public:
         while (leftMostParent) {
             auto parent = leftMostParent;
             prev = nullptr;
+            leftMostParent = nullptr;
             while (parent) {                
                 if (parent->left) {
                     if (prev) prev->next = parent->left;
+                    else leftMostParent = parent->left;
+                        
                     if (parent->right) {
                         parent->left->next = parent->right;
                         prev = parent->right;
@@ -87,19 +79,16 @@ public:
                     }
                 } else if (parent->right) {
                     if (prev) prev->next = parent->right;
+                    else leftMostParent = parent->right;
+                    
                     prev = parent->right;
                 }
                 
                 parent = parent->next;
             }
-            
-            while(!leftMostParent->left && !leftMostParent->right && leftMostParent->next) 
-                leftMostParent = leftMostParent->next;
-            
-            if (leftMostParent->left) leftMostParent= leftMostParent->left;
-            else leftMostParent = leftMostParent->right;
         }
         
         return root;
     }
 };
+
