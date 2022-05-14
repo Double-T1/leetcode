@@ -2,14 +2,8 @@
 class Solution {
 public:
     int maximumWhiteTiles(vector<vector<int>>& tiles, int carpetLen) {
-        sort(tiles.begin(),tiles.end());
-        int smallest = tiles[0][0]-1;
-        for (auto& block: tiles) {
-            block[0] -= smallest;
-            block[1] -= smallest;
-        }
-        
-        int ans = helper(tiles,carpetLen,0);
+        sort(tiles.begin(),tiles.end());        
+        int ans = helper(tiles,carpetLen,tiles[0][0]-1);
         for (auto& b: tiles) swap(b[0],b[1]);
         reverse(tiles.begin(),tiles.end());
         int x = helper(tiles,carpetLen,tiles[0][0]+1);
