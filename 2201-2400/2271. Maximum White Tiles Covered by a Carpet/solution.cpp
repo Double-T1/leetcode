@@ -1,3 +1,43 @@
+
+//solution 1 is much better, inspired by an answer from leetcode discussion 
+//solution 2 is spaghetti code, 
+//unfortunately written by myself
+
+//solution 1
+class Solution {
+public:
+    int maximumWhiteTiles(vector<vector<int>>& tiles, int len) {
+        sort(tiles.begin(),tiles.end());
+        int x = helper(tiles,len);
+        for (auto& block: tiles) swap(block[0],block[1]);
+        reverse(tiles.begin(),tiles.end());
+        return max(x,helper(tiles,len));
+    }
+    
+private:
+    int helper(vector<vector<int>>& tiles, int len) {
+        int ans = 0, curLen = 0, covered = 0;
+        for (int i=0,j=0; j<tiles.size() && ans < len;) {
+            if (len > abs(tiles[j][1]-tiles[i][0])) {
+                covered += abs(tiles[j][1]-tiles[j][0])+1;
+                ans = max(ans,covered);
+                
+                j++;
+            } else {
+                int partial = len - abs(tiles[i][0] - tiles[j][0]);
+                covered += partial;
+                ans = max(ans,covered);
+                
+                covered -= partial;
+                covered -= abs(tiles[i][1]-tiles[i][0])+1;
+                i++;
+            }
+        }
+        return ans;
+    }
+};
+
+//solution 2
 //O(n) time
 class Solution {
 public:
