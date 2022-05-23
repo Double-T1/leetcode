@@ -1,3 +1,6 @@
+//solution 1
+//time: O(n^2 * logn * logm)
+//solution 2 is better
 class Solution {
 public:
     int maxPoints(vector<vector<int>>& points) {
@@ -26,6 +29,37 @@ public:
                     ans = max(ans,hashmap[t]+1);
                     seen.emplace(dx,dy,cn,cd);
                 }
+            }
+        }
+        return ans;
+    }
+};
+
+//solution 2
+//time: O(n^2)
+//for hashing multiple values, we could either string as one string, or provide a hash function
+class Solution {
+public:
+    struct Comp {
+        size_t operator() (const pair<int,int>& p) const {
+            return p.first ^ p.second * 3;
+        }
+    };
+    
+    int maxPoints(vector<vector<int>>& points) {
+        int s = points.size(), ans = 1;
+        for (int i=0; i<s-1; i++) {
+            int x = points[i][0], y = points[i][1];
+            unordered_map<pair<int,int>,int, Comp> hashmap;
+            for (int j=i+1; j<s; j++) {
+                int dx = points[j][0]-x, dy = points[j][1]-y, d = gcd(dx,dy);
+                int dxd = abs(dx/d), dyd = abs(dy/d);
+                if (dx*dy<0) dxd *= -1; //dx*dy <2^31
+                hashmap[make_pair(dxd,dyd)]++;
+            }
+            
+            for (auto& line : hashmap) {
+                ans = max(ans,line.second+1);
             }
         }
         return ans;
