@@ -7,16 +7,12 @@ public:
         for (int i=0; i<s.size(); i++) {
             if (s[i] == '(') continue;
             int j = i-1;
-            for (int j=i-1; j>=0;) {
-                if (s[j] == '(') {
-                    dp[i] = dp[i-1] + 2;
-                    if (j>0) dp[i] += dp[j-1];
-                    break;
-                } else if (dp[j] == 0) {
-                    break;
-                } else {
-                    j -= dp[j];
-                }
+            if (j>=0 && s[j] == '(') {
+                dp[i] = 2;
+                if (j>0) dp[i] += dp[j-1];
+            } else if (j>= 0 && dp[j]>0 && (j -= dp[j])>=0 && s[j] == '(') {
+                dp[i] = 2 + dp[i-1];
+                if (j>0) dp[i] += dp[j-1];
             }
             ans = max(ans,dp[i]);
         }
