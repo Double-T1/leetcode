@@ -3,6 +3,16 @@ private:
     struct TrieNode {
         TrieNode* children[26] = {nullptr};
         bool isEnd = false;
+        
+        void clearMemory () {
+            for (int i=0; i<26; i++) {
+                if(this->children[i] != nullptr) {
+                    this->children[i]->clearMemory();
+                    delete this->children[i];
+                    this->children[i] = nullptr;
+                }
+            }
+        }
     };
     
     TrieNode* root = new TrieNode();
@@ -31,7 +41,7 @@ public:
             
             insert(words[i]);
         }
-        
+        root->clearMemory();
         return ans;
     }
     
