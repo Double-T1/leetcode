@@ -77,16 +77,16 @@ public:
     
 private:
     int findMax(vector<int>& nums1, vector<int>& nums2, int i1, int i2) {
-        int ans = 0, m = nums1.size(), n = nums2.size();
-        for (int j1 = i1, j2 = i2, curLen = 0; j1<m && j2<n; j1++,j2++) {
+        int ans = 0, m = nums1.size(), n = nums2.size(), curLen =0;
+        for (int j1 = i1, j2 = i2; j1<m && j2<n; j1++,j2++) {
             if (nums1[j1] == nums2[j2]) {
                 curLen++;
-                ans = max(curLen, ans);
             } else {
+                ans = max(curLen,ans);
                 curLen = 0;
             }
         }
-        return ans;
+        return max(ans, curLen);
     }
 };
 
