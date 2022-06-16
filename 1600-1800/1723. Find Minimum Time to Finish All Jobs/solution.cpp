@@ -38,3 +38,51 @@ base case: x(0,0) = 0, x(0,other) = invalid;
 x(i+1,mask|newMask) = min{max(x(i,mask),sum(newMask))|newMask of not mask}
 
 */
+
+
+//solution 2
+//binary search + backtrack
+//time: O(log(high-low) * 2^n * k)
+class Solution {
+public:
+    int minimumTimeRequired(vector<int>& jobs, int k) {
+        sort(jobs.begin(),jobs.end(),greater<int>());
+        int low = *max_element(jobs.begin(),jobs.end());
+        int high = accumulate(jobs.begin(),jobs.end(),0)+1;
+        return bsearch(jobs,low,high,k);
+    }
+    
+private:
+    int bsearch(vector<int>& jobs, int left, int right, int k) {
+        while (left<right) {
+            int mid = left + (right-left)/2;
+            vector<int> workers(k,0);
+            if (valid(jobs,mid,workers)) {
+                right = mid;
+            } else {
+                left = mid+1;
+            }
+        }
+        return right;
+    }
+    
+    bool valid(vector<int>& jobs, int max, vector<int>& workers, int i=0) {
+        if (i == jobs.size()) return true;
+        if (jobs[i]>max) return false;
+        
+        for (int j=0; j<workers.size(); j++) {
+            if (workers[j]+jobs[i] <= max) {
+                workers[j] += jobs[i];
+                if (valid(jobs,max,workers,i+1)) return true;
+                workers[j] -= jobs[i];
+            }
+            if (workers[j] == 0) break; //to prevent repeating permutations
+        }
+        return false;
+    }
+};
+
+/*
+bsearch:
+answer range between max number in array and the accumulated sum
+*/
