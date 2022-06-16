@@ -67,9 +67,6 @@ private:
     }
 };
 
-//solution 2
-//same as above but bottom-up
-
 //solution 3
 //DP with bitmask, and submask
 //time: O(k*(3^n)) 
@@ -101,6 +98,47 @@ public:
         return dp[k][limit-1];
     }
 };
+
+//solution 3.5
+//another way of bottom-up
+class Solution {
+public:
+    int distributeCookies(vector<int>& cookies, int k) {
+        int n = cookies.size();
+        int limit = 1 << n;
+        int sum[limit], i=0;
+        sum[0] = 0;
+        for (int m=1; m<limit; m++) {
+            int submask = m&(m-1);
+            if (submask == 0) sum[m] = cookies[i++];
+            else sum[m] = sum[submask] + sum[m^submask];
+        }
+        
+        
+        vector<vector<int>> dp(k+1,vector<int>(limit,INT_MAX));
+        
+        dp[0][0] = 0; //if there are 0 children and 0 cookies, the total is 0
+        for (int i=0; i<k; i++) {
+            for (int mask=0; mask<limit; mask++) {
+                if (dp[i][mask] == INT_MAX) continue;
+                int comp = limit-mask-1;
+                for (int submask=comp; submask; submask=comp&(submask-1)) {
+                    dp[i+1][mask|submask] = min(dp[i+1][mask|submask],
+                                               max(dp[i][mask],sum[submask]));
+                }
+            }
+        }
+        return dp[k][limit-1];
+    }
+};
+
+
+/*
+x(i,mask): minimum of maximum cookies obtained by a single child if there are i children with masked cookies chosen
+
+x(i+1,mask|newMask) =  min{max(x(i,mask),sum(newMask))|newMask of not mask}
+
+*/
 
 //solution 4
 //binary search
