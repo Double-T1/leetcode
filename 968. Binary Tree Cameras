@@ -5,7 +5,7 @@ var minCameraCover = function(root) {
 //recursion
 //lights that only cover itself => 1 (can move up to its parent)
 //lights that cover itself and its children => 2 (can't move)
-//spot covered by its children => 3
+//spots covered by its children => 3
 let helper = (root) => {
     if (!root) {
         return 0
