@@ -1,3 +1,4 @@
+//soltuion 1
 class Solution {
 public:
     vector<int> findRedundantDirectedConnection(vector<vector<int>>& edges) {
@@ -69,5 +70,55 @@ if the edge is from others, it can actually replace the original edge.
 
 prep:
 1. parent to determine component, and if 
+
+*/
+
+//solution 2
+//the better solution
+//even though shares the same complexity, the code is cleaner and the idea is easier. only one pass is required
+class Solution {
+public:
+    vector<int> findRedundantDirectedConnection(vector<vector<int>>& edges) {
+        int n = edges.size(), first = -1, second = -1, cycle = -1;
+        int parent[n+1], inEdge[n+1];
+        for (int i=0; i<n+1; i++) {
+            parent[i] = i;
+            inEdge[i] = -1;
+        }
+
+        for (int i=0; i<n; i++) {
+            auto u = edges[i][0], v = edges[i][1];
+            if (inEdge[v] != -1) {
+                first = inEdge[v];
+                second = i;
+                continue;
+            }
+            inEdge[v] = i;
+            
+            int pu = find(parent,u);
+            if (pu == v) cycle = i;
+            else parent[v] = pu;
+        }
+        
+        if (second == -1) return edges[cycle];
+        if (cycle == -1) return edges[second];
+        return edges[first];
+    }
+    
+private:
+    int find (int parent[], int x) {
+        if (x != parent[x]) {
+            parent[x] = find(parent,parent[x]);
+        }
+        return parent[x];
+    }
+};
+
+
+/*
+
+
+
+
 
 */
